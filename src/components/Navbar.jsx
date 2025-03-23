@@ -8,7 +8,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="bg-white shadow-md px-6 py-3 flex items-center justify-between">
+    <nav className="fixed top-0 left-0 w-full bg-white shadow-md px-6 py-3 flex items-center justify-between z-50">
       {/* Left Section: Logo */}
       <div className="flex items-center gap-3">
         <img src={dseu_logo} alt="DSEU Logo" className="h-12" />

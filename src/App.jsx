@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Sidebar from "./components/Sidebar";
-import Dashboard from "./components/Dashboard";
-import AttendanceReport from "./components/Attendence.jsx";
-import Attendence from "./components/Attendence"; // Corrected the filename
+import Sidebar from "./homepage/Sidebar";
+import Dashboard from "./homepage/Dashboard";
+import AttendanceReport from "./components/attendance/Attendance.jsx";
+import Attendence from "./components/attendance/Attendance.jsx"; // Corrected the filename
 import WeeklyReport from "./components/WeeklyReport";
 import MonthlyReport from "./components/MonthlyReport";
 import TrackLeave from "./components/TrackLeave";
