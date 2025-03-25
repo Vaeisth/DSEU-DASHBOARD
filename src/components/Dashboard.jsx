@@ -10,6 +10,7 @@ import TrackleaveIcon from "../assets/icons/Trackleave.png";
 import FiletrackingIcon from "../assets/icons/Filetracking.png";
 import SurveilanceIcon from "../assets/icons/Surveilance.png";
 import InventoryIcon from "../assets/icons/Inventory.png";
+import profile from "../assets/logo/profile.png";
 
 const data = [
   { name: "Present", value: 50, color: "#4CAF50" },
@@ -96,7 +97,13 @@ const Dashboard = () => {
         <div className="mt-4 flex gap-4 overflow-x-auto pb-2">
           {[1, 2, 3, 4].map((_, index) => (
             <div key={index} className="min-w-[250px] bg-white p-4 rounded-xl shadow-md flex items-center gap-4">
-              <img src="https://via.placeholder.com/40" alt="User" className="w-10 h-10 rounded-full" />
+               <button className="focus:outline-none">
+                        <img
+                          src={profile}
+                          alt="Profile"
+                          className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer"
+                        />
+                      </button>
               <div>
                 <p className="font-semibold text-gray-800 text-sm">Name</p>
                 <p className="text-xs text-gray-500">Organization Name</p>

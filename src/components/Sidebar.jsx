@@ -10,7 +10,7 @@ const Sidebar = () => {
             Attendance
           </li>
           <li className="text-gray-700 hover:text-blue-600 cursor-pointer">
-            Approvals
+            Approvalsss
           </li>
         </ul>
       </aside>

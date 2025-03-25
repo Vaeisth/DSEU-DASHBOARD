@@ -19,6 +19,8 @@ import LeaveHistory from "./components/leaveHistory";
 import CampusInfo from "./components/CampusInfo"; // The new CampusInfo page
 import Profile from "./components/Profile";
 import Inventory from "./components/Inventory";
+// import InventoryApproved from "./components/InventoryApproved";
+// import InventoryReject from "./components/InventoryReject";
 
 
 
@@ -65,6 +67,9 @@ function App() {
         <Route path="/" element={<Navbar/>} />
         <Route path="/profile" element={<Profile/>} />
         <Route path="/inventory" element={<Inventory/>} />
+        <Route path="/" element={<Inventory/>} />
+        {/* <Route path="/approved" element={<InventoryApproved />} />
+        <Route path="/rejected" element={<InventoryReject />} />  Add this line */}
         
 
         
