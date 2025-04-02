@@ -21,17 +21,9 @@ const services = [
   { name: "Inventory", path: "/inventory" },
 ];
 
-// Define an array of colors for the buttons
 const buttonColors = [
-  "bg-[#C4DAFA]",
-  "bg-[#EFFBEA]",
-  "bg-[#F1D9FC]",
-  "bg-[#FBD5D7]",
-  "bg-[#FBF5EA]",
-  "bg-[#FBC4DF]",
-  "bg-[#FCDFE0]",
-  "bg-[#C6FFEB]",
-  "bg-[#A3EEE7]",
+  "bg-[#C4DAFA]", "bg-[#EFFBEA]", "bg-[#F1D9FC]", "bg-[#FBD5D7]",
+  "bg-[#FBF5EA]", "bg-[#FBC4DF]", "bg-[#FCDFE0]", "bg-[#C6FFEB]", "bg-[#A3EEE7]",
 ];
 
 const Dashboard = () => {
@@ -45,7 +37,6 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {["Total Employees", "Today’s Attendance", "Leaves Approved"].map((title, index) => (
-        {["Total Employees", "Today’s Attendance", "Leaves Approved"].map((title, index) => (
           <div key={index} className="bg-white p-6 rounded-xl shadow-md text-center">
             <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
             <p className={`text-4xl font-bold ${index === 1 ? "text-green-600" : index === 2 ? "text-red-600" : "text-blue-600"}`}>
@@ -55,9 +46,7 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Attendance Chart & Services Section */}
       <div className="mt-8 flex flex-col md:flex-row gap-8">
-        {/* Employee Attendance Chart */}
         <div className="flex flex-col items-center w-full md:w-1/3 bg-white p-6 rounded-xl shadow-md">
           <h3 className="text-xl font-bold text-gray-700 mb-4 text-center">Employee Attendance</h3>
           <ResponsiveContainer width="90%" height={210}>
@@ -81,7 +70,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Services Section (Updated: Each Button has a Different Color) */}
         <div className="w-full md:w-2/3 bg-white p-6 rounded-xl shadow-md">
           <h3 className="text-xl font-bold text-gray-700 mb-4">Services</h3>
           <div className="grid grid-cols-3 gap-5">
@@ -105,8 +93,6 @@ const Dashboard = () => {
         </div>
         <div className="mt-4 flex gap-4 overflow-x-auto pb-2">
           {[1, 2, 3, 4].map((_, index) => (
-            <div key={index} className="min-w-[250px] bg-white p-4 rounded-xl shadow-md flex items-center gap-4">
-              <img src="https://via.placeholder.com/40" alt="User" className="w-10 h-10 rounded-full" />
             <div key={index} className="min-w-[250px] bg-white p-4 rounded-xl shadow-md flex items-center gap-4">
               <img src="https://via.placeholder.com/40" alt="User" className="w-10 h-10 rounded-full" />
               <div>
