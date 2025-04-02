@@ -1,8 +1,8 @@
 import React from "react";
 import { FaArrowLeft, FaFilter, FaCheck, FaBell, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import dseu_logo from "../assets/logo/dseu_logo.png";
-import profile from "../assets/logo/profile.png";
+import dseu_logo from "../../assets/logo/dseu_logo.png";
+import profile from "../../assets/logo/profile.png";
 
 const inventoryItems = [
   { id: 1, name: "Item Name", campus: "Campus name", image: profile },

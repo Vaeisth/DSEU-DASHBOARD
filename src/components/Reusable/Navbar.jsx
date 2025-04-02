@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import dseu_logo from "../assets/logo/dseu_logo.png";
-import BellIcon from "../assets/logo/Bell.png";
-import profile from "../assets/logo/profile.png";
-import searchIcon from "../assets/logo/search.png";
+import dseu_logo from "../../assets/logo/dseu_logo.png";
+import BellIcon from "../../assets/logo/Bell.png";
+import profile from "../../assets/logo/profile.png";
+import searchIcon from "../../assets/logo/search.png";
 
 const Navbar = () => {
   const navigate = useNavigate();

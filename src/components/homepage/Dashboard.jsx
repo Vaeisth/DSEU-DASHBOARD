@@ -1,16 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import HolidayIcon from "../assets/icons/Holiday.png";
-import ReportsIcon from "../assets/icons/Reports.png";
-import BuildingIcon from "../assets/icons/Building.png";
-import VectorIcon from "../assets/icons/Vector.png";
-import AttendanceIcon from "../assets/icons/Attendance.png";
-import TrackleaveIcon from "../assets/icons/Trackleave.png";
-import FiletrackingIcon from "../assets/icons/Filetracking.png";
-import SurveilanceIcon from "../assets/icons/Surveilance.png";
-import InventoryIcon from "../assets/icons/Inventory.png";
-import profile from "../assets/logo/profile.png";
+import HolidayIcon from "../../assets/icons/Holiday.png";
+import ReportsIcon from "../../assets/icons/Reports.png";
+import BuildingIcon from "../../assets/icons/Building.png";
+import VectorIcon from "../../assets/icons/Vector.png";
+import AttendanceIcon from "../../assets/icons/Attendance.png";
+import TrackleaveIcon from "../../assets/icons/Trackleave.png";
+import FiletrackingIcon from "../../assets/icons/Filetracking.png";
+import SurveilanceIcon from "../../assets/icons/Surveilance.png";
+import InventoryIcon from "../../assets/icons/Inventory.png";
+import profile from "../../assets/logo/profile.png";
 
 const data = [
   { name: "Present", value: 50, color: "#4CAF50" },
@@ -40,9 +40,8 @@ const Dashboard = () => {
         Employee Attendance Dashboard
       </h2>
 
-      {/* Employee Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {['Total Employees', 'Today’s Attendance', 'Leaves Approved'].map((title, index) => (
+        {["Total Employees", "Today’s Attendance", "Leaves Approved"].map((title, index) => (
           <div key={index} className="bg-white p-6 rounded-xl shadow-md text-center">
             <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
             <p className={`text-4xl font-bold ${index === 1 ? 'text-green-600' : index === 2 ? 'text-red-600' : 'text-blue-600'}`}>{[150, 120, 30][index]}</p>
@@ -50,9 +49,7 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Attendance Chart & Services Section */}
       <div className="mt-8 flex flex-col md:flex-row gap-8 ">
-        {/* Employee Attendance Chart */}
         <div className="flex flex-col items-center w-full md:w-1/3 bg-white p-6 rounded-xl shadow-md">
           <h3 className="text-xl font-bold text-gray-700 mb-4 text-center">
             Employee Attendance
@@ -67,8 +64,7 @@ const Dashboard = () => {
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
-      
-                <div className="flex flex-col gap-2 mt-4 text-sm text-gray-700">
+          <div className="flex flex-col gap-2 mt-4 text-sm text-gray-700">
             {data.map((entry, index) => (
               <span key={index} className="flex items-center gap-2">
                 <div className={`rounded-full w-4 h-4`} style={{ backgroundColor: entry.color }}></div>
@@ -78,7 +74,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Services Section */}
         <div className="w-full md:w-2/3 bg-white p-6 rounded-xl shadow-md">
           <h3 className="text-lg font-semibold mb-3 text-gray-800">Services</h3>
           <div className="grid grid-cols-3 gap-5">
@@ -96,7 +91,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Pending Approvals Section */}
       <div className="mt-8">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold text-gray-800">Pending Approvals</h3>
