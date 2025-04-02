@@ -1,6 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faUserCheck, faFileAlt, faPlaneDeparture, 
+  faBullhorn, faCalendarAlt, faUniversity, 
+  faFileArchive, faVideo, faBoxOpen 
+} from "@fortawesome/free-solid-svg-icons";
 
 const data = [
   { name: "Present", value: 50, color: "#4CAF50" },
@@ -10,16 +16,17 @@ const data = [
 ];
 
 const services = [
-  { name: "Attendance", path: "/attendance" },
-  { name: "Reports", path: "/reports" },
-  { name: "Track Leave", path: "/track-leave" },
-  { name: "Announcements", path: "/announcements" },
-  { name: "Holidays", path: "/holidays" },
-  { name: "Campus List", path: "/campus" },
-  { name: "File Tracking", path: "/filetracking" },
-  { name: "Surveillance", path: "/surveillance" },
-  { name: "Inventory", path: "/inventory" },
+  { name: "Attendance", path: "/attendance", icon: faUserCheck },
+  { name: "Reports", path: "/reports", icon: faFileAlt },
+  { name: "Track Leave", path: "/track-leave", icon: faPlaneDeparture },
+  { name: "Announcements", path: "/announcements", icon: faBullhorn },
+  { name: "Holidays", path: "/holidays", icon: faCalendarAlt },
+  { name: "Campus List", path: "/campus", icon: faUniversity },
+  { name: "File Tracking", path: "/filetracking", icon: faFileArchive },
+  { name: "Surveillance", path: "/surveillance", icon: faVideo },
+  { name: "Inventory", path: "/inventory", icon: faBoxOpen },
 ];
+
 
 const buttonColors = [
   "bg-[#C4DAFA]", "bg-[#EFFBEA]", "bg-[#F1D9FC]", "bg-[#FBD5D7]",
@@ -47,43 +54,50 @@ const Dashboard = () => {
       </div>
 
       <div className="mt-8 flex flex-col md:flex-row gap-8">
-        <div className="flex flex-col items-center w-full md:w-1/3 bg-white p-6 rounded-xl shadow-md">
-          <h3 className="text-xl font-bold text-gray-700 mb-4 text-center">Employee Attendance</h3>
-          <ResponsiveContainer width="90%" height={210}>
-            <PieChart>
-              <Pie data={data} dataKey="value" outerRadius={80}>
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+      <div className="flex flex-col items-center w-full md:w-1/3 bg-white p-6 rounded-xl shadow-md">
+  <h3 className="text-xl font-bold text-gray-700 mb-4 text-center">Employee Attendance</h3>
 
-          <div className="flex flex-col gap-2 mt-4 text-sm text-gray-700">
-            {data.map((entry, index) => (
-              <span key={index} className="flex items-center gap-2">
-                <div className="rounded-full w-4 h-4" style={{ backgroundColor: entry.color }}></div>
-                <p>{entry.name}</p>
-              </span>
-            ))}
-          </div>
-        </div>
+  <div className="flex justify-center items-center w-full">
+    <ResponsiveContainer width="100%" height={220}>
+      <PieChart>
+        <Pie data={data} dataKey="value" outerRadius={80} innerRadius={50} paddingAngle={5}>
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.color} />
+          ))}
+        </Pie>
+        <Tooltip />
+      </PieChart>
+    </ResponsiveContainer>
+  </div>
+
+  <div className="flex flex-wrap justify-center gap-3 mt-5 text-sm text-gray-700">
+    {data.map((entry, index) => (
+      <div key={index} className="flex items-center gap-2">
+        <div className="rounded-full w-5 h-5" style={{ backgroundColor: entry.color }}></div>
+        <p className="font-medium">{entry.name}</p>
+      </div>
+    ))}
+  </div>
+</div>
+
 
         <div className="w-full md:w-2/3 bg-white p-6 rounded-xl shadow-md">
-          <h3 className="text-xl font-bold text-gray-700 mb-4">Services</h3>
-          <div className="grid grid-cols-3 gap-5">
-            {services.map((service, index) => (
-              <div
-                key={index}
-                className={`w-[225px] h-[100px] flex justify-center items-center cursor-pointer p-7 text-white font-semibold rounded-lg shadow hover:shadow-md transition-transform transform hover:scale-105 ${buttonColors[index]}`}
-                onClick={() => navigate(service.path)}
-              >
-                <h3 className="text-sm">{service.name}</h3>
-              </div>
-            ))}
-          </div>
-        </div>
+  <h3 className="text-xl font-bold text-gray-700 mb-4">Services</h3>
+  <div className="grid grid-cols-3 gap-5">
+    {services.map((service, index) => (
+      <div
+        key={index}
+        className={`w-[225px] h-[100px] flex flex-col justify-center items-center cursor-pointer p-7 text-white font-semibold rounded-lg shadow hover:shadow-md transition-transform transform hover:scale-105 ${buttonColors[index]}`}
+        onClick={() => navigate(service.path)}
+      >
+        <FontAwesomeIcon icon={service.icon} className="text-3xl text-gray-800 mb-1" />
+        <h3 className="text-sm text-gray-900">{service.name}</h3>
+      </div>
+    ))}
+  </div>
+</div>
+
+
       </div>
 
       <div className="mt-8">
