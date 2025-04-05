@@ -15,31 +15,6 @@ const InventoryApproved = () => {
 
   return (
     <div className="min-h-screen bg-white-100">
-      {/* Navbar */}
-      <div className="w-[100%] flex items-center justify-between px-6 py-4 bg-white shadow-md">
-        {/* Left Section */}
-        <div className="flex items-center gap-[700px]">
-          <img src={dseu_logo} alt="DSEU Logo" className="h-12" />
-          <div className="relative ml-[70px]">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="pl-4 pr-10 py-2 border rounded-full bg-gray-100 text-gray-700 w-full"
-            />
-            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          </div>
-        </div>
-
-        {/* Right Section */}
-        <div className="flex items-center space-x-6">
-          <FaBell size={20} className="text-gray-600 cursor-pointer" />
-          <img
-            src={profile}
-            alt="Profile"
-            className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer"
-          />
-        </div>
-      </div>
 
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 bg-white mt-2">

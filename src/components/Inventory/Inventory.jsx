@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import dseu_logo from "../../assets/logo/dseu_logo.png";
 import profile from "../../assets/logo/profile.png";
 import { FaArrowLeft, FaFilter, FaClock, FaSearch, FaBell, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import Navbar from "../Reusable/Navbar";
 
 const inventoryItems = [
   { id: 1, name: "Item Name", campus: "Campus name", image: profile },
@@ -30,22 +31,11 @@ const InventoryPage = () => {
   };
 
   return (
+    
     <div className="min-h-screen bg-white-100">
-      <div className="w-[100%] flex items-center justify-between px-6 py-4 bg-white shadow-md">
-        <div className="flex items-center gap-[700px]">
-          <img src={dseu_logo} alt="DSEU Logo" className="h-12" />
-          <div className="relative ml-[70px]">
-            <input type="text" placeholder="Search..." className="pl-4 pr-10 py-2 border rounded-full bg-gray-100 text-gray-700 w-full" />
-            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          </div>
-        </div>
-        <div className="flex items-center space-x-6">
-          <FaBell size={20} className="text-gray-600 cursor-pointer" />
-          <img src={profile} alt="Profile" className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer" />
-        </div>
-      </div>
+      <Navbar/>
 
-      <div className="flex items-center justify-between px-6 py-4 bg-white mt-2">
+      <div className="flex items-center justify-between px-6 py-4 bg-white mt-20">
         <div className="flex items-center space-x-3">
           <button className="text-gray-700" onClick={() => navigate(-1)}>
             <FaArrowLeft size={20} />
