@@ -126,7 +126,7 @@ const Dashboard = () => {
         {/* Services Grid */}
         <div className="bg-white p-6 rounded-2xl shadow w-full lg:w-2/3">
           <h3 className="text-xl font-bold text-gray-700 mb-6">Services</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {services.map((service, index) => (
               <div
                 key={index}
