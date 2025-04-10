@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaClock, FaLink, FaFileAlt, FaPlus } from "react-icons/fa"; // Updated FaImage to FaFileAlt
-import img from "../../assets/icons/img (1).png";
+import img from "../../../assets/icons/img (1).png";
 
 const PostAnnouncement = () => {
   const navigate = useNavigate();

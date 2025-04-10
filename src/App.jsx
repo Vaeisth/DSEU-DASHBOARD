@@ -1,72 +1,74 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Reusable/Navbar.jsx";
-// import Sidebar from "./components/Reusable/Sidebar.jsx"; // Removed
-import Dashboard from "./components/homepage/Dashboard.jsx";
-import AttendanceReport from "./components/attendance/Attendance.jsx";
-import Attendence from "./components/attendance/Attendance.jsx"; // Corrected the filename
-import WeeklyReport from "./components/attendance/WeeklyReport.jsx";
-import MonthlyReport from "./components/attendance/MonthlyReport.jsx";
-import TrackLeave from "./components/Leave/TrackLeave.jsx";
-import LeaveDetails from "./components/Leave/LeaveDetails.jsx";
-import Announcements from "./components/Announcements/Announcements.jsx";
-import Holidays from "./components/Holidays/Holidays.jsx";
-import CampusList from "./components/CampusList/CampusList.jsx";
-import AnnouncementDetails from "./components/Announcements/AnnouncementDetails.jsx";
-import PostAnnouncement from "./components/Announcements/PostAnnouncement.jsx";
-import ScheduleDrawer from "./components/Attendance/ScheduleDrawer.jsx";
-import AttachLinkDrawer from "./components/Announcements/AttachLinkDrawer.jsx";
-import LeaveHistory from "./components/Leave/leaveHistory.jsx";
-import CampusInfo from "./components/CampusList/CampusInfo.jsx";
-import Profile from "./components/Profile/Profile.jsx";
-import Inventory from "./components/Inventory/Inventory.jsx";
-import InventoryApproved from "./components/Inventory/InventoryApproved.jsx";
-import InventoryReject from "./components/Inventory/InventoryReject.jsx";
-import Surveillance from "./components/surveillance/Surveillance.jsx";
-import Inventory_campus from "./components/Inventory_Campus/Inventory_compus.jsx";
-import RequestInventory from "./components/Inventory_Campus/RequestInventory.jsx";
+import Login from "./components/Login/Login";
+import Navbar from "./components/ViceChancellorUI/Reusable/Navbar.jsx";
+import Dashboard from "./components/ViceChancellorUI/homepage/Dashboard.jsx";
+import AttendanceReport from "./components/ViceChancellorUI/attendance/Attendance.jsx";
+import WeeklyReport from "./components/ViceChancellorUI/attendance/WeeklyReport.jsx";
+import MonthlyReport from "./components/ViceChancellorUI/attendance/MonthlyReport.jsx";
+import TrackLeave from "./components/ViceChancellorUI/Leave/TrackLeave.jsx";
+import LeaveDetails from "./components/ViceChancellorUI/Leave/LeaveDetails.jsx";
+import LeaveHistory from "./components/ViceChancellorUI/Leave/leaveHistory.jsx";
+import Announcements from "./components/ViceChancellorUI/Announcements/Announcements.jsx";
+import AnnouncementDetails from "./components/ViceChancellorUI/Announcements/AnnouncementDetails.jsx";
+import PostAnnouncement from "./components/ViceChancellorUI/Announcements/PostAnnouncement.jsx";
+import AttachLinkDrawer from "./components/ViceChancellorUI/Announcements/AttachLinkDrawer.jsx";
+import ScheduleDrawer from "./components/ViceChancellorUI/Attendance/ScheduleDrawer.jsx";
+import Holidays from "./components/ViceChancellorUI/Holidays/Holidays.jsx";
+import CampusList from "./components/ViceChancellorUI/CampusList/CampusList.jsx";
+import CampusInfo from "./components/ViceChancellorUI/CampusList/CampusInfo.jsx";
+import Profile from "./components/ViceChancellorUI/Profile/Profile.jsx";
+import Inventory from "./components/ViceChancellorUI/Inventory/Inventory.jsx";
+import InventoryApproved from "./components/ViceChancellorUI/Inventory/InventoryApproved.jsx";
+import InventoryReject from "./components/ViceChancellorUI/Inventory/InventoryReject.jsx";
+import Surveillance from "./components/ViceChancellorUI/surveillance/Surveillance.jsx";
+
+// VC Layout Wrapper
+const VCLayout = ({ children }) => (
+  <div className="bg-gray-100 min-h-screen w-full flex flex-col">
+    <Navbar />
+    <main className="flex-grow p-4">{children}</main>
+  </div>
+);
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Dashboard with full width, no Sidebar */}
+        {/* Login Route */}
+        <Route path="/" element={<Login />} />
+
+        {/* VC Dashboard - styled separately (like before) */}
         <Route
-          path="/"
+          path="/vc-dashboard"
           element={
             <div className="bg-gray-100 min-h-screen w-full flex flex-col">
               <Navbar />
-              <main className="flex-grow p-4">
-                <Dashboard />
-              </main>
+              <Dashboard />
             </div>
           }
         />
 
-
-
-        {/* Other routes without Sidebar */}
-        <Route path="/attendance" element={<AttendanceReport />} />
-        <Route path="/attendance-report" element={<Attendence />} />
-        <Route path="/track-leave" element={<TrackLeave />} />
-        <Route path="/weekly-report" element={<WeeklyReport />} />
-        <Route path="/monthly-report" element={<MonthlyReport />} />
-        <Route path="/leave-details/:id" element={<LeaveDetails />} />
-        <Route path="/track-leave/history" element={<LeaveHistory />} />
-        <Route path="/announcements" element={<Announcements />} />
-        <Route path="/holidays" element={<Holidays />} />
-        <Route path="/campus" element={<CampusList />} />
-        <Route path="/campus-info" element={<CampusInfo />} />
-        <Route path="/announcement/:id" element={<AnnouncementDetails />} />
-        <Route path="/post" element={<PostAnnouncement />} />
-        <Route path="/schedule" element={<ScheduleDrawer />} />
-        <Route path="/attach-link" element={<AttachLinkDrawer />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/inventory" element={<Inventory />} />
-        <Route path="/approved" element={<InventoryApproved />} />
-        <Route path="/rejected" element={<InventoryReject />} />
-        <Route path="/surveillance" element={<Surveillance />} />
-        <Route path="/inventory_campus" element={<Inventory_campus />} />
-        <Route path="/request" element={<RequestInventory />} />
+        {/* Other VC Pages use VCLayout */}
+        <Route path="/attendance" element={<VCLayout><AttendanceReport /></VCLayout>} />
+        <Route path="/weekly-report" element={<VCLayout><WeeklyReport /></VCLayout>} />
+        <Route path="/monthly-report" element={<VCLayout><MonthlyReport /></VCLayout>} />
+        <Route path="/track-leave" element={<VCLayout><TrackLeave /></VCLayout>} />
+        <Route path="/leave-details/:id" element={<VCLayout><LeaveDetails /></VCLayout>} />
+        <Route path="/track-leave/history" element={<VCLayout><LeaveHistory /></VCLayout>} />
+        <Route path="/announcements" element={<VCLayout><Announcements /></VCLayout>} />
+        <Route path="/announcement/:id" element={<VCLayout><AnnouncementDetails /></VCLayout>} />
+        <Route path="/post" element={<VCLayout><PostAnnouncement /></VCLayout>} />
+        <Route path="/attach-link" element={<VCLayout><AttachLinkDrawer /></VCLayout>} />
+        <Route path="/schedule" element={<VCLayout><ScheduleDrawer /></VCLayout>} />
+        <Route path="/holidays" element={<VCLayout><Holidays /></VCLayout>} />
+        <Route path="/campus" element={<VCLayout><CampusList /></VCLayout>} />
+        <Route path="/campus-info" element={<VCLayout><CampusInfo /></VCLayout>} />
+        <Route path="/profile" element={<VCLayout><Profile /></VCLayout>} />
+        <Route path="/inventory" element={<VCLayout><Inventory /></VCLayout>} />
+        <Route path="/approved" element={<VCLayout><InventoryApproved /></VCLayout>} />
+        <Route path="/rejected" element={<VCLayout><InventoryReject /></VCLayout>} />
+        <Route path="/surveillance" element={<VCLayout><Surveillance /></VCLayout>} />
+        
       </Routes>
     </Router>
   );
