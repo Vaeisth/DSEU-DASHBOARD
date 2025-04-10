@@ -22,6 +22,8 @@ import Inventory from "./components/Inventory/Inventory.jsx";
 import InventoryApproved from "./components/Inventory/InventoryApproved.jsx";
 import InventoryReject from "./components/Inventory/InventoryReject.jsx";
 import Surveillance from "./components/surveillance/Surveillance.jsx";
+import Inventory_campus from "./components/Inventory_Campus/Inventory_compus.jsx";
+import RequestInventory from "./components/Inventory_Campus/RequestInventory.jsx";
 
 function App() {
   return (
@@ -63,6 +65,8 @@ function App() {
         <Route path="/approved" element={<InventoryApproved />} />
         <Route path="/rejected" element={<InventoryReject />} />
         <Route path="/surveillance" element={<Surveillance />} />
+        <Route path="/inventory_campus" element={<Inventory_campus />} />
+        <Route path="/request" element={<RequestInventory />} />
       </Routes>
     </Router>
   );
