@@ -22,6 +22,7 @@ import InventoryApproved from "./components/ViceChancellorUI/Inventory/Inventory
 import InventoryReject from "./components/ViceChancellorUI/Inventory/InventoryReject.jsx";
 import Surveillance from "./components/ViceChancellorUI/surveillance/Surveillance.jsx";
 
+
 // VC Layout Wrapper
 const VCLayout = ({ children }) => (
   <div className="bg-gray-100 min-h-screen w-full flex flex-col">
