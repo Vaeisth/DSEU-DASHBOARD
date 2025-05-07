@@ -1,7 +1,30 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { users } from "../../Constants/Users.js";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import dseuLogo from "../../assets/logo/DSEULOGO.svg";
+
+const loginUser = async (form) => {
+  const { username, password } = form;
+  
+  const response = await axios.post(
+    "/login", 
+    new URLSearchParams({
+      grant_type: "password",
+      username: username,
+      password: password,
+      scope: "",
+      client_id: "", 
+      client_secret: "", 
+    }),
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
+  return response.data;
+};
 
 const Login = () => {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -9,7 +32,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const role = sessionStorage.getItem("currentRole");
+    const role = sessionStorage.getItem("currentrole");
     if (role) {
       switch (role) {
         case "VC":
@@ -30,24 +53,14 @@ const Login = () => {
     }
   }, [navigate]);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const mutation = useMutation({
+    mutationFn: loginUser,
+    onSuccess: (data) => {
+      sessionStorage.setItem("access_token", data.access_token);
+      sessionStorage.setItem("currentRole", data.role);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    const user = users.find(
-      (u) =>
-        u.username === form.username.trim() &&
-        u.password === form.password.trim()
-    );
-
-    if (user) {
-      sessionStorage.setItem("currentRole", user.role);
-
-      switch (user.role) {
-        case "VC":
+      switch (data.role) {
+        case "super_admin":
           navigate("/vc-dashboard");
           break;
         case "Store":
@@ -62,9 +75,22 @@ const Login = () => {
         default:
           setError("Unknown role.");
       }
-    } else {
-      setError("Invalid credentials.");
-    }
+    },
+    onError: (error) => {
+      const msg = error.response?.data?.detail || "Invalid credentials or server error.";
+      setError(msg.toString());
+      console.error("Login error:", error.response?.data);
+    },
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setError(""); 
+    mutation.mutate(form);
   };
 
   return (
@@ -111,9 +137,10 @@ const Login = () => {
 
         <button
           type="submit"
+          disabled={mutation.isLoading}
           className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
         >
-          Login
+          {mutation.isLoading ? "Logging in..." : "Login"}
         </button>
 
         {error && (

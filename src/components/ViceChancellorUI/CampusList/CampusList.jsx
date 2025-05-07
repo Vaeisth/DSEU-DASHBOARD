@@ -1,83 +1,87 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { FaArrowLeft, FaPlus, FaTimes } from "react-icons/fa";
 
-const campuses = [
-  {
-    zone: "East zone",
-    list: [
-      "Ambedkar DSEU Shakarpur Campus - I",
-      "Bhai Parmanand DSEU Shakarpur Campus - II",
-      "Dr. H.J Bhabha DSEU Mayur Vihar Campus",
-      "DSEU Vivek Vihar Campus",
-    ],
-  },
-  {
-    zone: "North zone",
-    list: [
-      "Aryabhatt DSEU Ashok Vihar Campus",
-      "DSEU Wazirpur-I Campus",
-      "Guru Nanak Dev DSEU Rohini Campus",
-      "Kasturba DSEU Pitampura Campus",
-      "Sir C.V. Raman DSEU Dheerpur Campus",
-    ],
-  },
-  {
-    zone: "South zone",
-    list: [
-      "G.B. Pant DSEU Okhla-I Campus",
-      "CHAMPS DSEU Okhla – II Campus",
-      "DSEU Okhla-II Campus",
-      "G.B. Pant DSEU Okhla-III Campus",
-      "DSEU Siri Fort Campus",
-      "Meerabai DSEU Maharani Bagh Campus",
-    ],
-  },
-  {
-    zone: "West zone",
-    list: [
-      "DSEU Dwarka Campus",
-      "DSEU Pusa Campus – I",
-      "DSEU Pusa Campus – II",
-      "DSEU Rajokri Campus",
-      "DSEU Ranhola Campus",
-      "DSEU Jaffarpur Campus",
-    ],
-  },
-];
+
+const fetchCampuses = async () => {
+  const token = sessionStorage.getItem("access_token");
+  if (!token) throw new Error("No token found");
+
+  const res = await axios.get("http://134.209.144.96:8081/superadmin/get-all-campuses", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data.data;
+};
+
+// Utility to group campuses by zone
+const groupByZone = (data) => {
+  const zoneMap = {};
+
+  data.forEach(campus => {
+    if (!zoneMap[campus.zone]) {
+      zoneMap[campus.zone] = [];
+    }
+    zoneMap[campus.zone].push(campus.name);
+  });
+
+  return Object.keys(zoneMap).map(zone => ({
+    zone,
+    list: zoneMap[zone],
+  }));
+};
 
 const CampusList = () => {
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState({});
   const [showModal, setShowModal] = useState(false);
-  const [zone, setZone] = useState("East Zone");
-  const [campusName, setCampusName] = useState("");
+  const [zone, setZone] = useState("");
+  const [name, setname] = useState("");
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
-  const [coordinates, setCoordinates] = useState([{ latitude: "", longitude: "" }]);
+  const [geoBoundary, setgeoBoundary] = useState([{ latitude: "", longitude: "" }]);
+
+  // Use React Query to fetch data
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["campuses"],
+    queryFn: fetchCampuses,
+  });
+
+  const campuses = data ? groupByZone(data) : [];
+
+  // Pre-select zone
+  React.useEffect(() => {
+    if (campuses.length > 0) setZone(campuses[0].zone);
+  }, [data]);
 
   const toggleExpand = (zone) => {
     setExpanded((prev) => ({ ...prev, [zone]: !prev[zone] }));
   };
 
   const handleAddCoordinate = () => {
-    setCoordinates([...coordinates, { latitude: "", longitude: "" }]);
+    setgeoBoundary([...geoBoundary, { latitude: "", longitude: "" }]);
   };
 
   const handleSave = () => {
     console.log({
       zone,
-      campusName,
+      name,
       description,
       address,
-      coordinates,
+      geoBoundary,
     });
     setShowModal(false);
   };
 
+  if (isLoading) return <div className="p-6">Loading...</div>;
+  if (isError) return <div className="p-6 text-red-600">Error: {error.message}</div>;
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {/* Header with Back and Add Buttons */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <button onClick={() => navigate(-1)} className="text-gray-700">
           <FaArrowLeft size={20} />
@@ -114,7 +118,7 @@ const CampusList = () => {
         ))}
       </div>
 
-      {/* Add Campus Modal */}
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -132,9 +136,7 @@ const CampusList = () => {
               onChange={(e) => setZone(e.target.value)}
             >
               {campuses.map((c, idx) => (
-                <option key={idx} value={c.zone}>
-                  {c.zone}
-                </option>
+                <option key={idx} value={c.zone}>{c.zone}</option>
               ))}
             </select>
 
@@ -142,8 +144,8 @@ const CampusList = () => {
             <input
               type="text"
               className="w-full p-2 border rounded mb-2"
-              value={campusName}
-              onChange={(e) => setCampusName(e.target.value)}
+              value={name}
+              onChange={(e) => setname(e.target.value)}
             />
 
             <label className="text-sm text-gray-700">Add Description</label>
@@ -162,7 +164,7 @@ const CampusList = () => {
             />
 
             <label className="text-sm text-gray-700">Add Co-ordinates</label>
-            {coordinates.map((coord, index) => (
+            {geoBoundary.map((coord, index) => (
               <div key={index} className="grid grid-cols-2 gap-2 mb-2">
                 <input
                   type="text"
@@ -170,8 +172,8 @@ const CampusList = () => {
                   className="p-2 border rounded"
                   value={coord.longitude}
                   onChange={(e) =>
-                    setCoordinates(
-                      coordinates.map((c, i) =>
+                    setgeoBoundary(
+                      geoBoundary.map((c, i) =>
                         i === index ? { ...c, longitude: e.target.value } : c
                       )
                     )
@@ -183,8 +185,8 @@ const CampusList = () => {
                   className="p-2 border rounded"
                   value={coord.latitude}
                   onChange={(e) =>
-                    setCoordinates(
-                      coordinates.map((c, i) =>
+                    setgeoBoundary(
+                      geoBoundary.map((c, i) =>
                         i === index ? { ...c, latitude: e.target.value } : c
                       )
                     )
