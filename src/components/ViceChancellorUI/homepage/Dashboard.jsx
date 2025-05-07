@@ -34,7 +34,7 @@ const services = [
   { name: "Reports", path: "/reports", icon: faFileAlt },
   { name: "Track Leave", path: "/track-leave", icon: faPlaneDeparture },
   { name: "Announcements", path: "/announcements", icon: faBullhorn },
-  { name: "Holidays", path: "/holidays", icon: faCalendarAlt },
+  { name: "Calender", path: "/holidays", icon: faCalendarAlt },
   { name: "Campus List", path: "/campus", icon: faUniversity },
   { name: "File Tracking", path: "/filetracking", icon: faFileArchive },
   { name: "Surveillance", path: "/surveillance", icon: faVideo },
@@ -57,7 +57,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="pt-16 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen w-full mt-5">
+    <div className="pt-16 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen w-full mt-[-3rem]">
       {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
         {["Total Employees", "Today’s Attendance", "Leaves Approved"].map(

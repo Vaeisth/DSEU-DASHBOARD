@@ -1,41 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaFilter, FaUpload } from "react-icons/fa";
 
-const initialAnnouncements = [
-  {
-    id: 1,
-    facultyName: "Faculty name",
-    designation: "Designation name",
-    title: "B.tech admission open session 2024 - 25",
-    description: "Lorem ipsum dolor sit amet, dummy dolor sit...",
-    timeAgo: "2d ago",
-    file: null,
-    profileImage: "https://via.placeholder.com/50",
-  },
-  {
-    id: 2,
-    facultyName: "Faculty name",
-    designation: "Designation name",
-    title: "B.tech admission open session 2024 - 25",
-    description: "Lorem ipsum dolor sit amet, dummy dolor sit...",
-    timeAgo: "2d ago",
-    file: null,
-    profileImage: "https://via.placeholder.com/50",
-  },
-];
-
 const Announcements = () => {
   const navigate = useNavigate();
-  const [announcements, setAnnouncements] = useState(initialAnnouncements);
+  const [announcements, setAnnouncements] = useState([]);
 
-  // Handle file/image upload for a specific announcement
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const token = sessionStorage.getItem("access_token");
+
+        const response = await fetch("http://134.209.144.96:8081/superadmin/get-all-announcements", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch announcements");
+        }
+
+        const data = await response.json();
+        setAnnouncements(data.data);
+      } catch (error) {
+        console.error("Error fetching announcements:", error);
+      }
+    };
+
+    fetchAnnouncements();
+  }, []);
+
+  // Handle file/image upload (local preview only)
   const handleFileUpload = (event, id) => {
     const file = event.target.files[0];
 
     if (file) {
       const fileUrl = URL.createObjectURL(file);
-
       setAnnouncements((prev) =>
         prev.map((item) =>
           item.id === id ? { ...item, file: fileUrl } : item
@@ -45,7 +46,6 @@ const Announcements = () => {
   };
 
   return (
-    
     <div className="p-4 bg-white min-h-screen flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -53,7 +53,6 @@ const Announcements = () => {
           <FaArrowLeft size={20} />
         </button>
         <h2 className="text-lg font-bold text-gray-900">Announcements</h2>
-        
       </div>
 
       {/* Subtitle */}
@@ -63,14 +62,16 @@ const Announcements = () => {
       <p className="text-gray-600 text-sm mt-2">
         Explore the latest announcements, events ensuring you're always in the know.
       </p>
+      
       <div className="flex justify-between items-center">
-  <p className="text-gray-700 text-sm font-semibold">Total: 105</p>
-  <button className="text-blue-500 flex items-center">
-    <FaFilter size={18} className="mr-1" />
-    <span className="text-sm">Filter</span>
-  </button>
-</div>
-
+        <p className="text-gray-700 text-sm font-semibold">
+          Total: {announcements.length}
+        </p>
+        <button className="text-blue-500 flex items-center">
+          <FaFilter size={18} className="mr-1" />
+          <span className="text-sm">Filter</span>
+        </button>
+      </div>
 
       {/* Date Range */}
       <div className="flex justify-between bg-[#F2F8FD] text-gray-600 text-sm mt-3 pb-2">
@@ -81,13 +82,12 @@ const Announcements = () => {
       {/* Announcements List */}
       <div className="mt-4 space-y-4 flex-grow">
         {announcements.map((item) => (
-          
           <div
             key={item.id}
             className="bg-[#F6F6F6] p-4 rounded-lg shadow-md flex items-start gap-3 cursor-pointer hover:bg-gray-50"
           >
             <img
-              src={item.profileImage}
+              src={item.profileImage || "https://via.placeholder.com/50"}
               alt="Faculty"
               className="w-10 h-10 rounded-full"
             />
@@ -133,7 +133,7 @@ const Announcements = () => {
                 </div>
               )}
             </div>
-            <span className="text-xs text-gray-400">{item.timeAgo}</span>
+            <span className="text-xs text-gray-400">{item.timeAgo || "Just now"}</span>
           </div>
         ))}
       </div>

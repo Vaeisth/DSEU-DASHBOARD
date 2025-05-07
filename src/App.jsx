@@ -22,12 +22,14 @@ import InventoryApproved from "./components/ViceChancellorUI/Inventory/Inventory
 import InventoryReject from "./components/ViceChancellorUI/Inventory/InventoryReject.jsx";
 import Surveillance from "./components/ViceChancellorUI/surveillance/Surveillance.jsx";
 
-
-// VC Layout Wrapper
+// Global Layout with Fixed Navbar
 const VCLayout = ({ children }) => (
-  <div className="bg-gray-100 min-h-screen w-full flex flex-col">
-    <Navbar />
-    <main className="flex-grow p-4">{children}</main>
+  <div className="bg-gray-100 min-h-screen w-full">
+    <div className="fixed top-0 w-full z-50">
+      <Navbar />
+    </div>
+    {/* Add top padding to offset navbar height */}
+    <main className="pt-20 p-4">{children}</main>
   </div>
 );
 
@@ -35,21 +37,17 @@ function App() {
   return (
     <Router>
       <Routes>
-
         <Route path="/" element={<Login />} />
 
-    
         <Route
           path="/vc-dashboard"
           element={
-            <div className="bg-gray-100 min-h-screen w-full flex flex-col">
-              <Navbar />
+            <VCLayout>
               <Dashboard />
-            </div>
+            </VCLayout>
           }
         />
 
-        {/* Other VC Pages use VCLayout */}
         <Route path="/attendance" element={<VCLayout><AttendanceReport /></VCLayout>} />
         <Route path="/weekly-report" element={<VCLayout><WeeklyReport /></VCLayout>} />
         <Route path="/monthly-report" element={<VCLayout><MonthlyReport /></VCLayout>} />
@@ -69,7 +67,6 @@ function App() {
         <Route path="/approved" element={<VCLayout><InventoryApproved /></VCLayout>} />
         <Route path="/rejected" element={<VCLayout><InventoryReject /></VCLayout>} />
         <Route path="/surveillance" element={<VCLayout><Surveillance /></VCLayout>} />
-        
       </Routes>
     </Router>
   );

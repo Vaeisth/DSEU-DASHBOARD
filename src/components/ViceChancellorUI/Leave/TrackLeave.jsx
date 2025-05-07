@@ -82,7 +82,7 @@ const TrackLeave = () => {
     <div className="p-4 bg-gray-100 min-h-screen">
       <Navbar/>
       {/* Header */}
-      <div className="flex items-center mb-4 mt-20">
+      <div className="flex items-center mb-4">
         <button onClick={() => navigate(-1)} className="mr-2 text-2xl text-blue-600">
           <FaArrowLeft />
         </button>

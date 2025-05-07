@@ -10,9 +10,12 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-md shadow-md px-4 sm:px-8 py-3 z-50">
       <div className="max-w-7xl mx-auto flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-3">
-        
+
         {/* Left: Logo */}
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div
+          className="flex items-center gap-3 flex-shrink-0 cursor-pointer"
+          onClick={() => navigate("/vc-dashboard")}
+        >
           <img src={dseu_logo} alt="DSEU Logo" className="h-10 sm:h-12" />
         </div>
 
