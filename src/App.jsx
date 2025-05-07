@@ -35,10 +35,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Login Route */}
+
         <Route path="/" element={<Login />} />
 
-        {/* VC Dashboard - styled separately (like before) */}
+    
         <Route
           path="/vc-dashboard"
           element={

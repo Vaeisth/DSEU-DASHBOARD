@@ -57,7 +57,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="pt-16 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen w-full">
+    <div className="pt-16 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen w-full mt-5">
       {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
         {["Total Employees", "Today’s Attendance", "Leaves Approved"].map(
