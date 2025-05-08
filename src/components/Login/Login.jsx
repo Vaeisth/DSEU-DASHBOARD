@@ -6,16 +6,16 @@ import dseuLogo from "../../assets/logo/DSEULOGO.svg";
 
 const loginUser = async (form) => {
   const { username, password } = form;
-  
+
   const response = await axios.post(
-    "/login", 
+    "/login",
     new URLSearchParams({
       grant_type: "password",
       username: username,
       password: password,
       scope: "",
-      client_id: "", 
-      client_secret: "", 
+      client_id: "",
+      client_secret: "",
     }),
     {
       headers: {
@@ -32,8 +32,9 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const role = sessionStorage.getItem("currentrole");
-    if (role) {
+    const token = sessionStorage.getItem("access_token");
+    const role = sessionStorage.getItem("currentRole");
+    if (role || token) {
       switch (role) {
         case "VC":
           navigate("/vc-dashboard");
@@ -44,8 +45,8 @@ const Login = () => {
         case "Employee":
           navigate("/employee-dashboard");
           break;
-        case "SuperAdmin":
-          navigate("/admin-dashboard");
+        case "super_admin":
+          navigate("/vc-dashboard");
           break;
         default:
           break;
@@ -77,7 +78,8 @@ const Login = () => {
       }
     },
     onError: (error) => {
-      const msg = error.response?.data?.detail || "Invalid credentials or server error.";
+      const msg =
+        error.response?.data?.detail || "Invalid credentials or server error.";
       setError(msg.toString());
       console.error("Login error:", error.response?.data);
     },
@@ -89,7 +91,7 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setError(""); 
+    setError("");
     mutation.mutate(form);
   };
 
