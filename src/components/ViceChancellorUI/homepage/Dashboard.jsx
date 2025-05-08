@@ -2,13 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import PendingApprovals from "./PendingApprovals";
 
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserCheck,
@@ -21,6 +15,7 @@ import {
   faVideo,
   faBoxOpen,
 } from "@fortawesome/free-solid-svg-icons";
+import withAuthProtection from "../../authProtection/withAuthProtection";
 
 const chartData = [
   { name: "Present", value: 50, color: "#4CAF50" },
@@ -152,4 +147,5 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+const ProtectedDashboard = withAuthProtection(Dashboard);
+export default ProtectedDashboard;
