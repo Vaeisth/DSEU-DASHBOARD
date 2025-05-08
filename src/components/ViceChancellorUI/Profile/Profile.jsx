@@ -1,28 +1,45 @@
 import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { FaArrowLeft, FaEdit, FaSave, FaTimes, FaCamera } from "react-icons/fa";
 
+const fetchProfile = async () => {
+  const response = await axios.get("http://134.209.144.96:8081/profile/", {
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
+    },
+  });
+  return response.data;
+};
+const fetchBankDetails = async () => {
+  const response = await axios.get("http://134.209.144.96:8081/profile/bank_details", {
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
+    },
+  });
+  return response.data;
+};
+
+
 const Profile = () => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [profilePic, setProfilePic] = useState(localStorage.getItem("profilePic") || null);
-  const [userData, setUserData] = useState({
-    name: "David Joe",
-    email: "VG@dseu.in",
-    employeeId: "524657801",
-    shift: "8:30 AM - 5:30 PM",
-    joiningDate: "Mar 24, 2020",
-    campus: "DSEU Pusa Campus-1",
-    department: "Computer Science",
-    designation: "Assistant Professor",
-    about: "Delhi Skill and Entrepreneurship University (DSEU) focuses on skilling and vocational training.",
-    address: "Integrated Institute of Technology Complex, Sector 9, Dwarka, New Delhi, 110077",
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["profile"],
+    queryFn: fetchProfile,
   });
 
-  // Handle Input Changes
+  const [isEditing, setIsEditing] = useState(false);
+  const [profilePic, setProfilePic] = useState(localStorage.getItem("profilePic") || null);
+
+  const [userData, setUserData] = useState(null);
+
+  React.useEffect(() => {
+    if (data) setUserData(data);
+  }, [data]);
+
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
-  // Handle Profile Picture Change
   const handleProfileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -35,9 +52,12 @@ const Profile = () => {
     }
   };
 
+  if (isLoading) return <div className="p-6">Loading...</div>;
+  if (isError) return <div className="p-6 text-red-500">Failed to load profile.</div>;
+  if (!userData) return null;
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <button onClick={() => window.history.back()} className="text-gray-700">
           <FaArrowLeft size={20} />
@@ -45,11 +65,10 @@ const Profile = () => {
         <h2 className="text-xl font-bold text-gray-800">Your Profile</h2>
       </div>
 
-      {/* Profile Section */}
       <div className="bg-white p-6 rounded-lg shadow-md flex items-center gap-4 relative">
         <div className="relative">
           <img
-            src={profilePic || "https://via.placeholder.com/150"}
+            src={profilePic || userData.picture || "https://via.placeholder.com/150"}
             alt="Profile"
             className="w-16 h-16 rounded-full object-cover"
           />
@@ -61,7 +80,7 @@ const Profile = () => {
         <div>
           <h3 className="text-lg font-bold">{userData.name}</h3>
           <p className="text-gray-600 text-sm">
-            {userData.designation} at {userData.campus}
+            {userData.designation?.join(", ") || "No Designation"} at {userData.campus?.name || "Unknown Campus"}
           </p>
           <a href={`mailto:${userData.email}`} className="text-blue-500 text-sm">
             {userData.email}
@@ -76,13 +95,13 @@ const Profile = () => {
           <FaEdit className="text-blue-500 cursor-pointer" onClick={() => setIsEditing(!isEditing)} />
         </h3>
         <div className="mt-2">
-          {["name", "email", "employeeId", "shift"].map((field) => (
+          {["name", "email", "gender", "dob"].map((field) => (
             <div key={field} className="mb-2">
-              <label className="text-gray-700 font-semibold">{field.replace(/([A-Z])/g, " $1")}</label>
+              <label className="text-gray-700 font-semibold capitalize">{field.replace(/_/g, " ")}</label>
               <input
                 type="text"
                 name={field}
-                value={userData[field]}
+                value={userData[field] || ""}
                 onChange={handleChange}
                 disabled={!isEditing}
                 className={`w-full px-3 py-2 border rounded ${
@@ -94,20 +113,20 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Work Information */}
+      {/* Work Info */}
       <div className="bg-white p-6 rounded-lg shadow-md mt-4">
         <h3 className="text-lg font-semibold flex justify-between">
           Work Information
           <FaEdit className="text-blue-500 cursor-pointer" onClick={() => setIsEditing(!isEditing)} />
         </h3>
         <div className="mt-2">
-          {["joiningDate", "campus", "department", "designation"].map((field) => (
+          {["date_of_joining", "staff_type"].map((field) => (
             <div key={field} className="mb-2">
-              <label className="text-gray-700 font-semibold">{field.replace(/([A-Z])/g, " $1")}</label>
+              <label className="text-gray-700 font-semibold capitalize">{field.replace(/_/g, " ")}</label>
               <input
                 type="text"
                 name={field}
-                value={userData[field]}
+                value={userData[field] || ""}
                 onChange={handleChange}
                 disabled={!isEditing}
                 className={`w-full px-3 py-2 border rounded ${
@@ -116,38 +135,31 @@ const Profile = () => {
               />
             </div>
           ))}
+          <div className="mb-2">
+            <label className="text-gray-700 font-semibold">Campus</label>
+            <input
+              type="text"
+              value={userData.campus?.name || ""}
+              disabled
+              className="w-full px-3 py-2 border rounded bg-gray-100"
+            />
+          </div>
         </div>
       </div>
 
-      {/* About Organization */}
+      {/* Bank Details */}
       <div className="bg-white p-6 rounded-lg shadow-md mt-4">
-        <h3 className="text-lg font-semibold flex justify-between">
-          About Organization
-          <FaEdit className="text-blue-500 cursor-pointer" onClick={() => setIsEditing(!isEditing)} />
-        </h3>
-        <textarea
-          name="about"
-          value={userData.about}
-          onChange={handleChange}
-          disabled={!isEditing}
-          className={`w-full p-2 border rounded ${
-            isEditing ? "bg-white border-gray-400" : "bg-gray-100"
-          }`}
-          rows="4"
-        ></textarea>
-        <p className="text-gray-700 mt-2">
-          <strong>Address:</strong>
-          <input
-            type="text"
-            name="address"
-            value={userData.address}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className={`w-full px-3 py-2 border rounded ${
-              isEditing ? "bg-white border-gray-400" : "bg-gray-100"
-            }`}
-          />
-        </p>
+        <h3 className="text-lg font-semibold">Bank Details</h3>
+        {userData.bank_detail ? (
+          <>
+            <p className="text-gray-700"><strong>Account Number:</strong> {userData.bank_detail.account_number}</p>
+            <p className="text-gray-700"><strong>IFSC:</strong> {userData.bank_detail.ifsc}</p>
+            <p className="text-gray-700"><strong>Bank Name:</strong> {userData.bank_detail.bank_name}</p>
+            <p className="text-gray-700"><strong>Branch:</strong> {userData.bank_detail.branch}</p>
+          </>
+        ) : (
+          <p className="text-gray-500 italic">Bank details not provided.</p>
+        )}
       </div>
 
       {/* Save & Cancel Buttons */}
