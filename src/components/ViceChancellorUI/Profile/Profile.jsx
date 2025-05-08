@@ -1,22 +1,14 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { apiRequestAxios } from '../../../utils/api';
 import { FaArrowLeft, FaEdit, FaSave, FaTimes, FaCamera } from "react-icons/fa";
 
 const fetchProfile = async () => {
-  const response = await axios.get("http://134.209.144.96:8081/profile/", {
-    headers: {
-      Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
-    },
-  });
+  const response = await apiRequestAxios({ url: 'http://134.209.144.96:8081/profile/', method: 'GET' });
   return response.data;
 };
 const fetchBankDetails = async () => {
-  const response = await axios.get("http://134.209.144.96:8081/profile/bank_details", {
-    headers: {
-      Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
-    },
-  });
+  const response = await apiRequestAxios({ url: 'http://134.209.144.96:8081/profile/bank_details', method: 'GET' });
   return response.data;
 };
 

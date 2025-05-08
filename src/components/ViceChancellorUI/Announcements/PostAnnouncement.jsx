@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaClock, FaLink, FaFileAlt } from "react-icons/fa";
 import img from "../../../assets/icons/img (1).png";
+import { apiRequest } from '../../../utils/api';
 
 const PostAnnouncement = () => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const PostAnnouncement = () => {
     }
 
     try {
-      const res = await fetch(
+      const res = await apiRequest(
         `http://134.209.144.96:8081/superadmin/create-announcement?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`,
         {
           method: "POST",

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { apiRequestAxios } from '../../../utils/api';
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -10,11 +10,7 @@ const fetchLeaves = async (type) => {
       ? "http://134.209.144.96:8081/superadmin/get-leave-requests"
       : "http://134.209.144.96:8081/superadmin/get-leave-requests-history";
 
-  const { data } = await axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const { data } = await apiRequestAxios({ url, method: 'GET' });
 
   return data.data;
 };
