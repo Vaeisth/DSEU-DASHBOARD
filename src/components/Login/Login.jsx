@@ -32,16 +32,15 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const role = sessionStorage.getItem("currentrole");
-    if (role) {
+    const token = sessionStorage.getItem("accessToken");
+    const role = sessionStorage.getItem("currentRole");
+    if (role || token) {
       switch (role) {
-        case "VC":
-          navigate("/vc-dashboard");
-          break;
         case "Store":
           navigate("/store-dashboard");
           break;
         case "Employee":
+        case "employee":
           navigate("/employee-dashboard");
           break;
         case "SuperAdmin":
@@ -56,7 +55,7 @@ const Login = () => {
   const mutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      sessionStorage.setItem("access_token", data.access_token);
+      sessionStorage.setItem("accessToken", data.access_token);
       sessionStorage.setItem("currentRole", data.role);
 
       switch (data.role) {
@@ -66,10 +65,11 @@ const Login = () => {
         case "Store":
           navigate("/store-dashboard");
           break;
+        case "employee":
         case "Employee":
           navigate("/employee-dashboard");
           break;
-        case "SuperAdmin":
+        case "admin":
           navigate("/admin-dashboard");
           break;
         default:
@@ -91,6 +91,12 @@ const Login = () => {
     e.preventDefault();
     setError(""); 
     mutation.mutate(form);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("currentRole");
+    navigate("/");
   };
 
   return (

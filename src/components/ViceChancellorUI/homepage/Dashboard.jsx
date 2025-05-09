@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import PendingApprovals from "./PendingApprovals";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequestAxios } from '../../../utils/api';
 
 import {
   PieChart,
@@ -53,14 +55,50 @@ const buttonColors = [
   "bg-[#A3EEE7]",
 ];
 
+const fetchTotalEmployees = async () => {
+ 
+  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/superadmin/all-users', method: 'GET' });
+  return res.data.data.length;
+};
+
+const fetchTodaysAttendance = async () => {
+ 
+  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/superadmin/todays-attendance', method: 'GET' });
+  return res.data.length;
+};
+const fetchLeavesApproved = async () => {
+ 
+  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/superadmin/get-leave-requests-history', method: 'GET' });
+  return res.data.data.length;
+};
+
 const Dashboard = () => {
   const navigate = useNavigate();
+
+  const { data: totalEmployees, isLoading, isError } = useQuery({
+    queryKey: ["totalEmployees"],
+    queryFn: fetchTotalEmployees,
+  });
+  const { data: todaysAttendance } = useQuery({
+    queryKey: ["todaysAttendance"],
+    queryFn: fetchTodaysAttendance,
+  });
+  const { data: leavesApproved } = useQuery({
+    queryKey: ["leavesApproved"],
+    queryFn: fetchLeavesApproved,
+  });
+
+  const cardData = [
+    isLoading ? "..." : isError ? "Nan" : totalEmployees,
+    todaysAttendance,
+    leavesApproved,
+  ];
 
   return (
     <div className="pt-16 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen w-full mt-[-3rem]">
       {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-        {["Total Employees", "Today’s Attendance", "Leaves Approved"].map(
+        {["Total Employees", "Today's Attendance", "Leaves Approved"].map(
           (title, index) => (
             <div
               key={index}
@@ -78,7 +116,7 @@ const Dashboard = () => {
                     : "text-blue-600"
                 }`}
               >
-                {[150, 120, 30][index]}
+                {cardData[index]}
               </p>
             </div>
           )

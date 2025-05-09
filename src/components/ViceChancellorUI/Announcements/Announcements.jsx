@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaFilter, FaUpload } from "react-icons/fa";
+import { apiRequest } from '../../../utils/api';
 
 const Announcements = () => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ const Announcements = () => {
       try {
         const token = sessionStorage.getItem("access_token");
 
-        const response = await fetch("http://134.209.144.96:8081/superadmin/get-all-announcements", {
+        const response = await apiRequest("http://134.209.144.96:8081/superadmin/get-all-announcements", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

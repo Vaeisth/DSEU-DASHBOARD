@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { apiRequestAxios } from '../../../utils/api';
 import { FaArrowLeft, FaPlus, FaTimes } from "react-icons/fa";
 
 
@@ -9,15 +9,11 @@ const fetchCampuses = async () => {
   const token = sessionStorage.getItem("access_token");
   if (!token) throw new Error("No token found");
 
-  const res = await axios.get("http://134.209.144.96:8081/superadmin/get-all-campuses", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/superadmin/get-all-campuses', method: 'GET' });
   return res.data.data;
 };
 
-// Utility to group campuses by zone
+
 const groupByZone = (data) => {
   const zoneMap = {};
 

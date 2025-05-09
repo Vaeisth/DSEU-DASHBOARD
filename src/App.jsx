@@ -21,6 +21,7 @@ import Inventory from "./components/ViceChancellorUI/Inventory/Inventory.jsx";
 import InventoryApproved from "./components/ViceChancellorUI/Inventory/InventoryApproved.jsx";
 import InventoryReject from "./components/ViceChancellorUI/Inventory/InventoryReject.jsx";
 import Surveillance from "./components/ViceChancellorUI/surveillance/Surveillance.jsx";
+import EmployeeDashboard from "./components/EmployeeUI/homepage/Dashboard.jsx";
 
 // Global Layout with Fixed Navbar
 const VCLayout = ({ children }) => (
@@ -29,6 +30,16 @@ const VCLayout = ({ children }) => (
       <Navbar />
     </div>
     {/* Add top padding to offset navbar height */}
+    <main className="pt-20 p-4">{children}</main>
+  </div>
+);
+
+// Employee Layout - using the same Navbar component
+const EmployeeLayout = ({ children }) => (
+  <div className="bg-gray-100 min-h-screen w-full">
+    <div className="fixed top-0 w-full z-50">
+      <Navbar />
+    </div>
     <main className="pt-20 p-4">{children}</main>
   </div>
 );
@@ -67,6 +78,40 @@ function App() {
         <Route path="/approved" element={<VCLayout><InventoryApproved /></VCLayout>} />
         <Route path="/rejected" element={<VCLayout><InventoryReject /></VCLayout>} />
         <Route path="/surveillance" element={<VCLayout><Surveillance /></VCLayout>} />
+
+        {/* Employee Routes */}
+        <Route
+          path="/employee-dashboard"
+          element={
+            <EmployeeLayout>
+              <EmployeeDashboard />
+            </EmployeeLayout>
+          }
+        />
+        <Route
+          path="/employee-leave"
+          element={
+            <EmployeeLayout>
+              <div>Leave Management</div>
+            </EmployeeLayout>
+          }
+        />
+        <Route
+          path="/employee-announcements"
+          element={
+            <EmployeeLayout>
+              <div>Announcements</div>
+            </EmployeeLayout>
+          }
+        />
+        <Route
+          path="/employee-profile"
+          element={
+            <EmployeeLayout>
+              <div>Profile</div>
+            </EmployeeLayout>
+          }
+        />
       </Routes>
     </Router>
   );

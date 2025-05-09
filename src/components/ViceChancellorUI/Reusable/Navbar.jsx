@@ -7,6 +7,32 @@ import searchIcon from "../../../assets/logo/search.png";
 const Navbar = () => {
   const navigate = useNavigate();
 
+  const handleLogoClick = () => {
+    const token = sessionStorage.getItem("accessToken");
+    const role = sessionStorage.getItem("currentRole");
+    if (!token) {
+      navigate("/");
+      return;
+    }
+    switch (role) {
+      case "super_admin":
+        navigate("/vc-dashboard");
+        break;
+      case "employee":
+      case "Employee":
+        navigate("/employee-dashboard");
+        break;
+      case "Store":
+        navigate("/store-dashboard");
+        break;
+      case "admin":
+        navigate("/admin-dashboard");
+        break;
+      default:
+        navigate("/");
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-md shadow-md px-4 sm:px-8 py-3 z-50">
       <div className="max-w-7xl mx-auto flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-3">
@@ -14,7 +40,7 @@ const Navbar = () => {
         {/* Left: Logo */}
         <div
           className="flex items-center gap-3 flex-shrink-0 cursor-pointer"
-          onClick={() => navigate("/vc-dashboard")}
+          onClick={handleLogoClick}
         >
           <img src={dseu_logo} alt="DSEU Logo" className="h-10 sm:h-12" />
         </div>
