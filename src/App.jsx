@@ -23,6 +23,7 @@ import InventoryReject from "./components/ViceChancellorUI/Inventory/InventoryRe
 import Surveillance from "./components/ViceChancellorUI/surveillance/Surveillance.jsx";
 import EmployeeDashboard from "./components/EmployeeUI/homepage/Dashboard.jsx";
 import OfficerDetails from "./components/ViceChancellorUI/attendance/OfficerDetails.jsx";
+import EmployeeList from "./components/ViceChancellorUI/employees/EmployeeList.jsx";
 
 // Global Layout with Fixed Navbar
 const VCLayout = ({ children }) => (
@@ -93,6 +94,7 @@ function App() {
         <Route path="/rejected" element={<VCLayout><InventoryReject /></VCLayout>} />
         <Route path="/surveillance" element={<VCLayout><Surveillance /></VCLayout>} />
         <Route path="/officer-details/:id" element={<VCLayout><OfficerDetails /></VCLayout>} />
+        <Route path="/employees" element={<VCLayout><EmployeeList /></VCLayout>} />
 
         {/* Employee Routes */}
         <Route

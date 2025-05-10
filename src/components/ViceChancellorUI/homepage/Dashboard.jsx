@@ -24,6 +24,7 @@ import {
   faVideo,
   faBoxOpen,
 } from "@fortawesome/free-solid-svg-icons";
+import { FaUsers } from "react-icons/fa";
 
 const chartData = [
   { name: "Present", value: 50, color: "#4CAF50" },
@@ -63,9 +64,8 @@ const fetchTotalEmployees = async () => {
 };
 
 const fetchTodaysAttendance = async () => {
- 
   const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/superadmin/todays-attendance', method: 'GET' });
-  return res.data.length;
+  return res.data.data.length;
 };
 const fetchLeavesApproved = async () => {
  
@@ -99,7 +99,14 @@ const Dashboard = () => {
     <div className="space-y-4">
       {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {["Total Employees", "Today's Attendance", "Leaves Approved"].map(
+        <div 
+          className="bg-white p-3 rounded-lg shadow flex flex-col items-center cursor-pointer"
+          onClick={() => navigate('/employees')}
+        >
+          <h3 className="text-sm font-semibold text-gray-600 mb-1">Total Employees</h3>
+          <p className="text-2xl font-bold text-blue-600">{cardData[0]}</p>
+        </div>
+        {["Today's Attendance", "Leaves Approved"].map(
           (title, index) => (
             <div
               key={index}
@@ -117,7 +124,7 @@ const Dashboard = () => {
                     : "text-blue-600"
                 }`}
               >
-                {cardData[index]}
+                {cardData[index + 1]}
               </p>
             </div>
           )
