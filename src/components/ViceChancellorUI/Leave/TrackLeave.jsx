@@ -40,20 +40,27 @@ const TrackLeave = () => {
   const getColor = (status) => {
     if (status === "Approved") return "green";
     if (status === "Rejected") return "red";
-    if (status === "Pending") return "yellow";
+    if (status === "Pending") return "gray";
     return "gray";
   };
 
   const renderLeaveCard = (leave) => {
     const color = getColor(leave.status);
     return (
-      <div key={leave._id} className="bg-white p-4 rounded-lg shadow-md flex items-center">
+      <div 
+        key={leave._id} 
+        className="bg-white p-4 rounded-lg shadow-md flex items-center cursor-pointer hover:shadow-lg transition-shadow"
+        onClick={() => navigate(`/leave-details/${leave._id}`)}
+      >
         <div className={`w-1.5 h-full bg-${color}-500 rounded-l-lg`}></div>
-        <div className="w-12 h-12 rounded-full bg-gray-300 mx-3 flex items-center justify-center text-white font-bold text-sm">
-          {leave.user_id?.id?.substring(0, 2) || "U"}
-        </div>
+        <img 
+          src={leave.user_id?.picture || "https://via.placeholder.com/50"} 
+          alt="Profile" 
+          className="w-12 h-12 rounded-full mx-3 object-cover"
+        />
         <div className="flex-grow">
-          <h4 className="text-sm font-semibold">User ID: {leave.user_id?.id}</h4>
+          <h4 className="text-sm font-semibold">{leave.user_id?.name}</h4>
+          <p className="text-xs text-gray-500">{leave.user_id?.campus?.name}</p>
           <p className="text-xs font-semibold text-gray-600">{leave.leave_type}</p>
           <p className="text-xs text-gray-500">📅 {leave.start_date} ⬇️ 📅 {leave.end_date}</p>
         </div>

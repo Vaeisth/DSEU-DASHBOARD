@@ -25,22 +25,22 @@ import EmployeeDashboard from "./components/EmployeeUI/homepage/Dashboard.jsx";
 
 // Global Layout with Fixed Navbar
 const VCLayout = ({ children }) => (
-  <div className="bg-gray-100 min-h-screen w-full">
+  <div className="bg-gray-100 h-screen w-full flex flex-col">
     <div className="fixed top-0 w-full z-50">
       <Navbar />
     </div>
-    {/* Add top padding to offset navbar height */}
-    <main className="pt-20 p-4">{children}</main>
+    {/* Main content area with flex-grow to fill remaining space */}
+    <main className="flex-1 pt-16 px-2 overflow-y-auto">{children}</main>
   </div>
 );
 
 // Employee Layout - using the same Navbar component
 const EmployeeLayout = ({ children }) => (
-  <div className="bg-gray-100 min-h-screen w-full">
+  <div className="bg-gray-100 h-screen w-full flex flex-col">
     <div className="fixed top-0 w-full z-50">
       <Navbar />
     </div>
-    <main className="pt-20 p-4">{children}</main>
+    <main className="flex-1 pt-16 px-2 overflow-y-auto">{children}</main>
   </div>
 );
 

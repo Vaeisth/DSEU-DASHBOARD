@@ -2,52 +2,131 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import { FaCheckCircle, FaTimes } from "react-icons/fa";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequestAxios } from '../../../utils/api';
+
+const fetchLeaveDetails = async (id) => {
+  // First try to fetch from pending requests
+  const pendingResponse = await apiRequestAxios({ 
+    url: "http://134.209.144.96:8081/superadmin/get-leave-requests", 
+    method: 'GET' 
+  });
+  
+  // Check if the leave request is in pending requests
+  let leaveRequest = pendingResponse.data.data.find(leave => leave._id === id);
+  
+  // If not found in pending, try history
+  if (!leaveRequest) {
+    const historyResponse = await apiRequestAxios({
+      url: "http://134.209.144.96:8081/superadmin/get-leave-requests-history",
+      method: 'GET'
+    });
+    leaveRequest = historyResponse.data.data.find(leave => leave._id === id);
+  }
+
+  if (!leaveRequest) {
+    throw new Error("Leave request not found");
+  }
+  return leaveRequest;
+};
+
+const approveLeave = async (id) => {
+  const { data } = await apiRequestAxios({
+    url: `http://134.209.144.96:8081/superadmin/leave-request/${id}/approve`,
+    method: 'PATCH',
+    data: { id }
+  });
+  return data;
+};
+
+const rejectLeave = async ({ id, remarks }) => {
+  const { data } = await apiRequestAxios({
+    url: `http://134.209.144.96:8081/superadmin/leave-request/${id}/reject`,
+    method: 'PATCH',
+    data: { id, remarks }
+  });
+  return data;
+};
 
 function LeaveDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
   const [showApprovePopup, setShowApprovePopup] = useState(false);
   const [showRejectPopup, setShowRejectPopup] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const [error, setError] = useState("");
 
-  // Sample leave request data
-  const leaveRequest = {
-    name: "XYZ",
-    role: "Designation Name",
-    campus: "Campus name",
-    leaveDays: "1 Day off",
-    leaveType: "Casual leave",
-    requestedDate: "15 May 24",
-    startDate: "24 May 24",
-    endDate: "24 May 24",
-    status: "Pending Approval",
-    reason: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    scheduleLeave: "4/20",
-    casualLeave: "1/7",
-    image: "https://randomuser.me/api/portraits/women/5.jpg",
-  };
+  const { data: leaveRequest, isLoading, isError, error: fetchError } = useQuery({
+    queryKey: ["leaveDetails", id],
+    queryFn: () => fetchLeaveDetails(id),
+  });
+
+  const approveMutation = useMutation({
+    mutationFn: approveLeave,
+    onSuccess: () => {
+      setShowApprovePopup(true);
+      queryClient.invalidateQueries(["leaves", "pending"]);
+      queryClient.invalidateQueries(["leaves", "history"]);
+      setTimeout(() => {
+        navigate(-1);
+      }, 2000);
+    },
+    onError: (error) => {
+      setError(error.response?.data?.message || "Failed to approve leave request");
+    }
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: rejectLeave,
+    onSuccess: () => {
+      setShowRejectPopup(false);
+      queryClient.invalidateQueries(["leaves", "pending"]);
+      queryClient.invalidateQueries(["leaves", "history"]);
+      navigate(-1);
+    },
+    onError: (error) => {
+      setError(error.response?.data?.message || "Failed to reject leave request");
+    }
+  });
 
   // Handle Approve
   const handleApprove = () => {
-    setShowApprovePopup(true);
-    setTimeout(() => {
-      setShowApprovePopup(false);
-    }, 3000);
+    setError("");
+    approveMutation.mutate(id);
   };
 
   // Handle Reject
   const handleReject = () => {
+    setError("");
     setShowRejectPopup(true);
   };
 
   // Handle Reject Submit
   const handleRejectSubmit = () => {
-    console.log("Rejected with reason:", rejectReason);
-    setShowRejectPopup(false);
+    if (!rejectReason.trim()) {
+      setError("Please provide a reason for rejection");
+      return;
+    }
+    rejectMutation.mutate({ id, remarks: rejectReason });
   };
+
+  if (isLoading) return <div className="p-4">Loading...</div>;
+  if (isError) return <div className="p-4 text-red-500">Failed to load leave details: {fetchError.message}</div>;
+  if (!leaveRequest) return <div className="p-4 text-red-500">Leave request not found</div>;
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen relative">
+      {/* Error Message */}
+      {error && (
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <span className="block sm:inline">{error}</span>
+          <button onClick={() => setError("")} className="absolute top-0 bottom-0 right-0 px-4 py-3">
+            <FaTimes />
+          </button>
+        </div>
+      )}
+
       {/* Approve Success Popup */}
       {showApprovePopup && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-white shadow-lg p-3 rounded-lg flex items-center border border-gray-300 transition-opacity duration-300">
@@ -55,8 +134,8 @@ function LeaveDetails() {
           <div>
             <p className="text-sm font-semibold">Leave approved successfully!</p>
             <p className="text-xs text-gray-500">
-              You have successfully approved {leaveRequest.name}'s leave.
-              Later you can see this request in leave history.
+              You have successfully approved {leaveRequest.user_id?.name}'s leave.
+              Redirecting back to leave list...
             </p>
           </div>
           <button onClick={() => setShowApprovePopup(false)} className="ml-4 text-gray-500">
@@ -84,6 +163,7 @@ function LeaveDetails() {
               placeholder="Write here..."
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
+              required
             ></textarea>
             <div className="flex justify-between">
               <button
@@ -94,9 +174,10 @@ function LeaveDetails() {
               </button>
               <button
                 onClick={handleRejectSubmit}
+                disabled={rejectMutation.isLoading}
                 className="flex-1 py-2 border border-blue-600 text-blue-600 rounded-lg mx-1"
               >
-                Submit
+                {rejectMutation.isLoading ? "Submitting..." : "Submit"}
               </button>
             </div>
           </div>
@@ -113,11 +194,15 @@ function LeaveDetails() {
 
       {/* User Info */}
       <div className="bg-white p-4 rounded-lg shadow-md flex items-center">
-        <img src={leaveRequest.image} alt="Profile" className="w-12 h-12 rounded-full mr-3" />
+        <img 
+          src={leaveRequest.user_id?.picture || "https://via.placeholder.com/50"} 
+          alt="Profile" 
+          className="w-12 h-12 rounded-full mr-3" 
+        />
         <div className="flex-grow">
-          <h4 className="text-sm font-semibold">{leaveRequest.name}</h4>
-          <p className="text-xs text-gray-500">{leaveRequest.role}</p>
-          <p className="text-xs text-gray-500">{leaveRequest.campus}</p>
+          <h4 className="text-sm font-semibold">{leaveRequest.user_id?.name}</h4>
+          <p className="text-xs text-gray-500">{leaveRequest.user_id?.designation?.[0]}</p>
+          <p className="text-xs text-gray-500">{leaveRequest.user_id?.campus?.name}</p>
         </div>
         <span className="px-3 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full">
           {leaveRequest.status}
@@ -127,10 +212,10 @@ function LeaveDetails() {
       {/* Leave Details */}
       <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
         <h2 className="text-md font-semibold mb-2">Details</h2>
-        <p className="text-xs text-gray-500">Requested on {leaveRequest.requestedDate}</p>
-        <p className="text-sm font-semibold text-blue-600">{leaveRequest.leaveDays} · {leaveRequest.leaveType}</p>
+        <p className="text-xs text-gray-500">Requested on {leaveRequest.request_date}</p>
+        <p className="text-sm font-semibold text-blue-600">{leaveRequest.leave_type}</p>
         <div className="flex items-center text-xs text-gray-500 mt-2">
-          📅 {leaveRequest.startDate} &nbsp; ⬇️ &nbsp; 📅 {leaveRequest.endDate}
+          📅 {leaveRequest.start_date} &nbsp; ⬇️ &nbsp; 📅 {leaveRequest.end_date}
         </div>
       </div>
 
@@ -140,36 +225,46 @@ function LeaveDetails() {
         <p className="text-xs text-gray-500">{leaveRequest.reason}</p>
       </div>
 
-      {/* Employee Leave Balance */}
+      {/* Additional Information */}
       <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
-        <h2 className="text-md font-semibold mb-2">Employee leave balance</h2>
-        <div className="flex gap-4">
-          <div className="flex-1 bg-blue-100 p-3 rounded-lg text-center">
-            <p className="text-lg font-bold">{leaveRequest.scheduleLeave}</p>
-            <p className="text-xs text-gray-500">Schedule leave</p>
-          </div>
-          <div className="flex-1 bg-yellow-100 p-3 rounded-lg text-center">
-            <p className="text-lg font-bold">{leaveRequest.casualLeave}</p>
-            <p className="text-xs text-gray-500">Casual leave</p>
-          </div>
+        <h2 className="text-md font-semibold mb-2">Additional Information</h2>
+        <div className="space-y-2">
+          <p className="text-xs text-gray-500">
+            <span className="font-semibold">Out of Station:</span> {leaveRequest.out_of_station ? "Yes" : "No"}
+          </p>
+          {leaveRequest.out_of_station && (
+            <p className="text-xs text-gray-500">
+              <span className="font-semibold">Address:</span> {leaveRequest.address_out_of_station}
+            </p>
+          )}
+          <p className="text-xs text-gray-500">
+            <span className="font-semibold">Contact Number:</span> {leaveRequest.mobile_no_of_contact}
+          </p>
+          {leaveRequest.child_age > 0 && (
+            <p className="text-xs text-gray-500">
+              <span className="font-semibold">Child Age:</span> {leaveRequest.child_age}
+            </p>
+          )}
         </div>
       </div>
 
       {/* Buttons */}
-      <div className="flex justify-between mt-4">
-        <button
-          onClick={handleReject}
-          className="flex-1 py-2 border border-red-600 text-red-600 rounded-lg mx-1"
-        >
-          Reject
-        </button>
-        <button
-          onClick={handleApprove}
-          className="flex-1 py-2 bg-green-600 text-white rounded-lg mx-1"
-        >
-          Approve
-        </button>
-      </div>
+      {leaveRequest.status === "Pending" && (
+        <div className="flex justify-between mt-4">
+          <button
+            onClick={handleReject}
+            className="flex-1 py-2 border border-red-600 text-red-600 rounded-lg mx-1"
+          >
+            Reject
+          </button>
+          <button
+            onClick={handleApprove}
+            className="flex-1 py-2 bg-green-600 text-white rounded-lg mx-1"
+          >
+            Approve
+          </button>
+        </div>
+      )}
     </div>
   );
 }

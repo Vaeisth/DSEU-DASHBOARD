@@ -95,20 +95,20 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="pt-16 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen w-full mt-[-3rem]">
+    <div className="space-y-4">
       {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {["Total Employees", "Today's Attendance", "Leaves Approved"].map(
           (title, index) => (
             <div
               key={index}
-              className="bg-white p-6 rounded-2xl shadow flex flex-col items-center"
+              className="bg-white p-3 rounded-lg shadow flex flex-col items-center"
             >
-              <h3 className="text-lg font-semibold text-gray-600 mb-2">
+              <h3 className="text-sm font-semibold text-gray-600 mb-1">
                 {title}
               </h3>
               <p
-                className={`text-4xl font-bold ${
+                className={`text-2xl font-bold ${
                   index === 1
                     ? "text-green-600"
                     : index === 2
@@ -124,20 +124,20 @@ const Dashboard = () => {
       </div>
 
       {/* Chart + Services */}
-      <div className="flex flex-col lg:flex-row gap-6 mb-10">
+      <div className="flex flex-col lg:flex-row gap-3">
         {/* Pie Chart */}
-        <div className="bg-white p-6 rounded-2xl shadow w-full lg:w-1/3">
-          <h3 className="text-xl font-bold text-gray-700 mb-6 text-center">
+        <div className="bg-white p-3 rounded-lg shadow w-full lg:w-1/3">
+          <h3 className="text-sm font-bold text-gray-700 mb-3 text-center">
             Employee Attendance
           </h3>
-          <div className="w-full h-[250px]">
+          <div className="w-full h-[200px]">
             <ResponsiveContainer>
               <PieChart>
                 <Pie
                   data={chartData}
                   dataKey="value"
-                  outerRadius={80}
-                  innerRadius={50}
+                  outerRadius={60}
+                  innerRadius={40}
                   paddingAngle={5}
                 >
                   {chartData.map((entry, index) => (
@@ -148,11 +148,11 @@ const Dashboard = () => {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex flex-wrap justify-center gap-4 mt-6 text-sm text-gray-700">
+          <div className="flex flex-wrap justify-center gap-2 mt-3 text-xs text-gray-700">
             {chartData.map((entry, index) => (
-              <div key={index} className="flex items-center gap-2">
+              <div key={index} className="flex items-center gap-1">
                 <div
-                  className="w-4 h-4 rounded-full"
+                  className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: entry.color }}
                 ></div>
                 <span>{entry.name}</span>
@@ -162,20 +162,20 @@ const Dashboard = () => {
         </div>
 
         {/* Services Grid */}
-        <div className="bg-white p-6 rounded-2xl shadow w-full lg:w-2/3">
-          <h3 className="text-xl font-bold text-gray-700 mb-6">Services</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="bg-white p-3 rounded-lg shadow w-full lg:w-2/3">
+          <h3 className="text-sm font-bold text-gray-700 mb-3">Services</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-2">
             {services.map((service, index) => (
               <div
                 key={index}
-                className={`flex flex-col justify-center items-center cursor-pointer p-4 h-[100px] rounded-xl shadow hover:shadow-lg transform transition-transform hover:scale-105 ${buttonColors[index]}`}
+                className={`flex flex-col justify-center items-center cursor-pointer p-2 h-[80px] rounded-lg shadow hover:shadow-md transform transition-transform hover:scale-105 ${buttonColors[index]}`}
                 onClick={() => navigate(service.path)}
               >
                 <FontAwesomeIcon
                   icon={service.icon}
-                  className="text-2xl text-gray-800 mb-1"
+                  className="text-xl text-gray-800 mb-1"
                 />
-                <span className="text-sm text-gray-900 text-center">
+                <span className="text-xs text-gray-900 text-center">
                   {service.name}
                 </span>
               </div>

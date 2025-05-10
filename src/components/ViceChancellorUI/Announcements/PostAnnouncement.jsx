@@ -2,7 +2,16 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaClock, FaLink, FaFileAlt } from "react-icons/fa";
 import img from "../../../assets/icons/img (1).png";
-import { apiRequest } from '../../../utils/api';
+import { apiRequestAxios } from '../../../utils/api';
+import { useQuery } from "@tanstack/react-query";
+
+const fetchCampuses = async () => {
+  const { data } = await apiRequestAxios({ 
+    url: 'http://134.209.144.96:8081/superadmin/get-all-campuses', 
+    method: 'GET' 
+  });
+  return data.data;
+};
 
 const PostAnnouncement = () => {
   const navigate = useNavigate();
@@ -11,9 +20,17 @@ const PostAnnouncement = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [audience, setAudience] = useState("");
-  const [campus, setCampus] = useState("Main"); // Default or dynamic
-  const [zone, setZone] = useState("East"); // Default or dynamic
+  const [campus, setCampus] = useState("");
+  const [zone, setZone] = useState("");
   const [file, setFile] = useState(null);
+
+  const { data: campuses = [], isLoading } = useQuery({
+    queryKey: ["campuses"],
+    queryFn: fetchCampuses,
+  });
+
+  // Get unique zones from campuses
+  const zones = [...new Set(campuses.map(campus => campus.zone))];
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -28,12 +45,6 @@ const PostAnnouncement = () => {
       return;
     }
 
-    const token = sessionStorage.getItem("access_token");
-    if (!token) {
-      alert("User not authenticated.");
-      return;
-    }
-
     const formData = new FormData();
     formData.append("zone", zone);
     formData.append("campus", campus);
@@ -44,108 +55,144 @@ const PostAnnouncement = () => {
     }
 
     try {
-      const res = await apiRequest(
-        `http://134.209.144.96:8081/superadmin/create-announcement?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
-      );
-
-      const data = await res.json();
-      if (res.ok) {
-        alert("Announcement posted successfully!");
-        navigate(-1);
-      } else {
-        alert("Error: " + (data.message || "Something went wrong"));
-        console.error(data);
+      const res = await apiRequestAxios({
+        url: `http://134.209.144.96:8081/superadmin/create-announcement?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`,
+        method: 'POST',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      if (res.data) {
+        navigate('/announcements');
       }
-    } catch (err) {
-      alert("Network error");
-      console.error(err);
+    } catch (error) {
+      console.error("Error posting announcement:", error);
+      alert("Failed to post announcement. Please try again.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-      <div className="w-full max-w-3xl bg-white rounded-xl shadow-lg p-8 relative">
-        {/* Floating Action Icons */}
-        <div className="absolute top-4 right-4 flex space-x-4">
-          <button onClick={() => navigate("/schedule")} title="Schedule"><FaClock size={20} /></button>
-          <button onClick={() => navigate("/attach-link")} title="Attach Link"><FaLink size={20} /></button>
-          <button onClick={() => fileInputRef.current.click()} title="Attach File"><FaFileAlt size={20} /></button>
-        </div>
-
-        <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
-
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Post Announcement</h2>
-
-        <div className="flex items-center mb-6">
-          <img src={img} alt="VC" className="w-[60px] h-[60px] rounded-full mr-4" />
-          <div>
-            <p className="text-lg font-semibold text-gray-800">VC Name</p>
-            <p className="text-sm text-gray-500">Designation</p>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Title"
-            className="w-full border border-gray-300 rounded-md p-3"
-          />
-
-          <textarea
-            rows="4"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Description"
-            className="w-full border border-gray-300 rounded-md p-3"
-          />
-
-          <select
-            value={audience}
-            onChange={(e) => setAudience(e.target.value)}
-            className="w-full border border-gray-300 rounded-md p-3"
-          >
-            <option value="" disabled>Select audience</option>
-            <option value="employee">Students</option>
-            <option value="admin">Faculty</option>
-          </select>
-
-          <input
-            type="text"
-            value={campus}
-            onChange={(e) => setCampus(e.target.value)}
-            placeholder="Campus"
-            className="w-full border border-gray-300 rounded-md p-3"
-          />
-
-          <input
-            type="text"
-            value={zone}
-            onChange={(e) => setZone(e.target.value)}
-            placeholder="Zone"
-            className="w-full border border-gray-300 rounded-md p-3"
-          />
-
-          {file && (
-            <div className="text-sm text-gray-600">
-              File selected: <strong>{file.name}</strong>
+    <div className="p-2 bg-gray-100 min-h-screen">
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-white rounded-lg shadow-md p-4">
+          <h1 className="text-lg font-semibold mb-4 text-gray-800">Post Announcement</h1>
+          
+          <div className="space-y-3">
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <label className="block text-xs font-medium text-gray-700 mb-1">Title</label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                placeholder="Enter announcement title"
+              />
             </div>
-          )}
 
-          <button
-            onClick={handlePost}
-            className="w-full bg-gray-800 text-white py-3 rounded-md font-medium hover:bg-gray-700"
-          >
-            Post Announcement
-          </button>
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                rows="3"
+                placeholder="Enter announcement description"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <label className="block text-xs font-medium text-gray-700 mb-1">Audience</label>
+                <select
+                  value={audience}
+                  onChange={(e) => setAudience(e.target.value)}
+                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                >
+                  <option value="">Select Audience</option>
+                  <option value="employee">Employee</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <label className="block text-xs font-medium text-gray-700 mb-1">Zone</label>
+                <select
+                  value={zone}
+                  onChange={(e) => {
+                    setZone(e.target.value);
+                    setCampus("");
+                  }}
+                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                >
+                  <option value="">All Zones</option>
+                  {zones.map((zoneName) => (
+                    <option key={zoneName} value={zoneName}>
+                      {zoneName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <label className="block text-xs font-medium text-gray-700 mb-1">Campus</label>
+              <select
+                value={campus}
+                onChange={(e) => setCampus(e.target.value)}
+                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+              >
+                <option value="">Select Campus</option>
+                {campuses
+                  .filter((c) => !zone || c.zone === zone)
+                  .map((campus) => (
+                    <option key={campus._id} value={campus.campus_id}>
+                      {campus.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <label className="block text-xs font-medium text-gray-700 mb-1">Attachment</label>
+              <div className="flex items-center">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept="image/*,.pdf"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-3 py-1.5 bg-white border border-gray-300 rounded-md shadow-sm text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Choose File
+                </button>
+                {file && (
+                  <span className="ml-2 text-xs text-gray-500">
+                    {file.name}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-2 pt-3">
+              <button
+                onClick={() => navigate(-1)}
+                className="px-4 py-1.5 bg-white border border-gray-300 rounded-md shadow-sm text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handlePost}
+                className="px-4 py-1.5 bg-blue-600 border border-transparent rounded-md shadow-sm text-xs font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Post
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

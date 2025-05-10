@@ -1,139 +1,201 @@
-import React from 'react';
-import { Box, Card, CardContent, Typography, Grid, Button, Stack } from '@mui/material';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import AnnouncementIcon from '@mui/icons-material/Announcement';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequestAxios } from '../../../utils/api';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUserCheck,
+  faFileAlt,
+  faPlaneDeparture,
+  faBullhorn,
+  faCalendarAlt,
+  faFileArchive,
+  faVideo,
+  faBoxOpen,
+  faClock,
+} from "@fortawesome/free-solid-svg-icons";
 
-const services = [
-  { label: 'Attendance', icon: <AssignmentIndIcon fontSize="large" />, color: '#e3f0fa' },
-  { label: 'Track Leaves', icon: <EventNoteIcon fontSize="large" />, color: '#f3e6fa' },
-  { label: 'Announcements', icon: <AnnouncementIcon fontSize="large" />, color: '#fae3e3' },
-  { label: 'Calendar', icon: <CalendarMonthIcon fontSize="large" />, color: '#faf7e3' },
-  { label: 'On Duty', icon: <AccessTimeIcon fontSize="large" />, color: '#e3faf7' },
+const chartData = [
+  { name: "Present", value: 20, color: "#4CAF50" },
+  { name: "Absent", value: 5, color: "#F44336" },
+  { name: "On Duty", value: 2, color: "#A3C1E2" },
+  { name: "On Leave", value: 3, color: "#FFC107" },
 ];
 
+const services = [
+  { name: "Mark Attendance", path: "/mark-attendance", icon: faUserCheck },
+  { name: "Apply Leave", path: "/apply-leave", icon: faPlaneDeparture },
+  { name: "Leave Status", path: "/leave-status", icon: faClock },
+  { name: "Announcements", path: "/announcements", icon: faBullhorn },
+  { name: "Holidays", path: "/holidays", icon: faCalendarAlt },
+  { name: "File Tracking", path: "/filetracking", icon: faFileArchive },
+  { name: "Reports", path: "/reports", icon: faFileAlt },
+  { name: "Inventory", path: "/inventory", icon: faBoxOpen },
+];
+
+const buttonColors = [
+  "bg-[#C4DAFA]",
+  "bg-[#EFFBEA]",
+  "bg-[#F1D9FC]",
+  "bg-[#FBD5D7]",
+  "bg-[#FBF5EA]",
+  "bg-[#FBC4DF]",
+  "bg-[#FCDFE0]",
+  "bg-[#C6FFEB]",
+];
+
+const fetchAttendanceStatus = async () => {
+  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/employee/attendance-status', method: 'GET' });
+  return res.data;
+};
+
+const fetchLeaveBalance = async () => {
+  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/employee/leave-balance', method: 'GET' });
+  return res.data;
+};
+
+const fetchPendingApprovals = async () => {
+  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/employee/pending-approvals', method: 'GET' });
+  return res.data;
+};
+
 const Dashboard = () => {
+  const navigate = useNavigate();
+
+  const { data: attendanceStatus, isLoading: attendanceLoading } = useQuery({
+    queryKey: ["attendanceStatus"],
+    queryFn: fetchAttendanceStatus,
+  });
+
+  const { data: leaveBalance, isLoading: leaveLoading } = useQuery({
+    queryKey: ["leaveBalance"],
+    queryFn: fetchLeaveBalance,
+  });
+
+  const { data: pendingApprovals, isLoading: approvalsLoading } = useQuery({
+    queryKey: ["pendingApprovals"],
+    queryFn: fetchPendingApprovals,
+  });
+
+  const cardData = [
+    attendanceLoading ? "..." : attendanceStatus?.status || "Not Marked",
+    leaveLoading ? "..." : leaveBalance?.balance || 0,
+    approvalsLoading ? "..." : pendingApprovals?.length || 0,
+  ];
+
   return (
-    <Box sx={{ p: { xs: 1, sm: 4 }, maxWidth: 1100, mx: 'auto', mt: 2 }}>
-      {/* On Duty Card */}
-      <Card sx={{ mb: 3, borderRadius: 4, boxShadow: '0 2px 16px 0 rgba(0,0,0,0.06)', px: 2 }}>
-        <CardContent>
-          <Typography variant="h6" fontWeight={700} sx={{ mb: 0.5 }}>On Duty</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            Sat, 1 Jun 25
-          </Typography>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <AccessTimeIcon fontSize="small" color="primary" />
-            <Typography variant="body2">Punch in 8 : 30 AM</Typography>
-          </Stack>
-        </CardContent>
-      </Card>
+    <div className="pt-16 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen w-full mt-[-3rem]">
+      {/* Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        {["Today's Status", "Leave Balance", "Pending Approvals"].map(
+          (title, index) => (
+            <div
+              key={index}
+              className="bg-white p-6 rounded-2xl shadow flex flex-col items-center"
+            >
+              <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                {title}
+              </h3>
+              <p
+                className={`text-4xl font-bold ${
+                  index === 0
+                    ? "text-green-600"
+                    : index === 1
+                    ? "text-blue-600"
+                    : "text-orange-600"
+                }`}
+              >
+                {cardData[index]}
+              </p>
+            </div>
+          )
+        )}
+      </div>
 
-      {/* Today's Attendance Card */}
-      <Card sx={{ mb: 3, borderRadius: 4, boxShadow: '0 2px 16px 0 rgba(0,0,0,0.06)', px: 2 }}>
-        <CardContent>
-          <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
-            <Grid item xs={12} md={8}>
-              <Typography variant="h6" fontWeight={700} sx={{ mb: 0.5 }}>Your today's attendance</Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                Sat, 25 May, 2024
-              </Typography>
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <AccessTimeIcon fontSize="small" color="primary" />
-                <Typography variant="body2">Punch in 8 : 30 AM</Typography>
-              </Stack>
-              <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 0.5 }}>
-                <AccessTimeIcon fontSize="small" color="primary" />
-                <Typography variant="body2">Punch out 5 : 40 PM</Typography>
-              </Stack>
-              <Button size="small" sx={{ mt: 1, textTransform: 'none', color: '#1976d2', fontWeight: 600 }}>Today</Button>
-            </Grid>
-            <Grid item xs={12} md={4} sx={{ display: 'flex', justifyContent: { xs: 'flex-start', md: 'flex-end' }, alignItems: 'center', mt: { xs: 2, md: 0 } }}>
-              <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                <svg width="64" height="64">
-                  <circle cx="32" cy="32" r="28" fill="#f5f5f5" />
-                  <circle cx="32" cy="32" r="28" fill="none" stroke="#ff9800" strokeWidth="6" strokeDasharray={175.93} strokeDashoffset={87.96} />
-                </svg>
-                <Box sx={{ position: 'absolute', top: 0, left: 0, width: '64px', height: '64px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                  <Typography variant="h6" fontWeight={700}>4/8</Typography>
-                  <Typography variant="caption">hours</Typography>
-                </Box>
-              </Box>
-              <Box sx={{ ml: 2, bgcolor: '#eafbe7', px: 2, py: 0.5, borderRadius: 2, fontWeight: 600, color: '#388e3c', fontSize: 16 }}>Present</Box>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-
-      {/* All Faculty Attendance Card */}
-      <Card sx={{ mb: 3, borderRadius: 4, boxShadow: '0 2px 16px 0 rgba(0,0,0,0.06)', px: 2 }}>
-        <CardContent>
-          <Grid container alignItems="center" justifyContent="space-between">
-            <Grid item>
-              <Typography variant="h6" fontWeight={700}>Today's All faculty Attendance</Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                Sat, 25 May 2024
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Button size="small" sx={{ textTransform: 'none', color: '#1976d2', fontWeight: 600 }}>See All</Button>
-            </Grid>
-          </Grid>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid item xs={6} sm={3}>
-              <Typography variant="subtitle2" color="text.secondary">Total</Typography>
-              <Typography variant="h6" fontWeight={700}>120</Typography>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Typography variant="subtitle2" color="text.secondary">Present</Typography>
-              <Typography variant="h6" fontWeight={700} sx={{ color: 'green' }}>80</Typography>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Typography variant="subtitle2" color="text.secondary">Absent</Typography>
-              <Typography variant="h6" fontWeight={700} sx={{ color: 'red' }}>5</Typography>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Typography variant="subtitle2" color="text.secondary">On Duty</Typography>
-              <Typography variant="h6" fontWeight={700}>0</Typography>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
+      {/* Chart + Services */}
+      <div className="flex flex-col lg:flex-row gap-6 mb-10">
+        {/* Pie Chart */}
+        <div className="bg-white p-6 rounded-2xl shadow w-full lg:w-1/3">
+          <h3 className="text-xl font-bold text-gray-700 mb-6 text-center">
+            Monthly Attendance
+          </h3>
+          <div className="w-full h-[250px]">
+            <ResponsiveContainer>
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  dataKey="value"
+                  outerRadius={80}
+                  innerRadius={50}
+                  paddingAngle={5}
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 mt-6 text-sm text-gray-700">
+            {chartData.map((entry, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <div
+                  className="w-4 h-4 rounded-full"
+                  style={{ backgroundColor: entry.color }}
+                ></div>
+                <span>{entry.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
       {/* Services Grid */}
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h6" fontWeight={700} sx={{ mb: 2, letterSpacing: 0.5 }}>Services</Typography>
-        <Grid container spacing={3}>
-          {services.map((service, idx) => (
-            <Grid item xs={6} sm={4} md={2.4} key={service.label}>
-              <Card sx={{
-                background: service.color,
-                borderRadius: 4,
-                boxShadow: '0 2px 8px 0 rgba(0,0,0,0.04)',
-                cursor: 'pointer',
-                p: 2.5,
-                textAlign: 'center',
-                minHeight: 100,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'transform 0.15s, box-shadow 0.15s',
-                '&:hover': {
-                  boxShadow: '0 4px 24px 0 rgba(25, 118, 210, 0.10)',
-                  transform: 'translateY(-4px) scale(1.04)'
-                }
-              }}>
-                <Box sx={{ mb: 1, color: '#222', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{service.icon}</Box>
-                <Typography variant="body1" fontWeight={600} sx={{ fontSize: 16, color: '#222' }}>{service.label}</Typography>
-              </Card>
-            </Grid>
+        <div className="bg-white p-6 rounded-2xl shadow w-full lg:w-2/3">
+          <h3 className="text-xl font-bold text-gray-700 mb-6">Services</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {services.map((service, index) => (
+              <div
+                key={index}
+                className={`flex flex-col justify-center items-center cursor-pointer p-4 h-[100px] rounded-xl shadow hover:shadow-lg transform transition-transform hover:scale-105 ${buttonColors[index]}`}
+                onClick={() => navigate(service.path)}
+              >
+                <FontAwesomeIcon
+                  icon={service.icon}
+                  className="text-2xl text-gray-800 mb-1"
+                />
+                <span className="text-sm text-gray-900 text-center">
+                  {service.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Activity */}
+      <div className="bg-white p-6 rounded-2xl shadow mb-10">
+        <h3 className="text-xl font-bold text-gray-700 mb-6">Recent Activity</h3>
+        <div className="space-y-4">
+          {[1, 2, 3].map((_, index) => (
+            <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <div>
+                <p className="text-sm text-gray-600">Leave request approved</p>
+                <p className="text-xs text-gray-400">2 hours ago</p>
+              </div>
+            </div>
           ))}
-        </Grid>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 };
 
