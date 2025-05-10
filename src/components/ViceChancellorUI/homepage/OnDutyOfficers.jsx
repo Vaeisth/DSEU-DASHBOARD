@@ -5,21 +5,21 @@ import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
 import { useNavigate } from "react-router-dom";
 
-const fetchPendingLeaves = async () => {
+const fetchOnDutyOfficers = async () => {
   const { data } = await apiRequestAxios({ 
-    url: "http://134.209.144.96:8081/superadmin/get-leave-requests", 
+    url: "http://134.209.144.96:8081/superadmin/all-on-duty-users", 
     method: 'GET' 
   });
   return data.data;
 };
 
-const PendingApprovals = () => {
+const OnDutyOfficers = () => {
   const navigate = useNavigate();
   const scrollRef = useRef(null);
 
-  const { data: pendingLeaves = [], isLoading, isError } = useQuery({
-    queryKey: ["pendingLeaves"],
-    queryFn: fetchPendingLeaves,
+  const { data: onDutyOfficers = [], isLoading, isError } = useQuery({
+    queryKey: ["onDutyOfficers"],
+    queryFn: fetchOnDutyOfficers,
   });
 
   const scroll = (direction) => {
@@ -32,29 +32,12 @@ const PendingApprovals = () => {
     }
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    return `${diffDays} days ago`;
-  };
-
   return (
     <div className="relative w-full">
       <div className="flex justify-between items-center mb-2 px-1">
         <h3 className="text-sm font-semibold text-gray-800">
-          Pending Approvals
+          On Duty Officers
         </h3>
-        <button
-          onClick={() => navigate("/track-leave")}
-          className="text-blue-600 text-xs font-medium hover:underline"
-        >
-          See all &gt;
-        </button>
       </div>
 
       {/* Scroll Buttons */}
@@ -85,22 +68,22 @@ const PendingApprovals = () => {
           </div>
         ) : isError ? (
           <div className="min-w-[240px] sm:min-w-[280px] bg-white p-3 rounded-lg shadow-sm flex items-center justify-center">
-            <p className="text-red-500">Failed to load approvals</p>
+            <p className="text-red-500">Failed to load officers</p>
           </div>
-        ) : pendingLeaves.length === 0 ? (
+        ) : onDutyOfficers.length === 0 ? (
           <div className="min-w-[240px] sm:min-w-[280px] bg-white p-3 rounded-lg shadow-sm flex items-center justify-center">
-            <p className="text-gray-500">No pending approvals</p>
+            <p className="text-gray-500">No officers on duty</p>
           </div>
         ) : (
-          pendingLeaves.slice(0, 7).map((leave) => (
+          onDutyOfficers.slice(0, 7).map((officer) => (
             <div
-              key={leave._id}
+              key={officer._id}
               className="min-w-[240px] sm:min-w-[280px] max-w-[90%] bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-3 cursor-pointer"
-              onClick={() => navigate(`/leave-details/${leave._id}`)}
+              onClick={() => navigate(`/officer-details/${officer._id}`)}
             >
               <img
-                src={leave.user_id?.picture || "https://via.placeholder.com/40"}
-                alt={leave.user_id?.name || "User"}
+                src={officer.link_id?.picture || "https://via.placeholder.com/40"}
+                alt={officer.name || "Officer"}
                 className="w-10 h-10 rounded-full object-cover border border-gray-200"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -109,21 +92,21 @@ const PendingApprovals = () => {
               />
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-gray-900 text-xs truncate">
-                  {leave.user_id?.name || "Unknown User"}
+                  {officer.name || "Unknown Officer"}
                 </p>
                 <p className="text-xs text-gray-500 truncate">
-                  {leave.user_id?.campus?.name || "No Campus"}
+                  {officer.link_id?.campus?.name || "No Campus"}
                 </p>
                 <p className="text-[10px] text-gray-400">
-                  {formatDate(leave.createdAt)}
+                  {officer.link_id?.designation?.[0] || "No Designation"}
                 </p>
               </div>
               <div className="flex flex-col items-end">
-                <span className="text-xs font-medium text-gray-600">
-                  {leave.leave_type}
+                <span className="text-xs font-medium text-green-600">
+                  On Duty
                 </span>
                 <span className="text-[10px] text-gray-400">
-                  {leave.start_date} - {leave.end_date}
+                  {officer.Date}
                 </span>
               </div>
             </div>
@@ -141,4 +124,4 @@ const PendingApprovals = () => {
   );
 };
 
-export default PendingApprovals;
+export default OnDutyOfficers; 

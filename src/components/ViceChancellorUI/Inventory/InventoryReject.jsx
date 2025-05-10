@@ -41,17 +41,12 @@ const InventoryReject = () => {
       </div>
 
       {/* Subheader */}
-      <div className="flex items-center justify-between px-6 py-4 bg-white mt-2 shadow-sm">
-        <div className="flex items-center space-x-3">
-          <button className="text-gray-700 hover:text-black" onClick={() => navigate(-1)}>
-            <FaArrowLeft size={20} />
-          </button>
-          <h2 className="text-xl font-bold text-gray-800">Inventory</h2>
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <h2 className="text-xl font-bold text-gray-800">Rejected Inventory</h2>
+          </div>
         </div>
-        <button className="text-blue-600 flex items-center hover:text-blue-800 transition">
-          <FaFilter size={16} className="mr-1" />
-          <span className="text-sm">Filter</span>
-        </button>
       </div>
 
       {/* Main Content */}

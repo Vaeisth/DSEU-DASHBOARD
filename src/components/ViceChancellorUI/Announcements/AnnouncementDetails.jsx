@@ -43,14 +43,13 @@ const AnnouncementDetails = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-6 sm:px-8">
-      {/* Back Button */}
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center text-sm text-blue-600 hover:underline mb-4"
-      >
-        <FaArrowLeft className="mr-2" />
-        Back to Announcements
-      </button>
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <h2 className="text-xl font-bold text-gray-800">Announcement Details</h2>
+          </div>
+        </div>
+      </div>
 
       {/* Card */}
       <div className="bg-white rounded-xl shadow-md p-6 sm:p-8 max-w-3xl mx-auto">

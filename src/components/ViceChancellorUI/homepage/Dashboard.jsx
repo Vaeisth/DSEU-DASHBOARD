@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import PendingApprovals from "./PendingApprovals";
+import OnDutyOfficers from "./OnDutyOfficers";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
 
@@ -184,8 +185,9 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Bottom Component */}
+      {/* Bottom Components */}
       <PendingApprovals />
+      <OnDutyOfficers />
     </div>
   );
 };

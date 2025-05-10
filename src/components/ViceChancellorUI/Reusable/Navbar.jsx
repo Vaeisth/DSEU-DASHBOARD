@@ -2,13 +2,39 @@ import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import dseu_logo from "../../../assets/logo/dseu_logo.png";
 import BellIcon from "../../../assets/logo/Bell.png";
-import profile from "../../../assets/logo/profile.png";
 import searchIcon from "../../../assets/logo/search.png";
+import { FaBell, FaSearch, FaUser, FaSignOutAlt, FaBuilding } from "react-icons/fa";
+import { apiRequest } from '../../../utils/api';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = sessionStorage.getItem("accessToken");
+        const response = await apiRequest("http://134.209.144.96:8081/profile/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch profile");
+        }
+
+        const data = await response.json();
+        setUserProfile(data);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -56,40 +82,34 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-md shadow-md px-2 sm:px-4 py-2 z-50">
-      <div className="max-w-7xl mx-auto flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-2">
+    <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 px-4 py-2.5 z-50">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Left: Logo */}
         <div
-          className="flex items-center gap-2 flex-shrink-0 cursor-pointer"
+          className="flex items-center gap-2 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
           onClick={handleLogoClick}
         >
-          <img src={dseu_logo} alt="DSEU Logo" className="h-8 sm:h-10" />
+          <img src={dseu_logo} alt="DSEU Logo" className="h-10" />
         </div>
 
         {/* Center: Search */}
-        <div className="relative w-full sm:w-1/2 order-3 sm:order-none">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full bg-white border border-gray-300 rounded-full px-3 py-1.5 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 shadow-sm"
-          />
-          <img
-            src={searchIcon}
-            alt="Search"
-            className="absolute right-2.5 top-2 w-4 h-4 opacity-60 pointer-events-none"
-          />
+        <div className="relative flex-1 max-w-2xl mx-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="w-full bg-gray-50 border border-gray-200 rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+          </div>
         </div>
 
         {/* Right: Icons */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-4">
           {/* Notifications */}
-          <button className="relative focus:outline-none hover:scale-105 transition-transform">
-            <img
-              src={BellIcon}
-              alt="Notifications"
-              className="w-5 h-5"
-            />
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-semibold rounded-full px-1 shadow">
+          <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors">
+            <FaBell className="w-5 h-5" />
+            <span className="absolute top-1 right-1 bg-red-500 text-white text-xs font-semibold rounded-full w-4 h-4 flex items-center justify-center">
               2
             </span>
           </button>
@@ -98,42 +118,68 @@ const Navbar = () => {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="focus:outline-none hover:scale-105 transition-transform"
+              className="flex items-center gap-2 p-1.5 hover:bg-gray-100 rounded-full transition-colors"
             >
               <img
-                src={profile}
-                alt="Profile"
-                className="w-8 h-8 rounded-full border border-gray-300 shadow-sm"
+                src={userProfile?.picture || "https://via.placeholder.com/40"}
+                alt={userProfile?.name || "Profile"}
+                className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://via.placeholder.com/40";
+                }}
               />
             </button>
 
             {/* Dropdown Menu */}
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg py-1 z-50">
-                <button
-                  onClick={() => {
-                    navigate("/profile");
-                    setIsDropdownOpen(false);
-                  }}
-                  className="w-full px-3 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                  </svg>
-                  Profile Info
-                </button>
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsDropdownOpen(false);
-                  }}
-                  className="w-full px-3 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-                  </svg>
-                  Logout
-                </button>
+              <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg py-2 z-50 border border-gray-100">
+                {/* User Info */}
+                <div className="px-4 py-3 border-b border-gray-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <img
+                      src={userProfile?.picture || "https://via.placeholder.com/40"}
+                      alt={userProfile?.name || "Profile"}
+                      className="w-12 h-12 rounded-full border-2 border-gray-200 object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://via.placeholder.com/40";
+                      }}
+                    />
+                    <div>
+                      <p className="font-medium text-gray-900">{userProfile?.name || "User"}</p>
+                      <p className="text-sm text-gray-500">{userProfile?.email || "user@example.com"}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <FaBuilding className="w-4 h-4 text-gray-400" />
+                    <span>{userProfile?.campus?.name || "No Campus"}</span>
+                  </div>
+                </div>
+
+                {/* Menu Items */}
+                <div className="py-1">
+                  <button
+                    onClick={() => {
+                      navigate("/profile");
+                      setIsDropdownOpen(false);
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                  >
+                    <FaUser className="w-4 h-4 text-gray-400" />
+                    Profile Info
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsDropdownOpen(false);
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                  >
+                    <FaSignOutAlt className="w-4 h-4" />
+                    Logout
+                  </button>
+                </div>
               </div>
             )}
           </div>

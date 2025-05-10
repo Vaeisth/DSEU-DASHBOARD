@@ -1,176 +1,198 @@
-import React, { useState } from "react";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
-import { FaArrowLeft, FaEdit, FaSave, FaTimes, FaCamera } from "react-icons/fa";
+import { FaArrowLeft, FaEnvelope, FaPhone, FaMapMarkerAlt, FaIdCard, FaUniversity, FaCalendarAlt, FaUserTie, FaBuilding } from "react-icons/fa";
 
 const fetchProfile = async () => {
   const response = await apiRequestAxios({ url: 'http://134.209.144.96:8081/profile/', method: 'GET' });
   return response.data;
 };
-const fetchBankDetails = async () => {
-  const response = await apiRequestAxios({ url: 'http://134.209.144.96:8081/profile/bank_details', method: 'GET' });
-  return response.data;
-};
-
 
 const Profile = () => {
-  const { data, isLoading, isError } = useQuery({
+  const { data: userData, isLoading, isError } = useQuery({
     queryKey: ["profile"],
     queryFn: fetchProfile,
   });
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [profilePic, setProfilePic] = useState(localStorage.getItem("profilePic") || null);
-
-  const [userData, setUserData] = useState(null);
-
-  React.useEffect(() => {
-    if (data) setUserData(data);
-  }, [data]);
-
-  const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
-  };
-
-  const handleProfileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setProfilePic(reader.result);
-        localStorage.setItem("profilePic", reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  if (isLoading) return <div className="p-6">Loading...</div>;
-  if (isError) return <div className="p-6 text-red-500">Failed to load profile.</div>;
+  if (isLoading) return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="flex flex-col items-center gap-4">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent"></div>
+        <p className="text-gray-600">Loading profile information...</p>
+      </div>
+    </div>
+  );
+  
+  if (isError) return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="text-center p-8 bg-white rounded-xl shadow-sm max-w-md">
+        <div className="text-red-500 text-5xl mb-4">⚠️</div>
+        <h3 className="text-xl font-semibold text-gray-800 mb-2">Failed to Load Profile</h3>
+        <p className="text-gray-600">Please try again later or contact support if the problem persists.</p>
+      </div>
+    </div>
+  );
+  
   if (!userData) return null;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="flex items-center gap-3 mb-4">
-        <button onClick={() => window.history.back()} className="text-gray-700">
-          <FaArrowLeft size={20} />
-        </button>
-        <h2 className="text-xl font-bold text-gray-800">Your Profile</h2>
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow-md flex items-center gap-4 relative">
-        <div className="relative">
-          <img
-            src={profilePic || userData.picture || "https://via.placeholder.com/150"}
-            alt="Profile"
-            className="w-16 h-16 rounded-full object-cover"
-          />
-          <label htmlFor="profile-upload" className="absolute bottom-0 right-0 bg-blue-500 p-1 rounded-full cursor-pointer">
-            <FaCamera className="text-white" />
-          </label>
-          <input type="file" id="profile-upload" accept="image/*" onChange={handleProfileChange} className="hidden" />
-        </div>
-        <div>
-          <h3 className="text-lg font-bold">{userData.name}</h3>
-          <p className="text-gray-600 text-sm">
-            {userData.designation?.join(", ") || "No Designation"} at {userData.campus?.name || "Unknown Campus"}
-          </p>
-          <a href={`mailto:${userData.email}`} className="text-blue-500 text-sm">
-            {userData.email}
-          </a>
-        </div>
-      </div>
-
-      {/* Basic Info */}
-      <div className="bg-white p-6 rounded-lg shadow-md mt-4">
-        <h3 className="text-lg font-semibold flex justify-between">
-          Basic Info
-          <FaEdit className="text-blue-500 cursor-pointer" onClick={() => setIsEditing(!isEditing)} />
-        </h3>
-        <div className="mt-2">
-          {["name", "email", "gender", "dob"].map((field) => (
-            <div key={field} className="mb-2">
-              <label className="text-gray-700 font-semibold capitalize">{field.replace(/_/g, " ")}</label>
-              <input
-                type="text"
-                name={field}
-                value={userData[field] || ""}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full px-3 py-2 border rounded ${
-                  isEditing ? "bg-white border-gray-400" : "bg-gray-100"
-                }`}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Work Info */}
-      <div className="bg-white p-6 rounded-lg shadow-md mt-4">
-        <h3 className="text-lg font-semibold flex justify-between">
-          Work Information
-          <FaEdit className="text-blue-500 cursor-pointer" onClick={() => setIsEditing(!isEditing)} />
-        </h3>
-        <div className="mt-2">
-          {["date_of_joining", "staff_type"].map((field) => (
-            <div key={field} className="mb-2">
-              <label className="text-gray-700 font-semibold capitalize">{field.replace(/_/g, " ")}</label>
-              <input
-                type="text"
-                name={field}
-                value={userData[field] || ""}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full px-3 py-2 border rounded ${
-                  isEditing ? "bg-white border-gray-400" : "bg-gray-100"
-                }`}
-              />
-            </div>
-          ))}
-          <div className="mb-2">
-            <label className="text-gray-700 font-semibold">Campus</label>
-            <input
-              type="text"
-              value={userData.campus?.name || ""}
-              disabled
-              className="w-full px-3 py-2 border rounded bg-gray-100"
-            />
+    <div className="min-h-screen bg-gray-50">
+      {/* Header with Back Button */}
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <h2 className="text-xl font-bold text-gray-800">Profile</h2>
           </div>
         </div>
       </div>
 
-      {/* Bank Details */}
-      <div className="bg-white p-6 rounded-lg shadow-md mt-4">
-        <h3 className="text-lg font-semibold">Bank Details</h3>
-        {userData.bank_detail ? (
-          <>
-            <p className="text-gray-700"><strong>Account Number:</strong> {userData.bank_detail.account_number}</p>
-            <p className="text-gray-700"><strong>IFSC:</strong> {userData.bank_detail.ifsc}</p>
-            <p className="text-gray-700"><strong>Bank Name:</strong> {userData.bank_detail.bank_name}</p>
-            <p className="text-gray-700"><strong>Branch:</strong> {userData.bank_detail.branch}</p>
-          </>
-        ) : (
-          <p className="text-gray-500 italic">Bank details not provided.</p>
-        )}
-      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Profile Card */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-32"></div>
+              <div className="px-6 pb-6">
+                <div className="flex justify-center">
+                  <div className="relative -mt-16">
+                    <img
+                      src={userData.picture || "https://via.placeholder.com/150"}
+                      alt="Profile"
+                      className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
+                    />
+                  </div>
+                </div>
+                <div className="text-center mt-4">
+                  <h2 className="text-2xl font-bold text-gray-800">{userData.name}</h2>
+                  <p className="text-gray-600 mt-1">{userData.designation?.join(", ") || "No Designation"}</p>
+                  <div className="mt-4 space-y-3">
+                    <div className="flex items-center justify-center text-gray-600">
+                      <FaUniversity className="mr-2" />
+                      <span>{userData.campus?.name || "Unknown Campus"}</span>
+                    </div>
+                    <div className="flex items-center justify-center text-gray-600">
+                      <FaUserTie className="mr-2" />
+                      <span className="capitalize">{userData.staff_type || "Not specified"}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-      {/* Save & Cancel Buttons */}
-      {isEditing && (
-        <div className="flex justify-between mt-4">
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded flex items-center"
-            onClick={() => setIsEditing(false)}
-          >
-            <FaSave className="mr-2" /> Save
-          </button>
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded flex items-center"
-            onClick={() => setIsEditing(false)}
-          >
-            <FaTimes className="mr-2" /> Cancel
-          </button>
+            {/* Contact Information Card */}
+            <div className="bg-white rounded-2xl shadow-sm mt-8 p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Contact Information</h3>
+              <div className="space-y-4">
+                <div className="flex items-center text-gray-600">
+                  <FaEnvelope className="w-5 h-5 mr-3 text-blue-500" />
+                  <a href={`mailto:${userData.email}`} className="hover:text-blue-600 transition-colors">
+                    {userData.email}
+                  </a>
+                </div>
+                {userData.phone && (
+                  <div className="flex items-center text-gray-600">
+                    <FaPhone className="w-5 h-5 mr-3 text-blue-500" />
+                    <span>{userData.phone}</span>
+                  </div>
+                )}
+                {userData.address && (
+                  <div className="flex items-center text-gray-600">
+                    <FaMapMarkerAlt className="w-5 h-5 mr-3 text-blue-500" />
+                    <span>{userData.address}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Information Cards */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Personal Information */}
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
+                <FaIdCard className="mr-2 text-blue-500" />
+                Personal Information
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-sm text-gray-500 block mb-1">Full Name</label>
+                  <p className="text-gray-800 font-medium">{userData.name}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500 block mb-1">Gender</label>
+                  <p className="text-gray-800 font-medium capitalize">{userData.gender || "Not specified"}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500 block mb-1">Date of Birth</label>
+                  <p className="text-gray-800 font-medium">{userData.dob || "Not specified"}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500 block mb-1">Email</label>
+                  <p className="text-gray-800 font-medium">{userData.email}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Work Information */}
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
+                <FaBuilding className="mr-2 text-blue-500" />
+                Work Information
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-sm text-gray-500 block mb-1">Date of Joining</label>
+                  <p className="text-gray-800 font-medium">{userData.date_of_joining || "Not specified"}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500 block mb-1">Staff Type</label>
+                  <p className="text-gray-800 font-medium capitalize">{userData.staff_type || "Not specified"}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500 block mb-1">Campus</label>
+                  <p className="text-gray-800 font-medium">{userData.campus?.name || "Not specified"}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500 block mb-1">Designation</label>
+                  <p className="text-gray-800 font-medium">{userData.designation?.join(", ") || "Not specified"}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Bank Details */}
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
+                <FaCalendarAlt className="mr-2 text-blue-500" />
+                Bank Details
+              </h3>
+              {userData.bank_detail ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-sm text-gray-500 block mb-1">Account Number</label>
+                    <p className="text-gray-800 font-medium">{userData.bank_detail.account_number}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-500 block mb-1">IFSC Code</label>
+                    <p className="text-gray-800 font-medium">{userData.bank_detail.ifsc}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-500 block mb-1">Bank Name</label>
+                    <p className="text-gray-800 font-medium">{userData.bank_detail.bank_name}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-500 block mb-1">Branch</label>
+                    <p className="text-gray-800 font-medium">{userData.bank_detail.branch}</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-500 italic">Bank details not provided</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

@@ -22,25 +22,39 @@ import InventoryApproved from "./components/ViceChancellorUI/Inventory/Inventory
 import InventoryReject from "./components/ViceChancellorUI/Inventory/InventoryReject.jsx";
 import Surveillance from "./components/ViceChancellorUI/surveillance/Surveillance.jsx";
 import EmployeeDashboard from "./components/EmployeeUI/homepage/Dashboard.jsx";
+import OfficerDetails from "./components/ViceChancellorUI/attendance/OfficerDetails.jsx";
 
 // Global Layout with Fixed Navbar
 const VCLayout = ({ children }) => (
-  <div className="bg-gray-100 h-screen w-full flex flex-col">
-    <div className="fixed top-0 w-full z-50">
+  <div className="min-h-screen bg-gray-50">
+    {/* Fixed Navbar */}
+    <div className="fixed top-0 left-0 right-0 z-50">
       <Navbar />
     </div>
-    {/* Main content area with flex-grow to fill remaining space */}
-    <main className="flex-1 pt-16 px-2 overflow-y-auto">{children}</main>
+
+    {/* Main content area with proper spacing */}
+    <main className="pt-20 pb-8 px-3 sm:px-4">
+      <div className="max-w-7xl mx-auto">
+        {children}
+      </div>
+    </main>
   </div>
 );
 
 // Employee Layout - using the same Navbar component
 const EmployeeLayout = ({ children }) => (
-  <div className="bg-gray-100 h-screen w-full flex flex-col">
-    <div className="fixed top-0 w-full z-50">
+  <div className="min-h-screen bg-gray-50">
+    {/* Fixed Navbar */}
+    <div className="fixed top-0 left-0 right-0 z-50">
       <Navbar />
     </div>
-    <main className="flex-1 pt-16 px-2 overflow-y-auto">{children}</main>
+
+    {/* Main content area with proper spacing */}
+    <main className="pt-20 pb-8 px-3 sm:px-4">
+      <div className="max-w-7xl mx-auto">
+        {children}
+      </div>
+    </main>
   </div>
 );
 
@@ -72,12 +86,13 @@ function App() {
         <Route path="/schedule" element={<VCLayout><ScheduleDrawer /></VCLayout>} />
         <Route path="/holidays" element={<VCLayout><Holidays /></VCLayout>} />
         <Route path="/campus" element={<VCLayout><CampusList /></VCLayout>} />
-        <Route path="/campus-info" element={<VCLayout><CampusInfo /></VCLayout>} />
+        <Route path="/campus/:id" element={<VCLayout><CampusInfo /></VCLayout>} />
         <Route path="/profile" element={<VCLayout><Profile /></VCLayout>} />
         <Route path="/inventory" element={<VCLayout><Inventory /></VCLayout>} />
         <Route path="/approved" element={<VCLayout><InventoryApproved /></VCLayout>} />
         <Route path="/rejected" element={<VCLayout><InventoryReject /></VCLayout>} />
         <Route path="/surveillance" element={<VCLayout><Surveillance /></VCLayout>} />
+        <Route path="/officer-details/:id" element={<VCLayout><OfficerDetails /></VCLayout>} />
 
         {/* Employee Routes */}
         <Route
