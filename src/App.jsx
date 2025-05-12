@@ -17,13 +17,12 @@ import Holidays from "./components/ViceChancellorUI/Holidays/Holidays.jsx";
 import CampusList from "./components/ViceChancellorUI/CampusList/CampusList.jsx";
 import CampusInfo from "./components/ViceChancellorUI/CampusList/CampusInfo.jsx";
 import Profile from "./components/ViceChancellorUI/Profile/Profile.jsx";
-import Inventory from "./components/ViceChancellorUI/Inventory/Inventory.jsx";
-import InventoryApproved from "./components/ViceChancellorUI/Inventory/InventoryApproved.jsx";
-import InventoryReject from "./components/ViceChancellorUI/Inventory/InventoryReject.jsx";
+import InventoryDashboard from "./components/ViceChancellorUI/Inventory/InventoryDashboard.jsx";
 import Surveillance from "./components/ViceChancellorUI/surveillance/Surveillance.jsx";
 import EmployeeDashboard from "./components/EmployeeUI/homepage/Dashboard.jsx";
 import OfficerDetails from "./components/ViceChancellorUI/attendance/OfficerDetails.jsx";
 import EmployeeList from "./components/ViceChancellorUI/employees/EmployeeList.jsx";
+import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
 
 // Global Layout with Fixed Navbar
 const VCLayout = ({ children }) => (
@@ -89,12 +88,11 @@ function App() {
         <Route path="/campus" element={<VCLayout><CampusList /></VCLayout>} />
         <Route path="/campus/:id" element={<VCLayout><CampusInfo /></VCLayout>} />
         <Route path="/profile" element={<VCLayout><Profile /></VCLayout>} />
-        <Route path="/inventory" element={<VCLayout><Inventory /></VCLayout>} />
-        <Route path="/approved" element={<VCLayout><InventoryApproved /></VCLayout>} />
-        <Route path="/rejected" element={<VCLayout><InventoryReject /></VCLayout>} />
+        <Route path="/inventory" element={<VCLayout><InventoryDashboard /></VCLayout>} />
         <Route path="/surveillance" element={<VCLayout><Surveillance /></VCLayout>} />
         <Route path="/officer-details/:id" element={<VCLayout><OfficerDetails /></VCLayout>} />
         <Route path="/employees" element={<VCLayout><EmployeeList /></VCLayout>} />
+        <Route path="/calendar" element={<VCLayout><Calendar /></VCLayout>} />
 
         {/* Employee Routes */}
         <Route

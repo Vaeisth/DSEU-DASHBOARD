@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
+import { API_ENDPOINTS } from '../../../config/api.config';
 import {
   PieChart,
   Pie,
@@ -52,17 +53,26 @@ const buttonColors = [
 ];
 
 const fetchAttendanceStatus = async () => {
-  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/employee/attendance-status', method: 'GET' });
+  const res = await apiRequestAxios({ 
+    endpoint: API_ENDPOINTS.EMPLOYEE_ATTENDANCE_STATUS,
+    method: 'GET' 
+  });
   return res.data;
 };
 
 const fetchLeaveBalance = async () => {
-  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/employee/leave-balance', method: 'GET' });
+  const res = await apiRequestAxios({ 
+    endpoint: API_ENDPOINTS.EMPLOYEE_LEAVE_BALANCE,
+    method: 'GET' 
+  });
   return res.data;
 };
 
 const fetchPendingApprovals = async () => {
-  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/employee/pending-approvals', method: 'GET' });
+  const res = await apiRequestAxios({ 
+    endpoint: API_ENDPOINTS.EMPLOYEE_PENDING_APPROVALS,
+    method: 'GET' 
+  });
   return res.data;
 };
 

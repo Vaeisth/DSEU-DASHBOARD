@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUpload, FaCalendarAlt, FaUserAlt, FaBuilding } from "react-icons/fa";
 import { apiRequest } from '../../../utils/api';
+import { API_ENDPOINTS } from '../../../config/api.config';
 
 const Announcements = () => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ const Announcements = () => {
     const fetchAnnouncements = async () => {
       try {
         const token = sessionStorage.getItem("accessToken");
-        const response = await apiRequest("http://134.209.144.96:8081/superadmin/get-all-announcements", {
+        const response = await apiRequest(API_ENDPOINTS.ALL_ANNOUNCEMENTS, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -5,6 +5,7 @@ import BellIcon from "../../../assets/logo/Bell.png";
 import searchIcon from "../../../assets/logo/search.png";
 import { FaBell, FaSearch, FaUser, FaSignOutAlt, FaBuilding } from "react-icons/fa";
 import { apiRequest } from '../../../utils/api';
+import { API_ENDPOINTS } from '../../../config/api.config';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Navbar = () => {
     const fetchUserProfile = async () => {
       try {
         const token = sessionStorage.getItem("accessToken");
-        const response = await apiRequest("http://134.209.144.96:8081/profile/", {
+        const response = await apiRequest(API_ENDPOINTS.PROFILE, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

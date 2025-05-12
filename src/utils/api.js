@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { getApiUrl } from '../config/api.config';
 
-export async function apiRequest(url, { method = 'GET', body, headers = {}, ...rest } = {}) {
+export async function apiRequest(endpoint, { method = 'GET', body, headers = {}, ...rest } = {}) {
   const token = sessionStorage.getItem('accessToken');
   const finalHeaders = {
     'Content-Type': 'application/json',
@@ -9,7 +10,7 @@ export async function apiRequest(url, { method = 'GET', body, headers = {}, ...r
   if (token) {
     finalHeaders['Authorization'] = `Bearer ${token}`;
   }
-  const response = await fetch(url, {
+  const response = await fetch(getApiUrl(endpoint), {
     method,
     headers: finalHeaders,
     body: body ? JSON.stringify(body) : undefined,
@@ -24,7 +25,7 @@ export async function apiRequest(url, { method = 'GET', body, headers = {}, ...r
   return response;
 }
 
-export async function apiRequestAxios({ url, method = 'GET', data = {}, headers = {}, ...rest }) {
+export async function apiRequestAxios({ endpoint, method = 'GET', data = {}, headers = {}, ...rest }) {
   const token = sessionStorage.getItem('accessToken');
   const finalHeaders = {
     'Content-Type': 'application/json',
@@ -35,7 +36,7 @@ export async function apiRequestAxios({ url, method = 'GET', data = {}, headers 
   }
   try {
     const response = await axios({
-      url,
+      url: getApiUrl(endpoint),
       method,
       data,
       headers: finalHeaders,
