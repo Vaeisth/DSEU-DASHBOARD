@@ -69,8 +69,19 @@ const fetchTodaysAttendance = async () => {
 };
 const fetchLeavesApproved = async () => {
  
-  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/superadmin/get-leave-requests-history', method: 'GET' });
-  return res.data.data.length;
+   try {
+    const res = await apiRequestAxios({
+      url: 'http://134.209.144.96:8081/superadmin/get-leave-requests-history',
+      method: 'GET',
+    });
+    const allLeaves = res.data.data || [];
+    const approvedLeaves = allLeaves.filter(leave => leave.status === 'Approved');
+    return approvedLeaves.length;
+
+  } catch (error) {
+    console.error('Error fetching approved leaves:', error);
+    return 0;  
+  }
 };
 
 const Dashboard = () => {
