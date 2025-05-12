@@ -1,16 +1,20 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
+import { API_ENDPOINTS } from '../../../config/api.config';
 import { FaArrowLeft, FaEnvelope, FaPhone, FaMapMarkerAlt, FaIdCard, FaCalendarAlt, FaUserTie, FaBuilding, FaUniversity, FaCreditCard } from "react-icons/fa";
 
 const fetchProfile = async () => {
-  const response = await apiRequestAxios({ url: 'http://134.209.144.96:8081/profile/', method: 'GET' });
-  return response.data;
-};
-
-const fetchBankDetails = async () => {
-  const response = await apiRequestAxios({ url: 'http://134.209.144.96:8081/profile/bank_details', method: 'GET' });
-  return response.data;
+  try {
+    const response = await apiRequestAxios({ 
+      endpoint: API_ENDPOINTS.PROFILE,
+      method: 'GET' 
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Profile fetch error:', error);
+    throw error;
+  }
 };
 
 const Profile = () => {
@@ -19,12 +23,7 @@ const Profile = () => {
     queryFn: fetchProfile,
   });
 
-  const { data: bankData, isLoading: bankLoading, isError: bankError } = useQuery({
-    queryKey: ["bankDetails"],
-    queryFn: fetchBankDetails,
-  });
-
-  if (profileLoading || bankLoading) return (
+  if (profileLoading) return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="flex flex-col items-center gap-4">
         <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent"></div>
@@ -33,7 +32,7 @@ const Profile = () => {
     </div>
   );
   
-  if (profileError || bankError) return (
+  if (profileError) return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="text-center p-8 bg-white rounded-xl shadow-sm max-w-md">
         <div className="text-red-500 text-5xl mb-4">⚠️</div>
@@ -175,30 +174,10 @@ const Profile = () => {
                 <FaCreditCard className="mr-2 text-blue-500" />
                 Bank Details
               </h3>
-              {bankData ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="text-sm text-gray-500 block mb-1">Account Number</label>
-                    <p className="text-gray-800 font-medium">{bankData.account_number}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-500 block mb-1">IFSC Code</label>
-                    <p className="text-gray-800 font-medium">{bankData.ifsc}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-500 block mb-1">Bank Name</label>
-                    <p className="text-gray-800 font-medium">{bankData.bank_name}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-500 block mb-1">Branch</label>
-                    <p className="text-gray-800 font-medium">{bankData.branch}</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 italic">Bank details not provided</p>
-                </div>
-              )}
+              <div className="text-center py-8">
+                <p className="text-gray-500 italic">Bank details are currently unavailable</p>
+                <p className="text-sm text-gray-400 mt-2">Please contact the administration for assistance</p>
+              </div>
             </div>
           </div>
         </div>

@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
+import { API_ENDPOINTS } from '../../../config/api.config';
 import { FaSearch, FaFilter, FaCheckCircle, FaTimesCircle, FaClock, FaBoxOpen } from "react-icons/fa";
 import { format } from "date-fns";
 
 const fetchInventoryCounts = async () => {
   const response = await apiRequestAxios({ 
-    url: 'http://134.209.144.96:8081/vc/counts',
+    endpoint: API_ENDPOINTS.VC_COUNTS,
     method: 'GET'
   });
   return response.data;
 };
 
 const fetchInventoryRequests = async (status) => {
+  const endpoint = status === 'pending' ? API_ENDPOINTS.VC_ALL_PENDING :
+                  status === 'approved' ? API_ENDPOINTS.VC_ALL_APPROVED :
+                  API_ENDPOINTS.VC_ALL_REJECTED;
+                  
   const response = await apiRequestAxios({ 
-    url: `http://134.209.144.96:8081/vc/all_${status.toLowerCase()}`,
+    endpoint,
     method: 'GET'
   });
   return response.data;

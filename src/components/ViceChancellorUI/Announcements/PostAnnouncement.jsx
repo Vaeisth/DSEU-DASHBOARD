@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { FaClock, FaLink, FaFileAlt } from "react-icons/fa";
 import img from "../../../assets/icons/img (1).png";
 import { apiRequestAxios } from '../../../utils/api';
+import { API_ENDPOINTS } from '../../../config/api.config';
 import { useQuery } from "@tanstack/react-query";
 
 const fetchCampuses = async () => {
   const { data } = await apiRequestAxios({ 
-    url: 'http://134.209.144.96:8081/superadmin/get-all-campuses', 
+    endpoint: API_ENDPOINTS.ALL_CAMPUSES,
     method: 'GET' 
   });
   return data.data;
@@ -56,7 +57,7 @@ const PostAnnouncement = () => {
 
     try {
       const res = await apiRequestAxios({
-        url: `http://134.209.144.96:8081/superadmin/create-announcement?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`,
+        endpoint: `${API_ENDPOINTS.CREATE_ANNOUNCEMENT}?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`,
         method: 'POST',
         data: formData,
         headers: {

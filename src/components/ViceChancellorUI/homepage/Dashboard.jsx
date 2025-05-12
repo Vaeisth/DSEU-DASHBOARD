@@ -4,6 +4,7 @@ import PendingApprovals from "./PendingApprovals";
 import OnDutyOfficers from "./OnDutyOfficers";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
+import { API_ENDPOINTS } from '../../../config/api.config';
 
 import {
   PieChart,
@@ -38,7 +39,7 @@ const services = [
   { name: "Reports", path: "/reports", icon: faFileAlt },
   { name: "Track Leave", path: "/track-leave", icon: faPlaneDeparture },
   { name: "Announcements", path: "/announcements", icon: faBullhorn },
-  { name: "Calender", path: "/holidays", icon: faCalendarAlt },
+  { name: "Calendar", path: "/calendar", icon: faCalendarAlt },
   { name: "Campus List", path: "/campus", icon: faUniversity },
   { name: "File Tracking", path: "/filetracking", icon: faFileArchive },
   { name: "Surveillance", path: "/surveillance", icon: faVideo },
@@ -58,26 +59,30 @@ const buttonColors = [
 ];
 
 const fetchTotalEmployees = async () => {
- 
-  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/superadmin/all-users', method: 'GET' });
+  const res = await apiRequestAxios({ 
+    endpoint: API_ENDPOINTS.ALL_USERS,
+    method: 'GET' 
+  });
   return res.data.data.length;
 };
 
 const fetchTodaysAttendance = async () => {
-  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/superadmin/todays-attendance', method: 'GET' });
+  const res = await apiRequestAxios({ 
+    endpoint: API_ENDPOINTS.TODAYS_ATTENDANCE,
+    method: 'GET' 
+  });
   return res.data.data.length;
 };
+
 const fetchLeavesApproved = async () => {
- 
-   try {
+  try {
     const res = await apiRequestAxios({
-      url: 'http://134.209.144.96:8081/superadmin/get-leave-requests-history',
+      endpoint: API_ENDPOINTS.LEAVE_REQUESTS_HISTORY,
       method: 'GET',
     });
     const allLeaves = res.data.data || [];
     const approvedLeaves = allLeaves.filter(leave => leave.status === 'Approved');
     return approvedLeaves.length;
-
   } catch (error) {
     console.error('Error fetching approved leaves:', error);
     return 0;  

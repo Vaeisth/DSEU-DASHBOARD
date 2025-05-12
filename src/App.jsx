@@ -22,6 +22,7 @@ import Surveillance from "./components/ViceChancellorUI/surveillance/Surveillanc
 import EmployeeDashboard from "./components/EmployeeUI/homepage/Dashboard.jsx";
 import OfficerDetails from "./components/ViceChancellorUI/attendance/OfficerDetails.jsx";
 import EmployeeList from "./components/ViceChancellorUI/employees/EmployeeList.jsx";
+import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
 
 // Global Layout with Fixed Navbar
 const VCLayout = ({ children }) => (
@@ -91,6 +92,7 @@ function App() {
         <Route path="/surveillance" element={<VCLayout><Surveillance /></VCLayout>} />
         <Route path="/officer-details/:id" element={<VCLayout><OfficerDetails /></VCLayout>} />
         <Route path="/employees" element={<VCLayout><EmployeeList /></VCLayout>} />
+        <Route path="/calendar" element={<VCLayout><Calendar /></VCLayout>} />
 
         {/* Employee Routes */}
         <Route

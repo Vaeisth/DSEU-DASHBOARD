@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
+import { API_ENDPOINTS } from '../../../config/api.config';
 import { FaArrowLeft, FaMapMarkerAlt, FaBuilding, FaInfoCircle, FaPhone, FaEnvelope, FaGlobe } from "react-icons/fa";
 
 const fetchCampusDetails = async (campusId) => {
@@ -11,7 +12,7 @@ const fetchCampusDetails = async (campusId) => {
 
   try {
     const response = await apiRequestAxios({ 
-      url: `http://134.209.144.96:8081/superadmin/get-all-campuses`, 
+      endpoint: API_ENDPOINTS.ALL_CAMPUSES,
       method: 'GET' 
     });
     

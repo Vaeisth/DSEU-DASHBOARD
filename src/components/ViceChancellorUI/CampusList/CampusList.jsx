@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
+import { API_ENDPOINTS } from '../../../config/api.config';
 import { FaArrowLeft, FaPlus, FaTimes, FaMapMarkerAlt, FaBuilding, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const fetchCampuses = async () => {
   const token = sessionStorage.getItem("accessToken");
   if (!token) throw new Error("No token found");
 
-  const res = await apiRequestAxios({ url: 'http://134.209.144.96:8081/superadmin/get-all-campuses', method: 'GET' });
+  const res = await apiRequestAxios({ 
+    endpoint: API_ENDPOINTS.ALL_CAMPUSES,
+    method: 'GET' 
+  });
   return res.data.data;
 };
 

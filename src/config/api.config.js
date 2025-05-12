@@ -1,0 +1,34 @@
+// API Base URL
+export const API_BASE_URL = 'http://68.183.89.54:8081';
+
+// API Endpoints
+export const API_ENDPOINTS = {
+  // Auth
+  LOGIN: '/login',
+  
+  // Profile
+  PROFILE: '/profile',
+  
+  // Super Admin
+  ALL_USERS: '/superadmin/all-users',
+  TODAYS_ATTENDANCE: '/superadmin/todays-attendance',
+  LEAVE_REQUESTS: '/superadmin/get-leave-requests',
+  LEAVE_REQUESTS_HISTORY: '/superadmin/get-leave-requests-history',
+  ALL_ANNOUNCEMENTS: '/superadmin/get-all-announcements',
+  CREATE_ANNOUNCEMENT: '/superadmin/create-announcement',
+  ALL_CAMPUSES: '/superadmin/get-all-campuses',
+  
+  // VC
+  VC_COUNTS: '/vc/counts',
+  VC_ALL_PENDING: '/vc/all_pending',
+  VC_ALL_APPROVED: '/vc/all_approved',
+  VC_ALL_REJECTED: '/vc/all_rejected',
+  
+  // Employee
+  EMPLOYEE_ATTENDANCE_STATUS: '/employee/attendance-status',
+  EMPLOYEE_LEAVE_BALANCE: '/employee/leave-balance',
+  EMPLOYEE_PENDING_APPROVALS: '/employee/pending-approvals',
+};
+
+// Helper function to get full API URL
+export const getApiUrl = (endpoint) => `${API_BASE_URL}${endpoint}`; 
