@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import Navbar from "./../Reusable/Navbar.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Inventory() {
   const [activeTab, setActiveTab] = useState("request");
+  const navigate = useNavigate();
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-6 bg-white min-h-screen">

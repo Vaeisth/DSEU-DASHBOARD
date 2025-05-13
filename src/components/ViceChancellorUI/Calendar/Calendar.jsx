@@ -1,25 +1,16 @@
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { apiRequestAxios } from '../../../utils/api';
-import { FaCalendarAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-
-const fetchHolidays = async () => {
-  try {
-    const response = await apiRequestAxios({ 
-      url: 'http://134.209.144.96:8081/profile/get-calender', 
-      method: 'GET' 
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Holidays fetch error:', error);
-    throw error;
-  }
-};
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { FaCalendarAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { fetchHolidays } from "../../../utils/apiservice";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const { data: holidays, isLoading, isError } = useQuery({
-    queryKey: ['holidays'],
+  const {
+    data: holidays,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["holidays"],
     queryFn: fetchHolidays,
   });
 
@@ -36,51 +27,71 @@ const Calendar = () => {
   ).getDay();
 
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
-  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const prevMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1)
+    );
   };
 
   const nextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1)
+    );
   };
 
   const isHoliday = (date) => {
     if (!holidays) return false;
-    const dateStr = date.toISOString().split('T')[0];
-    return holidays.some(holiday => holiday.date === dateStr);
+    const dateStr = date.toISOString().split("T")[0];
+    return holidays.some((holiday) => holiday.date === dateStr);
   };
 
   const getHolidayName = (date) => {
-    if (!holidays) return '';
-    const dateStr = date.toISOString().split('T')[0];
-    const holiday = holidays.find(h => h.date === dateStr);
-    return holiday ? holiday.holiday : '';
+    if (!holidays) return "";
+    const dateStr = date.toISOString().split("T")[0];
+    const holiday = holidays.find((h) => h.date === dateStr);
+    return holiday ? holiday.holiday : "";
   };
 
-  if (isLoading) return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="flex flex-col items-center gap-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent"></div>
-        <p className="text-gray-600">Loading calendar information...</p>
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent"></div>
+          <p className="text-gray-600">Loading calendar information...</p>
+        </div>
       </div>
-    </div>
-  );
+    );
 
-  if (isError) return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="text-center p-8 bg-white rounded-xl shadow-sm max-w-md">
-        <div className="text-red-500 text-5xl mb-4">⚠️</div>
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">Failed to Load Calendar</h3>
-        <p className="text-gray-600">Please try again later or contact support if the problem persists.</p>
+  if (isError)
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center p-8 bg-white rounded-xl shadow-sm max-w-md">
+          <div className="text-red-500 text-5xl mb-4">⚠️</div>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            Failed to Load Calendar
+          </h3>
+          <p className="text-gray-600">
+            Please try again later or contact support if the problem persists.
+          </p>
+        </div>
       </div>
-    </div>
-  );
+    );
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -138,8 +149,8 @@ const Calendar = () => {
                   key={index}
                   className={`aspect-square p-4 relative group ${
                     isHolidayDay
-                      ? 'bg-red-50 border-2 border-red-200'
-                      : 'hover:bg-gray-50'
+                      ? "bg-red-50 border-2 border-red-200"
+                      : "hover:bg-gray-50"
                   } rounded-xl transition-colors`}
                 >
                   <span className="text-gray-800 text-lg">{index + 1}</span>
@@ -158,7 +169,9 @@ const Calendar = () => {
 
         {/* Holiday List */}
         <div className="bg-white rounded-2xl shadow-sm p-8">
-          <h3 className="text-2xl font-semibold text-gray-800 mb-6">Upcoming Holidays</h3>
+          <h3 className="text-2xl font-semibold text-gray-800 mb-6">
+            Upcoming Holidays
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {holidays?.map((holiday) => (
               <div
@@ -166,13 +179,15 @@ const Calendar = () => {
                 className="flex items-center p-6 bg-red-50 rounded-xl hover:bg-red-100 transition-colors"
               >
                 <div className="flex-1">
-                  <h4 className="font-medium text-gray-800 text-lg mb-2">{holiday.holiday}</h4>
+                  <h4 className="font-medium text-gray-800 text-lg mb-2">
+                    {holiday.holiday}
+                  </h4>
                   <p className="text-gray-600">
-                    {new Date(holiday.date).toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
+                    {new Date(holiday.date).toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
                     })}
                   </p>
                 </div>
@@ -185,4 +200,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar; 
+export default Calendar;

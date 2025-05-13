@@ -29,6 +29,9 @@ export const API_ENDPOINTS = {
   EMPLOYEE_ATTENDANCE_STATUS: '/employee/attendance-status',
   EMPLOYEE_LEAVE_BALANCE: '/employee/leave-balance',
   EMPLOYEE_PENDING_APPROVALS: '/employee/pending-approvals',
+
+  // Mics
+  HOLIDAY_CALENDAR: '/profile/get-calender',
 };
 
 // Helper function to get full API URL

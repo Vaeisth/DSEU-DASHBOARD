@@ -1,23 +1,19 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useQuery } from "@tanstack/react-query";
-import { apiRequestAxios } from '../../../utils/api';
 import { useNavigate } from "react-router-dom";
-
-const fetchPendingLeaves = async () => {
-  const { data } = await apiRequestAxios({ 
-    url: "http://134.209.144.96:8081/superadmin/get-leave-requests", 
-    method: 'GET' 
-  });
-  return data.data;
-};
+import { fetchPendingLeaves } from "../../../utils/apiservice";
 
 const PendingApprovals = () => {
   const navigate = useNavigate();
   const scrollRef = useRef(null);
 
-  const { data: pendingLeaves = [], isLoading, isError } = useQuery({
+  const {
+    data: pendingLeaves = [],
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["pendingLeaves"],
     queryFn: fetchPendingLeaves,
   });
@@ -37,7 +33,7 @@ const PendingApprovals = () => {
     const now = new Date();
     const diffTime = Math.abs(now - date);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return "Today";
     if (diffDays === 1) return "Yesterday";
     return `${diffDays} days ago`;
