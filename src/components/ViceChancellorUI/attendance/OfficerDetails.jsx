@@ -9,7 +9,7 @@ import placeholder from "../../../assets/placeholder-pfp.jpg";
 
 const fetchOfficerDetails = async (officerId) => {
   const { data } = await apiRequestAxios({ 
-    endpoint: API_ENDPOINTS.ALL_USERS,
+    endpoint: API_ENDPOINTS.ALL_ON_DUTY_USERS,
     method: "GET", 
   });
   
