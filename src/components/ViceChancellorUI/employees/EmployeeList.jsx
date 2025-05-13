@@ -1,23 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import { apiRequestAxios } from "../../../utils/api";
 import {
   FaBuilding,
   FaUserTie,
   FaCalendarAlt,
   FaEnvelope,
 } from "react-icons/fa";
-import { API_ENDPOINTS } from "../../../config/api.config";
-import placeholder from '../../../assets/placeholder-pfp.jpg'
-
-const fetchAllEmployees = async () => {
-  const { data } = await apiRequestAxios({
-    endpoint: API_ENDPOINTS.ALL_USERS,
-    method: "GET",
-  });
-  return data?.data || [];
-};
+import placeholder from "../../../assets/placeholder-pfp.jpg";
+import { useState } from "react";
+import { fetchAllEmployees } from "../../../utils/apiservice";
+import { debounce } from "lodash";
 
 const EmployeeList = () => {
+  const [inputField, setInputField] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+
   const {
     data: employees = [],
     isLoading,
@@ -27,9 +23,18 @@ const EmployeeList = () => {
     queryFn: fetchAllEmployees,
   });
 
-  // useEffect(() => {
-  //   console.log(employees);
-  // }, [employees]);
+  const debouncedSearch = debounce((value) => {
+    setSearchInput(value);
+  }, 100);
+
+  const handleInputChange = (e) => {
+    setInputField(e.target.value);
+    debouncedSearch(e.target.value);
+  };
+
+  const filteredEmployees = employees.filter((employee) =>
+    employee.name.toLowerCase().includes(searchInput.toLowerCase())
+  );
 
   if (isLoading)
     return (
@@ -56,21 +61,30 @@ const EmployeeList = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <h2 className="text-xl font-bold text-gray-800">All Employees</h2>
             <span className="text-sm text-gray-500">
-              Total: {employees.length}
+              Total: {filteredEmployees.length}
             </span>
           </div>
         </div>
       </div>
 
+      <div className="flex flex-row min-w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        <input
+          type="text"
+          value={inputField}
+          onChange={handleInputChange}
+          placeholder="Search by employee name..."
+          className="px-4 py-2 rounded-xl border-2 border-blue-300 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200 transition duration-300 shadow-sm w-full"
+        />
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {employees.map((employee) => (
+          {filteredEmployees.map((employee) => (
             <div
               key={employee._id}
               className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
