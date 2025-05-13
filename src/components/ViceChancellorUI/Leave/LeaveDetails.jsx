@@ -3,50 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import { FaCheckCircle, FaTimes } from "react-icons/fa";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequestAxios } from '../../../utils/api';
+import { approveLeave, fetchLeaveDetails, rejectLeave } from "../../../utils/apiservice";
 
-const fetchLeaveDetails = async (id) => {
-  // First try to fetch from pending requests
-  const pendingResponse = await apiRequestAxios({ 
-    url: "http://134.209.144.96:8081/superadmin/get-leave-requests", 
-    method: 'GET' 
-  });
-  
-  // Check if the leave request is in pending requests
-  let leaveRequest = pendingResponse.data.data.find(leave => leave._id === id);
-  
-  // If not found in pending, try history
-  if (!leaveRequest) {
-    const historyResponse = await apiRequestAxios({
-      url: "http://134.209.144.96:8081/superadmin/get-leave-requests-history",
-      method: 'GET'
-    });
-    leaveRequest = historyResponse.data.data.find(leave => leave._id === id);
-  }
-
-  if (!leaveRequest) {
-    throw new Error("Leave request not found");
-  }
-  return leaveRequest;
-};
-
-const approveLeave = async (id) => {
-  const { data } = await apiRequestAxios({
-    url: `http://134.209.144.96:8081/superadmin/leave-request/${id}/approve`,
-    method: 'PATCH',
-    data: { id }
-  });
-  return data;
-};
-
-const rejectLeave = async ({ id, remarks }) => {
-  const { data } = await apiRequestAxios({
-    url: `http://134.209.144.96:8081/superadmin/leave-request/${id}/reject`,
-    method: 'PATCH',
-    data: { id, remarks }
-  });
-  return data;
-};
 
 function LeaveDetails() {
   const navigate = useNavigate();
