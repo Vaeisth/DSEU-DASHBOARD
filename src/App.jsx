@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login/Login";
-import Navbar from "./components/ViceChancellorUI/Reusable/Navbar.jsx";
 import Dashboard from "./components/ViceChancellorUI/homepage/Dashboard.jsx";
 import AttendanceReport from "./components/ViceChancellorUI/attendance/Attendance.jsx";
 import WeeklyReport from "./components/ViceChancellorUI/attendance/WeeklyReport.jsx";
@@ -24,40 +23,10 @@ import OfficerDetails from "./components/ViceChancellorUI/attendance/OfficerDeta
 import EmployeeList from "./components/ViceChancellorUI/employees/EmployeeList.jsx";
 import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
 import { Toaster } from "react-hot-toast";
-
-// Global Layout with Fixed Navbar
-const VCLayout = ({ children }) => (
-  <div className="min-h-screen bg-gray-50">
-    {/* Fixed Navbar */}
-    <div className="fixed top-0 left-0 right-0 z-50">
-      <Navbar />
-    </div>
-
-    {/* Main content area with proper spacing */}
-    <main className="pt-20 pb-8 px-3 sm:px-4">
-      <div className="max-w-7xl mx-auto">
-        {children}
-      </div>
-    </main>
-  </div>
-);
+import VCLayout from "./layouts/VcLayout.jsx";
+import EmployeeLayout from './layouts/EmployeeLayout.jsx';
 
 // Employee Layout - using the same Navbar component
-const EmployeeLayout = ({ children }) => (
-  <div className="min-h-screen bg-gray-50">
-    {/* Fixed Navbar */}
-    <div className="fixed top-0 left-0 right-0 z-50">
-      <Navbar />
-    </div>
-
-    {/* Main content area with proper spacing */}
-    <main className="pt-20 pb-8 px-3 sm:px-4">
-      <div className="max-w-7xl mx-auto">
-        {children}
-      </div>
-    </main>
-  </div>
-);
 
 function App() {
   return (
@@ -66,69 +35,41 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
 
-        <Route
-          path="/vc-dashboard"
-          element={
-            <VCLayout>
-              <Dashboard />
-            </VCLayout>
-          }
-        />
-
-        <Route path="/attendance" element={<VCLayout><AttendanceReport /></VCLayout>} />
-        <Route path="/weekly-report" element={<VCLayout><WeeklyReport /></VCLayout>} />
-        <Route path="/monthly-report" element={<VCLayout><MonthlyReport /></VCLayout>} />
-        <Route path="/track-leave" element={<VCLayout><TrackLeave /></VCLayout>} />
-        <Route path="/leave-details/:id" element={<VCLayout><LeaveDetails /></VCLayout>} />
-        <Route path="/track-leave/history" element={<VCLayout><LeaveHistory /></VCLayout>} />
-        <Route path="/announcements" element={<VCLayout><Announcements /></VCLayout>} />
-        <Route path="/announcement/:id" element={<VCLayout><AnnouncementDetails /></VCLayout>} />
-        <Route path="/post" element={<VCLayout><PostAnnouncement /></VCLayout>} />
-        <Route path="/attach-link" element={<VCLayout><AttachLinkDrawer /></VCLayout>} />
-        <Route path="/schedule" element={<VCLayout><ScheduleDrawer /></VCLayout>} />
-        <Route path="/holidays" element={<VCLayout><Holidays /></VCLayout>} />
-        <Route path="/campus" element={<VCLayout><CampusList /></VCLayout>} />
-        <Route path="/campus/:id" element={<VCLayout><CampusInfo /></VCLayout>} />
-        <Route path="/profile" element={<VCLayout><Profile /></VCLayout>} />
-        <Route path="/inventory" element={<VCLayout><InventoryDashboard /></VCLayout>} />
-        <Route path="/surveillance" element={<VCLayout><Surveillance /></VCLayout>} />
-        <Route path="/officer-details/:id" element={<VCLayout><OfficerDetails /></VCLayout>} />
-        <Route path="/employees" element={<VCLayout><EmployeeList /></VCLayout>} />
-        <Route path="/calendar" element={<VCLayout><Calendar /></VCLayout>} />
+        {/* VC routes */}
+        <Route path="/" element={<VCLayout />}>
+          <Route path="vc-dashboard" element={<Dashboard />} />
+          <Route path="attendance" element={<AttendanceReport />} />
+          <Route path="weekly-report" element={<WeeklyReport />} />
+          <Route path="monthly-report" element={<MonthlyReport />} />
+          <Route path="track-leave" element={<TrackLeave />} />
+          <Route path="leave-details/:id" element={<LeaveDetails />} />
+          <Route path="track-leave/history" element={<LeaveHistory />} />
+          <Route path="announcements" element={<Announcements />} />
+          <Route path="announcement/:id" element={<AnnouncementDetails />} />
+          <Route path="post" element={<PostAnnouncement />} />
+          <Route path="attach-link" element={<AttachLinkDrawer />} />
+          <Route path="schedule" element={<ScheduleDrawer />} />
+          <Route path="holidays" element={<Holidays />} />
+          <Route path="campus" element={<CampusList />} />
+          <Route path="campus/:id" element={<CampusInfo />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="inventory" element={<InventoryDashboard />} />
+          <Route path="surveillance" element={<Surveillance />} />
+          <Route path="officer-details/:id" element={<OfficerDetails />} />
+          <Route path="employees" element={<EmployeeList />} />
+          <Route path="calendar" element={<Calendar />} />
+        </Route>
 
         {/* Employee Routes */}
-        <Route
-          path="/employee-dashboard"
-          element={
-            <EmployeeLayout>
-              <EmployeeDashboard />
-            </EmployeeLayout>
-          }
-        />
-        <Route
-          path="/employee-leave"
-          element={
-            <EmployeeLayout>
-              <div>Leave Management</div>
-            </EmployeeLayout>
-          }
-        />
-        <Route
-          path="/employee-announcements"
-          element={
-            <EmployeeLayout>
-              <div>Announcements</div>
-            </EmployeeLayout>
-          }
-        />
-        <Route
-          path="/employee-profile"
-          element={
-            <EmployeeLayout>
-              <div>Profile</div>
-            </EmployeeLayout>
-          }
-        />
+        <Route path="/" element={<EmployeeLayout />}>
+          <Route path="employee-dashboard" element={<EmployeeDashboard />} />
+          <Route path="employee-leave" element={<div>Leave Management</div>} />
+          <Route
+            path="employee-announcements"
+            element={<div>Announcements</div>}
+          />
+          <Route path="employee-profile" element={<div>Profile</div>} />
+        </Route>
       </Routes>
     </Router>
   );
