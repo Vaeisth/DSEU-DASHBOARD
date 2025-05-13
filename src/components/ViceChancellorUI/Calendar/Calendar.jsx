@@ -27,32 +27,18 @@ const Calendar = () => {
   ).getDay();
 
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
   ];
 
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const prevMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1)
-    );
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
   };
 
   const nextMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1)
-    );
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
   };
 
   const isHoliday = (date) => {
@@ -72,8 +58,8 @@ const Calendar = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent"></div>
-          <p className="text-gray-600">Loading calendar information...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+          <p className="text-gray-600 text-sm">Loading calendar...</p>
         </div>
       </div>
     );
@@ -81,54 +67,41 @@ const Calendar = () => {
   if (isError)
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center p-8 bg-white rounded-xl shadow-sm max-w-md">
-          <div className="text-red-500 text-5xl mb-4">⚠️</div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            Failed to Load Calendar
-          </h3>
-          <p className="text-gray-600">
-            Please try again later or contact support if the problem persists.
-          </p>
+        <div className="text-center p-6 bg-white rounded-xl shadow-sm max-w-md">
+          <div className="text-red-500 text-4xl mb-3">⚠️</div>
+          <h3 className="text-lg font-semibold text-gray-800 mb-1">Failed to Load Calendar</h3>
+          <p className="text-gray-600 text-sm">Please try again later or contact support.</p>
         </div>
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-[95%] mx-auto px-4">
+    <div className="bg-gray-50 py-6">
+      <div className="max-w-4xl mx-auto px-2 sm:px-4">
         {/* Calendar Header */}
-        <div className="bg-white rounded-2xl shadow-sm p-8 mb-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 flex items-center">
-              <FaCalendarAlt className="mr-3 text-blue-500 text-4xl" />
-              Academic Calendar
+        <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+              <FaCalendarAlt className="mr-2 text-blue-500 text-3xl" />
+              Calendar
             </h2>
-            <div className="flex items-center space-x-6">
-              <button
-                onClick={prevMonth}
-                className="p-3 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <FaChevronLeft className="text-gray-600 text-xl" />
+            <div className="flex items-center space-x-4">
+              <button onClick={prevMonth} className="p-2 hover:bg-gray-100 rounded-full">
+                <FaChevronLeft className="text-gray-600 text-lg" />
               </button>
-              <span className="text-2xl font-semibold text-gray-800">
+              <span className="text-lg font-semibold text-gray-800">
                 {months[currentDate.getMonth()]} {currentDate.getFullYear()}
               </span>
-              <button
-                onClick={nextMonth}
-                className="p-3 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <FaChevronRight className="text-gray-600 text-xl" />
+              <button onClick={nextMonth} className="p-2 hover:bg-gray-100 rounded-full">
+                <FaChevronRight className="text-gray-600 text-lg" />
               </button>
             </div>
           </div>
 
           {/* Calendar Grid */}
-          <div className="grid grid-cols-7 gap-4">
+          <div className="grid grid-cols-7 gap-2 text-sm">
             {weekDays.map((day) => (
-              <div
-                key={day}
-                className="text-center py-3 font-semibold text-gray-600 text-lg"
-              >
+              <div key={day} className="text-center py-2 font-semibold text-gray-600">
                 {day}
               </div>
             ))}
@@ -136,27 +109,21 @@ const Calendar = () => {
               <div key={`empty-${index}`} className="aspect-square" />
             ))}
             {Array.from({ length: daysInMonth }).map((_, index) => {
-              const date = new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth(),
-                index + 1
-              );
+              const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), index + 1);
               const isHolidayDay = isHoliday(date);
               const holidayName = getHolidayName(date);
 
               return (
                 <div
                   key={index}
-                  className={`aspect-square p-4 relative group ${
-                    isHolidayDay
-                      ? "bg-red-50 border-2 border-red-200"
-                      : "hover:bg-gray-50"
-                  } rounded-xl transition-colors`}
+                  className={`aspect-square p-2 relative group ${
+                    isHolidayDay ? "bg-red-50 border border-red-200" : "hover:bg-gray-50"
+                  } rounded-lg transition-colors`}
                 >
-                  <span className="text-gray-800 text-lg">{index + 1}</span>
+                  <span className="text-gray-800">{index + 1}</span>
                   {isHolidayDay && (
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-red-50 rounded-xl">
-                      <span className="text-base text-red-600 font-medium text-center px-2">
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-red-50 rounded-lg">
+                      <span className="text-xs text-red-600 font-medium text-center px-1">
                         {holidayName}
                       </span>
                     </div>
@@ -168,29 +135,25 @@ const Calendar = () => {
         </div>
 
         {/* Holiday List */}
-        <div className="bg-white rounded-2xl shadow-sm p-8">
-          <h3 className="text-2xl font-semibold text-gray-800 mb-6">
-            Upcoming Holidays
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="bg-white rounded-xl shadow-sm p-5">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Upcoming Holidays</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {holidays?.map((holiday) => (
               <div
                 key={holiday._id}
-                className="flex items-center p-6 bg-red-50 rounded-xl hover:bg-red-100 transition-colors"
+                className="p-4 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
               >
-                <div className="flex-1">
-                  <h4 className="font-medium text-gray-800 text-lg mb-2">
-                    {holiday.holiday}
-                  </h4>
-                  <p className="text-gray-600">
-                    {new Date(holiday.date).toLocaleDateString("en-US", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                </div>
+                <h4 className="font-medium text-gray-800 text-base mb-1">
+                  {holiday.holiday}
+                </h4>
+                <p className="text-gray-600 text-sm">
+                  {new Date(holiday.date).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
               </div>
             ))}
           </div>

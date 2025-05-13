@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
-import { FaCheckCircle, FaTimes } from "react-icons/fa";
+import { FaCheckCircle, FaTimes, FaCalendarAlt, FaBuilding, FaUserAlt, FaPhone, FaMapMarkerAlt, FaInfoCircle } from "react-icons/fa";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { approveLeave, fetchLeaveDetails, rejectLeave } from "../../../utils/apiservice";
-
+import { format } from "date-fns";
 
 function LeaveDetails() {
   const navigate = useNavigate();
@@ -48,19 +48,16 @@ function LeaveDetails() {
     }
   });
 
-  // Handle Approve
   const handleApprove = () => {
     setError("");
     approveMutation.mutate(id);
   };
 
-  // Handle Reject
   const handleReject = () => {
     setError("");
     setShowRejectPopup(true);
   };
 
-  // Handle Reject Submit
   const handleRejectSubmit = () => {
     if (!rejectReason.trim()) {
       setError("Please provide a reason for rejection");
@@ -69,73 +66,116 @@ function LeaveDetails() {
     rejectMutation.mutate({ id, remarks: rejectReason });
   };
 
-  if (isLoading) return <div className="p-4">Loading...</div>;
-  if (isError) return <div className="p-4 text-red-500">Failed to load leave details: {fetchError.message}</div>;
-  if (!leaveRequest) return <div className="p-4 text-red-500">Leave request not found</div>;
+  if (isLoading) {
+    return (
+      <div className="p-6 bg-gray-50 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-500">Loading leave details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-6 bg-gray-50 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <FaTimes className="text-red-500 text-4xl mx-auto mb-4" />
+          <p className="text-red-500">Failed to load leave details: {fetchError.message}</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!leaveRequest) {
+    return (
+      <div className="p-6 bg-gray-50 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <FaInfoCircle className="text-gray-400 text-4xl mx-auto mb-4" />
+          <p className="text-gray-500">Leave request not found</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-4 bg-gray-100 min-h-screen relative">
+    <div className="p-6 bg-gray-50 min-h-screen">
       {/* Error Message */}
       {error && (
-        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <span className="block sm:inline">{error}</span>
-          <button onClick={() => setError("")} className="absolute top-0 bottom-0 right-0 px-4 py-3">
-            <FaTimes />
-          </button>
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg z-50">
+          <div className="flex items-center">
+            <FaTimes className="mr-2" />
+            <span>{error}</span>
+            <button onClick={() => setError("")} className="ml-4 text-red-700 hover:text-red-900">
+              <FaTimes />
+            </button>
+          </div>
         </div>
       )}
 
       {/* Approve Success Popup */}
       {showApprovePopup && (
-        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-white shadow-lg p-3 rounded-lg flex items-center border border-gray-300 transition-opacity duration-300">
-          <FaCheckCircle className="text-green-600 mr-2" size={20} />
-          <div>
-            <p className="text-sm font-semibold">Leave approved successfully!</p>
-            <p className="text-xs text-gray-500">
-              You have successfully approved {leaveRequest.user_id?.name}'s leave.
-              Redirecting back to leave list...
-            </p>
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-white shadow-lg p-4 rounded-lg border border-green-200 z-50">
+          <div className="flex items-center">
+            <FaCheckCircle className="text-green-500 mr-3" size={24} />
+            <div>
+              <p className="font-semibold text-gray-900">Leave approved successfully!</p>
+              <p className="text-sm text-gray-500">
+                Redirecting back to leave list...
+              </p>
+            </div>
           </div>
-          <button onClick={() => setShowApprovePopup(false)} className="ml-4 text-gray-500">
-            <FaTimes size={14} />
-          </button>
         </div>
       )}
 
       {/* Reject Confirmation Popup */}
       {showRejectPopup && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-5 rounded-lg shadow-lg w-80">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-md font-bold text-blue-600">Leave Request Rejected</h2>
-              <button onClick={() => setShowRejectPopup(false)} className="text-gray-500">
-                <FaTimes size={18} />
-              </button>
-            </div>
-            <p className="text-xs text-gray-600 mb-3">
-              Are you sure you want to reject this leave request? This action cannot be undone.
-              Please provide a brief reason for the rejection.
-            </p>
-            <textarea
-              className="w-full border border-gray-300 rounded-lg p-2 text-xs mb-3"
-              placeholder="Write here..."
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              required
-            ></textarea>
-            <div className="flex justify-between">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">Reject Leave Request</h2>
               <button
                 onClick={() => setShowRejectPopup(false)}
-                className="flex-1 py-2 bg-blue-600 text-white rounded-lg mx-1"
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <FaTimes size={20} />
+              </button>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">
+              Please provide a reason for rejecting this leave request. This will be visible to the employee.
+            </p>
+            <textarea
+              className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              placeholder="Enter rejection reason..."
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+            />
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={() => setShowRejectPopup(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleRejectSubmit}
                 disabled={rejectMutation.isLoading}
-                className="flex-1 py-2 border border-blue-600 text-blue-600 rounded-lg mx-1"
+                className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
               >
-                {rejectMutation.isLoading ? "Submitting..." : "Submit"}
+                {rejectMutation.isLoading ? "Submitting..." : "Confirm Rejection"}
               </button>
             </div>
           </div>
@@ -143,84 +183,160 @@ function LeaveDetails() {
       )}
 
       {/* Header */}
-      <div className="flex items-center mb-4">
-        <button onClick={() => navigate(-1)} className="mr-2 text-2xl text-blue-600">
-          <IoArrowBack />
+      <div className="flex items-center mb-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="mr-4 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <IoArrowBack className="text-2xl text-gray-600" />
         </button>
-        <h1 className="text-lg font-semibold">Leave request details</h1>
-      </div>
-
-      {/* User Info */}
-      <div className="bg-white p-4 rounded-lg shadow-md flex items-center">
-        <img 
-          src={leaveRequest.user_id?.picture || "https://via.placeholder.com/50"} 
-          alt="Profile" 
-          className="w-12 h-12 rounded-full mr-3" 
-        />
-        <div className="flex-grow">
-          <h4 className="text-sm font-semibold">{leaveRequest.user_id?.name}</h4>
-          <p className="text-xs text-gray-500">{leaveRequest.user_id?.designation?.[0]}</p>
-          <p className="text-xs text-gray-500">{leaveRequest.user_id?.campus?.name}</p>
-        </div>
-        <span className="px-3 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full">
-          {leaveRequest.status}
-        </span>
-      </div>
-
-      {/* Leave Details */}
-      <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
-        <h2 className="text-md font-semibold mb-2">Details</h2>
-        <p className="text-xs text-gray-500">Requested on {leaveRequest.request_date}</p>
-        <p className="text-sm font-semibold text-blue-600">{leaveRequest.leave_type}</p>
-        <div className="flex items-center text-xs text-gray-500 mt-2">
-          📅 {leaveRequest.start_date} &nbsp; ⬇️ &nbsp; 📅 {leaveRequest.end_date}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Leave Request Details</h1>
+          <p className="text-gray-500 mt-1">Review and manage leave request</p>
         </div>
       </div>
 
-      {/* Reason */}
-      <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
-        <h2 className="text-md font-semibold mb-2">Reason</h2>
-        <p className="text-xs text-gray-500">{leaveRequest.reason}</p>
-      </div>
+      {/* Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column - Employee Info */}
+        <div className="lg:col-span-1 space-y-6">
+          {/* Employee Card */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex items-center space-x-4">
+              <img
+                src={leaveRequest.user_id?.picture || "https://via.placeholder.com/100"}
+                alt="Profile"
+                className="w-20 h-20 rounded-full object-cover border-2 border-gray-100"
+              />
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {leaveRequest.user_id?.name}
+                </h3>
+                <p className="text-gray-500">{leaveRequest.user_id?.designation?.[0]}</p>
+                <div className="flex items-center text-gray-500 mt-1">
+                  <FaBuilding className="mr-2" />
+                  <span>{leaveRequest.user_id?.campus?.name}</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-      {/* Additional Information */}
-      <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
-        <h2 className="text-md font-semibold mb-2">Additional Information</h2>
-        <div className="space-y-2">
-          <p className="text-xs text-gray-500">
-            <span className="font-semibold">Out of Station:</span> {leaveRequest.out_of_station ? "Yes" : "No"}
-          </p>
-          {leaveRequest.out_of_station && (
-            <p className="text-xs text-gray-500">
-              <span className="font-semibold">Address:</span> {leaveRequest.address_out_of_station}
-            </p>
-          )}
-          <p className="text-xs text-gray-500">
-            <span className="font-semibold">Contact Number:</span> {leaveRequest.mobile_no_of_contact}
-          </p>
-          {leaveRequest.child_age > 0 && (
-            <p className="text-xs text-gray-500">
-              <span className="font-semibold">Child Age:</span> {leaveRequest.child_age}
-            </p>
-          )}
+          {/* Contact Information */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
+            <div className="space-y-3">
+              <div className="flex items-center text-gray-600">
+                <FaPhone className="mr-3 text-gray-400" />
+                <span>{leaveRequest.mobile_no_of_contact}</span>
+              </div>
+              {leaveRequest.out_of_station && (
+                <div className="flex items-start text-gray-600">
+                  <FaMapMarkerAlt className="mr-3 text-gray-400 mt-1" />
+                  <span>{leaveRequest.address_out_of_station}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column - Leave Details */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Leave Details Card */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Leave Details</h3>
+                <p className="text-gray-500 mt-1">
+                  Requested on {format(new Date(leaveRequest.request_date), "MMMM dd, yyyy")}
+                </p>
+              </div>
+              <span
+                className={`px-4 py-2 rounded-full text-sm font-medium ${
+                  leaveRequest.status === "Approved"
+                    ? "bg-green-100 text-green-800"
+                    : leaveRequest.status === "Rejected"
+                    ? "bg-red-100 text-red-800"
+                    : "bg-yellow-100 text-yellow-800"
+                }`}
+              >
+                {leaveRequest.status}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm text-gray-500">Leave Type</label>
+                  <p className="font-medium text-gray-900">{leaveRequest.leave_type}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500">Start Date</label>
+                  <p className="font-medium text-gray-900">
+                    {format(new Date(leaveRequest.start_date), "MMMM dd, yyyy")}
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm text-gray-500">Duration</label>
+                  <p className="font-medium text-gray-900">
+                    {leaveRequest.duration} days
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-500">End Date</label>
+                  <p className="font-medium text-gray-900">
+                    {format(new Date(leaveRequest.end_date), "MMMM dd, yyyy")}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Reason Card */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Reason for Leave</h3>
+            <p className="text-gray-600 whitespace-pre-wrap">{leaveRequest.reason}</p>
+          </div>
+
+          {/* Additional Information Card */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Additional Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm text-gray-500">Out of Station</label>
+                <p className="font-medium text-gray-900">
+                  {leaveRequest.out_of_station ? "Yes" : "No"}
+                </p>
+              </div>
+              {leaveRequest.child_age > 0 && (
+                <div>
+                  <label className="text-sm text-gray-500">Child Age</label>
+                  <p className="font-medium text-gray-900">{leaveRequest.child_age} years</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Buttons */}
+      {/* Action Buttons */}
       {leaveRequest.status === "Pending" && (
-        <div className="flex justify-between mt-4">
-          <button
-            onClick={handleReject}
-            className="flex-1 py-2 border border-red-600 text-red-600 rounded-lg mx-1"
-          >
-            Reject
-          </button>
-          <button
-            onClick={handleApprove}
-            className="flex-1 py-2 bg-green-600 text-white rounded-lg mx-1"
-          >
-            Approve
-          </button>
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+          <div className="max-w-7xl mx-auto flex justify-end gap-4">
+            <button
+              onClick={handleReject}
+              className="px-6 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-colors"
+            >
+              Reject
+            </button>
+            <button
+              onClick={handleApprove}
+              className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+            >
+              Approve
+            </button>
+          </div>
         </div>
       )}
     </div>
