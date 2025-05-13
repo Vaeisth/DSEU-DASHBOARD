@@ -97,3 +97,11 @@ export const fetchLeaves = async (type) => {
 
   return data.data;
 };
+
+export const fetchAllEmployees = async () => {
+  const { data } = await apiRequestAxios({
+    endpoint: API_ENDPOINTS.ALL_USERS,
+    method: "GET",
+  });
+  return data?.data || [];
+};
