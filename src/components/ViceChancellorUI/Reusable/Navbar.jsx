@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import dseu_logo from "../../../assets/logo/dseu_logo.png";
-import BellIcon from "../../../assets/logo/Bell.png";
-import searchIcon from "../../../assets/logo/search.png";
 import { FaBell, FaSearch, FaUser, FaSignOutAlt, FaBuilding } from "react-icons/fa";
 import { apiRequest } from '../../../utils/api';
 import { API_ENDPOINTS } from '../../../config/api.config';
+import placeholder from '../../../assets/placeholder-pfp.jpg';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -122,7 +121,7 @@ const Navbar = () => {
               className="flex items-center gap-2 p-1.5 hover:bg-gray-100 rounded-full transition-colors"
             >
               <img
-                src={userProfile?.picture || "https://via.placeholder.com/40"}
+                src={userProfile?.picture || placeholder}
                 alt={userProfile?.name || "Profile"}
                 className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover"
                 onError={(e) => {

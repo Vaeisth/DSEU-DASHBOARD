@@ -23,6 +23,7 @@ import EmployeeDashboard from "./components/EmployeeUI/homepage/Dashboard.jsx";
 import OfficerDetails from "./components/ViceChancellorUI/attendance/OfficerDetails.jsx";
 import EmployeeList from "./components/ViceChancellorUI/employees/EmployeeList.jsx";
 import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
+import { Toaster } from "react-hot-toast";
 
 // Global Layout with Fixed Navbar
 const VCLayout = ({ children }) => (
@@ -61,6 +62,7 @@ const EmployeeLayout = ({ children }) => (
 function App() {
   return (
     <Router>
+      <Toaster />
       <Routes>
         <Route path="/" element={<Login />} />
 
