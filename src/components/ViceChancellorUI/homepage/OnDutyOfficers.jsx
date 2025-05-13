@@ -4,11 +4,14 @@ import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINTS } from "../../../config/api.config";
+import placeholder from "../../../assets/placeholder-pfp.jpg";
+
 
 const fetchOnDutyOfficers = async () => {
-  const { data } = await apiRequestAxios({ 
-    url: "http://134.209.144.96:8081/superadmin/all-on-duty-users", 
-    method: 'GET' 
+  const { data } = await apiRequestAxios({
+    endpoint: API_ENDPOINTS.ALL_USERS,
+    method: "GET",
   });
   return data.data;
 };
@@ -82,12 +85,12 @@ const OnDutyOfficers = () => {
               onClick={() => navigate(`/officer-details/${officer._id}`)}
             >
               <img
-                src={officer.link_id?.picture || "https://via.placeholder.com/40"}
-                alt={officer.name || "Officer"}
-                className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                src={officer.link_id?.picture || "https://via.placeholder.com/150"}
+                alt={officer.name}
+                className="w-10 h-10 rounded-full border-4 border-white shadow-lg object-cover"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "https://via.placeholder.com/40";
+                  e.target.src = placeholder;
                 }}
               />
               <div className="flex-1 min-w-0">

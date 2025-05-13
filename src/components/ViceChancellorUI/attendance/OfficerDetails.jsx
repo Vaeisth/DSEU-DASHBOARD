@@ -3,11 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
 import { FaArrowLeft, FaMapMarkerAlt, FaBuilding, FaUserTie, FaClock, FaCalendarAlt } from "react-icons/fa";
+import { API_ENDPOINTS } from "../../../config/api.config";
+import placeholder from "../../../assets/placeholder-pfp.jpg";
+
 
 const fetchOfficerDetails = async (officerId) => {
   const { data } = await apiRequestAxios({ 
-    url: "http://134.209.144.96:8081/superadmin/all-on-duty-users", 
-    method: 'GET' 
+    endpoint: API_ENDPOINTS.ALL_USERS,
+    method: "GET", 
   });
   
   const officer = data.data.find(o => o._id === officerId);
@@ -77,7 +80,7 @@ const OfficerDetails = () => {
                   className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/150";
+                    e.target.src = placeholder;
                   }}
                 />
               </div>
