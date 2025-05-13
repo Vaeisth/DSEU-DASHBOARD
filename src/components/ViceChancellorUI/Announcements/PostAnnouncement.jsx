@@ -7,9 +7,9 @@ import { API_ENDPOINTS } from '../../../config/api.config';
 import { useQuery } from "@tanstack/react-query";
 
 const fetchCampuses = async () => {
-  const { data } = await apiRequestAxios({ 
+  const { data } = await apiRequestAxios({
     endpoint: API_ENDPOINTS.ALL_CAMPUSES,
-    method: 'GET' 
+    method: 'GET'
   });
   return data.data;
 };
@@ -64,7 +64,7 @@ const PostAnnouncement = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      
+
       if (res.data) {
         navigate('/announcements');
       }
@@ -78,85 +78,107 @@ const PostAnnouncement = () => {
     <div className="p-2 bg-gray-100 min-h-screen">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-lg shadow-md p-4">
-          <h1 className="text-lg font-semibold mb-4 text-gray-800">Post Announcement</h1>
-          
+          <h1 className="md:text-2xl text-xl font-semibold mb-4 text-gray-800 text-center mt-2">Post Announcement</h1>
+
           <div className="space-y-3">
+            {/* Title */}
             <div className="bg-gray-50 p-3 rounded-lg">
-              <label className="block text-xs font-medium text-gray-700 mb-1">Title</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
-                placeholder="Enter announcement title"
-              />
+              <label className="block text-md font-medium text-gray-700 mb-1">Title</label>
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter announcement title"
+                  className="peer w-full bg-transparent border-b border-gray-300 px-2 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500"
+                />
+                <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-blue-500 transition-all duration-300 peer-focus:w-full"></span>
+              </div>
             </div>
 
+            {/* Description */}
             <div className="bg-gray-50 p-3 rounded-lg">
-              <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
-                rows="3"
-                placeholder="Enter announcement description"
-              />
+              <label className="block text-md font-medium text-gray-700 mb-1">Description</label>
+              <div className="relative w-full">
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Enter announcement description"
+                  rows="3"
+                  className="peer w-full bg-transparent border-b border-gray-300 px-2 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500 resize-none"
+                />
+                <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-blue-500 transition-all duration-300 peer-focus:w-full"></span>
+              </div>
             </div>
 
+            {/* Audience and Zone */}
             <div className="grid grid-cols-2 gap-3">
+              {/* Audience */}
               <div className="bg-gray-50 p-3 rounded-lg">
-                <label className="block text-xs font-medium text-gray-700 mb-1">Audience</label>
-                <select
-                  value={audience}
-                  onChange={(e) => setAudience(e.target.value)}
-                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
-                >
-                  <option value="">Select Audience</option>
-                  <option value="employee">Employee</option>
-                  <option value="admin">Admin</option>
-                </select>
+                <label className="block text-md font-medium text-gray-700 mb-1">Audience</label>
+                <div className="relative w-full">
+                  <select
+                    value={audience}
+                    onChange={(e) => setAudience(e.target.value)}
+                    className="peer w-full bg-transparent border-b border-gray-300 px-2 py-2 text-sm text-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
+                  >
+                    <option value="">Select Audience</option>
+                    <option value="employee">Employee</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                  <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-blue-500 transition-all duration-300 peer-focus:w-full"></span>
+                </div>
               </div>
 
+              {/* Zone */}
               <div className="bg-gray-50 p-3 rounded-lg">
-                <label className="block text-xs font-medium text-gray-700 mb-1">Zone</label>
-                <select
-                  value={zone}
-                  onChange={(e) => {
-                    setZone(e.target.value);
-                    setCampus("");
-                  }}
-                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
-                >
-                  <option value="">All Zones</option>
-                  {zones.map((zoneName) => (
-                    <option key={zoneName} value={zoneName}>
-                      {zoneName}
-                    </option>
-                  ))}
-                </select>
+                <label className="block text-md font-medium text-gray-700 mb-1">Zone</label>
+                <div className="relative w-full">
+                  <select
+                    value={zone}
+                    onChange={(e) => {
+                      setZone(e.target.value);
+                      setCampus("");
+                    }}
+                    className="peer w-full bg-transparent border-b border-gray-300 px-2 py-2 text-sm text-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
+                  >
+                    <option value="">All Zones</option>
+                    {zones.map((zoneName) => (
+                      <option key={zoneName} value={zoneName}>
+                        {zoneName}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-blue-500 transition-all duration-300 peer-focus:w-full"></span>
+                </div>
               </div>
             </div>
 
+            {/* Campus */}
             <div className="bg-gray-50 p-3 rounded-lg">
-              <label className="block text-xs font-medium text-gray-700 mb-1">Campus</label>
-              <select
-                value={campus}
-                onChange={(e) => setCampus(e.target.value)}
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
-              >
-                <option value="">Select Campus</option>
-                {campuses
-                  .filter((c) => !zone || c.zone === zone)
-                  .map((campus) => (
-                    <option key={campus._id} value={campus.campus_id}>
-                      {campus.name}
-                    </option>
-                  ))}
-              </select>
+              <label className="block text-md font-medium text-gray-700 mb-1">Campus</label>
+              <div className="relative w-full">
+                <select
+                  value={campus}
+                  onChange={(e) => setCampus(e.target.value)}
+                  className="peer w-full bg-transparent border-b border-gray-300 px-2 py-2 text-sm text-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
+                >
+                  <option value="">Select Campus</option>
+                  {campuses
+                    .filter((c) => !zone || c.zone === zone)
+                    .map((campus) => (
+                      <option key={campus._id} value={campus.campus_id}>
+                        {campus.name}
+                      </option>
+                    ))}
+                </select>
+                <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-blue-500 transition-all duration-300 peer-focus:w-full"></span>
+              </div>
             </div>
 
+            {/* File Input */}
             <div className="bg-gray-50 p-3 rounded-lg">
-              <label className="block text-xs font-medium text-gray-700 mb-1">Attachment</label>
+              <label className="block text-md font-medium text-gray-700 mb-1">Attachment</label>
               <div className="flex items-center">
                 <input
                   type="file"
@@ -179,6 +201,7 @@ const PostAnnouncement = () => {
               </div>
             </div>
 
+            {/* Buttons */}
             <div className="flex justify-end space-x-2 pt-3">
               <button
                 onClick={() => navigate(-1)}
