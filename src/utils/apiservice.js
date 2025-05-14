@@ -8,10 +8,10 @@ export const loginUser = async (form) => {
     try {
         const response = await axios.post(
             "/login",
-            new ({
-                username: username,
-                password: password,
-            }),
+            {
+                username,
+                password,
+            },
             {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -28,6 +28,7 @@ export const loginUser = async (form) => {
         throw new Error(errorMessage);
     }
 };
+
 
 export const fetchHolidays = async () => {
     const response = await apiRequestAxios({
@@ -74,7 +75,6 @@ export const approveLeave = async (id) => {
     });
     return data;
 };
-
 export const rejectLeave = async ({ id, remarks }) => {
     const { data } = await apiRequestAxios({
         endpoint: `${API_ENDPOINTS.LEAVE_REQUEST_REJECT}/${id}?remarks=${encodeURIComponent(remarks)}`,
