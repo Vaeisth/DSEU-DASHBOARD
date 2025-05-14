@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
   CREATE_ANNOUNCEMENT: '/superadmin/create-announcement',
   ALL_CAMPUSES: '/superadmin/get-all-campuses',
   ALL_ON_DUTY_USERS: '/superadmin/all-on-duty-users',
+  ATTENDANCE_REPORT: '/superadmin/today-attendance-report',
   
   // VC
   VC_COUNTS: '/vc/counts',

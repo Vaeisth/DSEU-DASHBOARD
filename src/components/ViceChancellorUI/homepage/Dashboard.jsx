@@ -25,14 +25,8 @@ import {
   faVideo,
   faBoxOpen,
 } from "@fortawesome/free-solid-svg-icons";
-import { FaUsers } from "react-icons/fa";
 
-const chartData = [
-  { name: "Present", value: 50, color: "#4CAF50" },
-  { name: "Absent", value: 20, color: "#F44336" },
-  { name: "On Duty", value: 67, color: "#A3C1E2" },
-  { name: "On Leave", value: 30, color: "#FFC107" },
-];
+
 
 const services = [
   { name: "Attendance", path: "/attendance", icon: faUserCheck },
@@ -57,6 +51,15 @@ const buttonColors = [
   "bg-[#C6FFEB]",
   "bg-[#A3EEE7]",
 ];
+
+const fetchAttendanceReport = async () => {
+  const res = await apiRequestAxios({
+    endpoint: API_ENDPOINTS.ATTENDANCE_REPORT,
+    method: 'GET'
+  });
+  console.log(res.data.report)
+  return res.data.report;
+};
 
 const fetchTotalEmployees = async () => {
   const res = await apiRequestAxios({ 
@@ -91,7 +94,10 @@ const fetchLeavesApproved = async () => {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-
+  const {data: AttendanceReport} = useQuery({
+    queryKey: ["AttendanceReport"],
+    queryFn: fetchAttendanceReport,
+  });
   const { data: totalEmployees, isLoading, isError } = useQuery({
     queryKey: ["totalEmployees"],
     queryFn: fetchTotalEmployees,
@@ -104,6 +110,11 @@ const Dashboard = () => {
     queryKey: ["leavesApproved"],
     queryFn: fetchLeavesApproved,
   });
+  const chartData = [
+    { name: "Present", value: AttendanceReport?.present, color: "#4CAF50" },
+    { name: "Absent", value: AttendanceReport?.absent, color: "#F44336" },
+    { name: "On Duty", value: AttendanceReport?.on_duty, color: "#A3C1E2" },
+  ];
 
   const cardData = [
     isLoading ? "..." : isError ? "Nan" : totalEmployees,
