@@ -88,9 +88,7 @@ const Login = () => {
     },
 
     onError: (error) => {
-      // setLoginAttempts((prev) => prev + 1);
-
-      // Improved error handling
+      
       const errorMessage =
         error.message ||
         error.response?.data?.detail ||

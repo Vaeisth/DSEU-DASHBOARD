@@ -1,3 +1,4 @@
+// src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login/Login";
 import Dashboard from "./components/ViceChancellorUI/homepage/Dashboard.jsx";
@@ -21,12 +22,11 @@ import Surveillance from "./components/ViceChancellorUI/surveillance/Surveillanc
 import EmployeeDashboard from "./components/EmployeeUI/homepage/Dashboard.jsx";
 import OfficerDetails from "./components/ViceChancellorUI/attendance/OfficerDetails.jsx";
 import EmployeeList from "./components/ViceChancellorUI/employees/EmployeeList.jsx";
+import EmployeePersonalDetail from "./components/ViceChancellorUI/employees/EmployeeDetail.jsx"; // Fixed path
 import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
 import { Toaster } from "react-hot-toast";
 import VCLayout from "./layouts/VcLayout.jsx";
-import EmployeeLayout from './layouts/EmployeeLayout.jsx';
-
-// Employee Layout - using the same Navbar component
+import EmployeeLayout from "./layouts/EmployeeLayout.jsx";
 
 function App() {
   return (
@@ -53,6 +53,8 @@ function App() {
           <Route path="campus" element={<CampusList />} />
           <Route path="campus/:id" element={<CampusInfo />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="profile/:employeeId" element={<Profile />} />
+          <Route path="employee-details/:employeeId" element={<EmployeePersonalDetail />} />
           <Route path="inventory" element={<InventoryDashboard />} />
           <Route path="surveillance" element={<Surveillance />} />
           <Route path="officer-details/:id" element={<OfficerDetails />} />
@@ -64,10 +66,7 @@ function App() {
         <Route path="/" element={<EmployeeLayout />}>
           <Route path="employee-dashboard" element={<EmployeeDashboard />} />
           <Route path="employee-leave" element={<div>Leave Management</div>} />
-          <Route
-            path="employee-announcements"
-            element={<div>Announcements</div>}
-          />
+          <Route path="employee-announcements" element={<div>Announcements</div>} />
           <Route path="employee-profile" element={<div>Profile</div>} />
         </Route>
       </Routes>

@@ -1,12 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  FaBuilding,
-  FaUserTie,
-  FaCalendarAlt,
-  FaEnvelope,
-} from "react-icons/fa";
+import { FaBuilding, FaUserTie, FaCalendarAlt, FaEnvelope } from "react-icons/fa";
 import placeholder from "../../../assets/placeholder-pfp.jpg";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { fetchAllEmployees } from "../../../utils/apiservice";
 import { debounce } from "lodash";
 
@@ -18,10 +14,14 @@ const EmployeeList = () => {
     data: employees = [],
     isLoading,
     isError,
+    error,
   } = useQuery({
     queryKey: ["allEmployee"],
     queryFn: fetchAllEmployees,
+    retry: 1,
   });
+
+  console.log("Employees data:", employees);
 
   const debouncedSearch = debounce((value) => {
     setSearchInput(value);
@@ -33,7 +33,7 @@ const EmployeeList = () => {
   };
 
   const filteredEmployees = employees.filter((employee) =>
-    employee.name.toLowerCase().includes(searchInput.toLowerCase())
+    employee.name?.toLowerCase().includes(searchInput.toLowerCase())
   );
 
   if (isLoading)
@@ -54,7 +54,17 @@ const EmployeeList = () => {
           <h3 className="text-xl font-semibold text-gray-800 mb-2">
             Failed to Load Employees
           </h3>
-          <p className="text-gray-600">Please try again later.</p>
+          <p className="text-gray-600">{error.message || "Please try again later."}</p>
+        </div>
+      </div>
+    );
+
+  if (employees.length === 0)
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center p-8 bg-white rounded-xl shadow-sm max-w-md">
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">No Employees Found</h3>
+          <p className="text-gray-600">There are no employees to display.</p>
         </div>
       </div>
     );
@@ -85,22 +95,23 @@ const EmployeeList = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEmployees.map((employee) => (
-            <div
+            <Link
               key={employee._id}
-              className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+              to={`/employee-details/${employee._id}`}
+              className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow block"
             >
               <div className="p-6">
                 <div className="flex items-center gap-4">
                   <img
                     src={employee.picture || placeholder}
-                    alt={employee.name}
+                    alt={employee.name || "Employee"}
                     className="w-16 h-16 rounded-full object-cover border border-gray-200"
                   />
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      {employee.name}
+                      {employee.name || "Unknown"}
                     </h3>
-                    <p className="text-sm text-gray-500">{employee.email}</p>
+                    <p className="text-sm text-gray-500">{employee.email || "No email"}</p>
                   </div>
                 </div>
 
@@ -117,12 +128,14 @@ const EmployeeList = () => {
                     <FaCalendarAlt className="w-5 h-5 mr-3 text-blue-500" />
                     <span>
                       Joined:{" "}
-                      {new Date(employee.date_of_joining).toLocaleDateString()}
+                      {employee.date_of_joining
+                        ? new Date(employee.date_of_joining).toLocaleDateString()
+                        : "Not specified"}
                     </span>
                   </div>
                   <div className="flex items-center text-gray-600">
                     <FaEnvelope className="w-5 h-5 mr-3 text-blue-500" />
-                    <span className="text-sm">{employee.role}</span>
+                    <span className="text-sm">{employee.role || "Not specified"}</span>
                   </div>
                 </div>
 
@@ -135,11 +148,11 @@ const EmployeeList = () => {
                       >
                         {dept}
                       </span>
-                    ))}
+                    )) || <span className="text-gray-500 text-xs">No departments</span>}
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
