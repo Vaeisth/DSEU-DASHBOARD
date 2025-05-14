@@ -5,6 +5,7 @@ import { FaCheckCircle, FaTimes, FaCalendarAlt, FaBuilding, FaUserAlt, FaPhone, 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { approveLeave, fetchLeaveDetails, rejectLeave } from "../../../utils/apiservice";
 import { format } from "date-fns";
+import { showErrorToast } from "../../../utils/toasts";
 
 function LeaveDetails() {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ function LeaveDetails() {
     },
     onError: (error) => {
       setError(error.response?.data?.message || "Failed to approve leave request");
+      showErrorToast("Failed to approve leave request");
     }
   });
 
@@ -45,6 +47,8 @@ function LeaveDetails() {
     },
     onError: (error) => {
       setError(error.response?.data?.message || "Failed to reject leave request");
+      console.error(error);
+      showErrorToast("Failed to reject leave request");
     }
   });
 
@@ -61,6 +65,7 @@ function LeaveDetails() {
   const handleRejectSubmit = () => {
     if (!rejectReason.trim()) {
       setError("Please provide a reason for rejection");
+      showErrorToast("Please provide a reason for rejection!")
       return;
     }
     rejectMutation.mutate({ id, remarks: rejectReason });
@@ -113,19 +118,6 @@ function LeaveDetails() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      {/* Error Message */}
-      {error && (
-        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg z-50">
-          <div className="flex items-center">
-            <FaTimes className="mr-2" />
-            <span>{error}</span>
-            <button onClick={() => setError("")} className="ml-4 text-red-700 hover:text-red-900">
-              <FaTimes />
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Approve Success Popup */}
       {showApprovePopup && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-white shadow-lg p-4 rounded-lg border border-green-200 z-50">
@@ -143,7 +135,7 @@ function LeaveDetails() {
 
       {/* Reject Confirmation Popup */}
       {showRejectPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Reject Leave Request</h2>
@@ -251,13 +243,12 @@ function LeaveDetails() {
                 </p>
               </div>
               <span
-                className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  leaveRequest.status === "Approved"
-                    ? "bg-green-100 text-green-800"
-                    : leaveRequest.status === "Rejected"
+                className={`px-4 py-2 rounded-full text-sm font-medium ${leaveRequest.status === "Approved"
+                  ? "bg-green-100 text-green-800"
+                  : leaveRequest.status === "Rejected"
                     ? "bg-red-100 text-red-800"
                     : "bg-yellow-100 text-yellow-800"
-                }`}
+                  }`}
               >
                 {leaveRequest.status}
               </span>
@@ -326,13 +317,13 @@ function LeaveDetails() {
           <div className="max-w-7xl mx-auto flex justify-end gap-4">
             <button
               onClick={handleReject}
-              className="px-6 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-colors"
+              className="px-6 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500 transition-colors cursor-pointer hover:text-white/90 hover:shadow-sm hover:shadow-red-500"
             >
               Reject
             </button>
             <button
               onClick={handleApprove}
-              className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+              className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-white transition-colors cursor-pointer hover:border-green-500 hover:border-2 hover:shadow-sm hover:shadow-green-500 hover:text-green-700"
             >
               Approve
             </button>

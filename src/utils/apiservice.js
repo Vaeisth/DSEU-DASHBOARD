@@ -8,7 +8,7 @@ export const loginUser = async (form) => {
     try {
         const response = await axios.post(
             "/login",
-            new URLSearchParams({
+            new ({
                 username: username,
                 password: password,
             }),
@@ -68,7 +68,7 @@ export const fetchLeaveDetails = async (id) => {
 
 export const approveLeave = async (id) => {
     const { data } = await apiRequestAxios({
-        endpoint: `${API_ENDPOINTS.LEAVE_REQUESTS}/${id}/approve`,
+        endpoint: `${API_ENDPOINTS.LEAVE_REQUEST_APPROVE}/${id}`,
         method: 'PATCH',
         data: { id }
     });
@@ -77,31 +77,31 @@ export const approveLeave = async (id) => {
 
 export const rejectLeave = async ({ id, remarks }) => {
     const { data } = await apiRequestAxios({
-        endpoint: `${API_ENDPOINTS.LEAVE_REQUESTS}/${id}/reject`,
+        endpoint: `${API_ENDPOINTS.LEAVE_REQUEST_REJECT}/${id}?remarks=${encodeURIComponent(remarks)}`,
         method: 'PATCH',
-        data: { id, remarks }
     });
     return data;
 };
 
+
 export const fetchLeaves = async (type) => {
-  const endpoint =
-    type === "pending"
-      ? API_ENDPOINTS.LEAVE_REQUESTS
-      : API_ENDPOINTS.LEAVE_REQUESTS_HISTORY;
+    const endpoint =
+        type === "pending"
+            ? API_ENDPOINTS.LEAVE_REQUESTS
+            : API_ENDPOINTS.LEAVE_REQUESTS_HISTORY;
 
-  const { data } = await apiRequestAxios({
-    endpoint,
-    method: 'GET'
-  });
+    const { data } = await apiRequestAxios({
+        endpoint,
+        method: 'GET'
+    });
 
-  return data.data;
+    return data.data;
 };
 
 export const fetchAllEmployees = async () => {
-  const { data } = await apiRequestAxios({
-    endpoint: API_ENDPOINTS.ALL_USERS,
-    method: "GET",
-  });
-  return data?.data || [];
+    const { data } = await apiRequestAxios({
+        endpoint: API_ENDPOINTS.ALL_USERS,
+        method: "GET",
+    });
+    return data?.data || [];
 };

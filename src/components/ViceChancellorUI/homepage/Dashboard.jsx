@@ -57,7 +57,6 @@ const fetchAttendanceReport = async () => {
     endpoint: API_ENDPOINTS.ATTENDANCE_REPORT,
     method: 'GET'
   });
-  console.log(res.data.report)
   return res.data.report;
 };
 

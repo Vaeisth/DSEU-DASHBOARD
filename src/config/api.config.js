@@ -19,6 +19,8 @@ export const API_ENDPOINTS = {
   ALL_CAMPUSES: '/superadmin/get-all-campuses',
   ALL_ON_DUTY_USERS: '/superadmin/all-on-duty-users',
   ATTENDANCE_REPORT: '/superadmin/today-attendance-report',
+  LEAVE_REQUEST_APPROVE: '/superadmin/approve-leave-request',
+  LEAVE_REQUEST_REJECT: '/superadmin/reject-leave-request',
   
   // VC
   VC_COUNTS: '/vc/counts',
