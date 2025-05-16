@@ -1,15 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
 import { API_ENDPOINTS } from '../../../config/api.config';
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserCheck,
@@ -18,17 +11,12 @@ import {
   faBullhorn,
   faCalendarAlt,
   faFileArchive,
-  faVideo,
   faBoxOpen,
   faClock,
+  faFilePdf,
+  faFileExcel,
+  faFilePowerpoint,
 } from "@fortawesome/free-solid-svg-icons";
-
-const chartData = [
-  { name: "Present", value: 20, color: "#4CAF50" },
-  { name: "Absent", value: 5, color: "#F44336" },
-  { name: "On Duty", value: 2, color: "#A3C1E2" },
-  { name: "On Leave", value: 3, color: "#FFC107" },
-];
 
 const services = [
   { name: "Mark Attendance", path: "/mark-attendance", icon: faUserCheck },
@@ -50,6 +38,24 @@ const buttonColors = [
   "bg-[#FBC4DF]",
   "bg-[#FCDFE0]",
   "bg-[#C6FFEB]",
+];
+
+// Sample announcement data (you can replace this with an API call if needed)
+const announcements = [
+  {
+    facultyName: "Faculty name",
+    designation: "Designation name",
+    timestamp: "2d ago",
+    title: "B.Tech admission open session 2024 - 25",
+    description: "Lorem ipsum dolor sit amet, dummy dolor sit...",
+    files: [
+      { name: "File_can be....", icon: faFilePdf, color: "text-red-500" },
+      { name: "File.can be....", icon: faFileExcel, color: "text-green-500" },
+      { name: "+1", icon: null, color: "text-gray-500" },
+      { name: "File.can be....", icon: faFilePowerpoint, color: "text-purple-500" },
+    ],
+  },
+  // Add more announcement objects if needed
 ];
 
 const fetchAttendanceStatus = async () => {
@@ -78,6 +84,9 @@ const fetchPendingApprovals = async () => {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [isOnDuty, setIsOnDuty] = useState(true);
+  const [showReasonPopup, setShowReasonPopup] = useState(false);
+  const [reason, setReason] = useState("");
 
   const { data: attendanceStatus, isLoading: attendanceLoading } = useQuery({
     queryKey: ["attendanceStatus"],
@@ -93,6 +102,27 @@ const Dashboard = () => {
     queryKey: ["pendingApprovals"],
     queryFn: fetchPendingApprovals,
   });
+
+  const handleToggleChange = () => {
+    if (!isOnDuty) {
+      // If turning ON "On Duty", show the reason popup
+      setShowReasonPopup(true);
+    } else {
+      // If turning OFF "On Duty", just toggle without popup
+      setIsOnDuty(false);
+    }
+  };
+
+  const handleSave = () => {
+    setIsOnDuty(true);
+    setShowReasonPopup(false);
+    // Here you would typically call an API to update the duty status
+  };
+
+  const handleCancel = () => {
+    setShowReasonPopup(false);
+    // Keep the duty status as it was
+  };
 
   const cardData = [
     attendanceLoading ? "..." : attendanceStatus?.status || "Not Marked",
@@ -129,45 +159,99 @@ const Dashboard = () => {
         )}
       </div>
 
-      {/* Chart + Services */}
+      {/* Attendance UI + Services */}
       <div className="flex flex-col lg:flex-row gap-6 mb-10">
-        {/* Pie Chart */}
-        <div className="bg-white p-6 rounded-2xl shadow w-full lg:w-1/3">
-          <h3 className="text-xl font-bold text-gray-700 mb-6 text-center">
-            Monthly Attendance
-          </h3>
-          <div className="w-full h-[250px]">
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  dataKey="value"
-                  outerRadius={80}
-                  innerRadius={50}
-                  paddingAngle={5}
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex flex-wrap justify-center gap-4 mt-6 text-sm text-gray-700">
-            {chartData.map((entry, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: entry.color }}
-                ></div>
-                <span>{entry.name}</span>
+        {/* Attendance Status UI */}
+        <div className="w-full lg:w-1/3 space-y-4">
+          {/* On Duty Card */}
+          <div className="bg-white p-6 rounded-2xl shadow">
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="text-3xl font-bold text-gray-800">On Duty</h3>
+                <p className="text-gray-600">Sat, 25 May, 2024</p>
+                <div className="flex items-center mt-2 text-gray-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                  </svg>
+                  <span>Punch in 8:40 AM</span>
+                </div>
               </div>
-            ))}
+              <div className="relative inline-block w-14 h-7 transition duration-200 ease-in-out">
+                <input
+                  type="checkbox"
+                  name="toggle"
+                  id="toggle"
+                  className="absolute w-0 h-0 opacity-0"
+                  checked={isOnDuty}
+                  onChange={handleToggleChange}
+                />
+                <label
+                  htmlFor="toggle"
+                  className={`block overflow-hidden h-7 rounded-full ${isOnDuty ? 'bg-blue-600' : 'bg-gray-300'} cursor-pointer`}
+                >
+                  <span 
+                    className={`block h-7 w-7 rounded-full bg-white transform transition-transform duration-200 ease-in-out ${isOnDuty ? 'translate-x-7' : 'translate-x-0'}`}
+                  ></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* Today's Attendance Card */}
+          <div className="bg-white p-6 rounded-2xl shadow">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800">Your today's attendance</h3>
+                <p className="text-gray-600">Sat, 25 May, 2024</p>
+                <div className="flex items-center mt-2 text-gray-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                  </svg>
+                  <span>Punch in 8:30 AM</span>
+                </div>
+              </div>
+              <span className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-medium">
+                Present
+              </span>
+            </div>
+            
+            <div className="flex justify-between items-center">
+              <button className="text-blue-500 font-semibold">Today</button>
+              <div className="relative w-24 h-24">
+                <svg className="w-full h-full" viewBox="0 0 100 100">
+                  {/* Background circle */}
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="40" 
+                    fill="none" 
+                    stroke="#E5E7EB" 
+                    strokeWidth="10" 
+                  />
+                  {/* Progress circle - 4/8 = 50% */}
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="40" 
+                    fill="none" 
+                    stroke="#F59E0B" 
+                    strokeWidth="10" 
+                    strokeDasharray="251.2" 
+                    strokeDashoffset="125.6" 
+                    strokeLinecap="round"
+                    transform="rotate(-90 50 50)" 
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center flex-col">
+                  <span className="text-xl font-bold">4/8</span>
+                  <span className="text-sm text-gray-500">hours</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-      {/* Services Grid */}
+        {/* Services Grid */}
         <div className="bg-white p-6 rounded-2xl shadow w-full lg:w-2/3">
           <h3 className="text-xl font-bold text-gray-700 mb-6">Services</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -205,8 +289,128 @@ const Dashboard = () => {
           ))}
         </div>
       </div>
+
+      {/* Latest Announcements */}
+      <div className="bg-white p-6 rounded-2xl shadow mb-10">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-bold text-gray-700">Latest Announcements</h3>
+          <button
+            onClick={() => navigate("/announcements")}
+            className="text-blue-500 font-semibold flex items-center gap-1 hover:underline"
+          >
+            See all
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+        <div className="space-y-4">
+          {announcements.map((announcement, index) => (
+            <div
+              key={index}
+              className="bg-blue-50 p-4 rounded-lg flex flex-col gap-2"
+            >
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full" /> {/* Placeholder for faculty image */}
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {announcement.facultyName}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {announcement.designation}
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs text-gray-500">
+                  {announcement.timestamp}
+                </span>
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-gray-800">
+                  {announcement.title}
+                </h4>
+                <p className="text-sm text-gray-600">
+                  {announcement.description}
+                  <span className="text-blue-500 cursor-pointer hover:underline">
+                    More
+                  </span>
+                </p>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {announcement.files.map((file, fileIndex) => (
+                  <button
+                    key={fileIndex}
+                    className="flex items-center gap-2 px-3 py-1 border border-blue-300 rounded-full text-sm text-gray-700"
+                  >
+                    {file.icon && (
+                      <FontAwesomeIcon
+                        icon={file.icon}
+                        className={`text-sm ${file.color}`}
+                      />
+                    )}
+                    <span>{file.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center mt-4">
+          <div className="flex gap-2">
+            <div className="w-2 h-2 bg-blue-500 rounded-full" />
+            <div className="w-2 h-2 bg-gray-300 rounded-full" />
+            <div className="w-2 h-2 bg-gray-300 rounded-full" />
+            <div className="w-2 h-2 bg-gray-300 rounded-full" />
+          </div>
+        </div>
+      </div>
+
+      {showReasonPopup && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-opacity-10 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div className="p-6">
+              <div className="mb-6">
+                <label className="block text-gray-700 text-lg font-medium mb-2">
+                  Reason for Turning On Duty
+                </label>
+                <textarea
+                  className="w-full h-40 px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500"
+                  placeholder="Write here..."
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                />
+              </div>
+              
+              <div className="flex justify-between">
+                <button
+                  className="border border-blue-500 text-blue-500 px-6 py-2 rounded-full font-medium"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="bg-blue-500 text-white px-8 py-2 rounded-full font-medium"
+                  onClick={handleSave}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Dashboard; 
+export default Dashboard;
