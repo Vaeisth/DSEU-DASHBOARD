@@ -34,6 +34,10 @@ export const API_ENDPOINTS = {
   EMPLOYEE_LEAVE_BALANCE: '/employee/leave-balance',
   EMPLOYEE_PENDING_APPROVALS: '/employee/pending-approvals',
 
+  // Ghante ka hisab 
+   EMPLOYEE_TOTAL_DURATION: '/attendance/total_duration',
+   EMPLOYEE_ON_DUTY:'/attendance/on_duty',
+
   // Mics
   HOLIDAY_CALENDAR: '/profile/get-calender',
 };
