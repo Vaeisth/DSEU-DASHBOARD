@@ -105,3 +105,16 @@ export const fetchAllEmployees = async () => {
     });
     return data?.data || [];
 };
+
+
+export const updateProfileImage = async (formData) => {
+    const res = await apiRequestAxios({
+        endpoint: API_ENDPOINTS.UPLOAD_IMAGE,
+        method: 'POST',
+        data: formData,
+    })
+
+    console.log(formData);
+    console.log(res.data);
+    return res.data;
+}
