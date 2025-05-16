@@ -27,6 +27,9 @@ import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
 import { Toaster } from "react-hot-toast";
 import VCLayout from "./layouts/VcLayout.jsx";
 import EmployeeLayout from "./layouts/EmployeeLayout.jsx";
+import AdminLayout from "./layouts/AdminLayout.jsx";
+import AdminDashboard from "./components/Admin/Dashboard.jsx";
+
 
 function App() {
   return (
@@ -70,6 +73,14 @@ function App() {
           <Route path="employee-profile" element={<div>Profile</div>} />
         </Route>
       </Routes>
+
+      {/* Admin Routes */} 
+     <Routes>
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route path="dashboard" element={<AdminDashboard />} />
+      </Route>
+    </Routes>
+
     </Router>
   );
 }

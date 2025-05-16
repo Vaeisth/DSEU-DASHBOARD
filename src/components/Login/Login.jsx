@@ -19,7 +19,7 @@ const ROUTES = {
   [ROLES.STORE]: "/store-dashboard",
   [ROLES.EMPLOYEE]: "/employee-dashboard",
   [ROLES.SUPER_ADMIN]: "/vc-dashboard",
-  [ROLES.ADMIN]: "/admin-dashboard",
+  [ROLES.ADMIN]: "/admin/dashboard",
 };
 
 // Validation functions

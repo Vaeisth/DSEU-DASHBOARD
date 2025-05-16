@@ -67,7 +67,7 @@ const Navbar = () => {
         navigate("/store-dashboard");
         break;
       case "admin":
-        navigate("/admin-dashboard");
+        navigate("/admin/dashboard");
         break;
       default:
         navigate("/");
