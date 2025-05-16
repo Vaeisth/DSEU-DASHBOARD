@@ -5,6 +5,7 @@ import { apiRequestAxios } from '../../../utils/api';
 import {API_BASE_URL, API_ENDPOINTS } from '../../../config/api.config';
 import { FaArrowLeft, FaPlus, FaTimes, FaMapMarkerAlt, FaBuilding, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useQueryClient } from "@tanstack/react-query";
+import { showErrorToast, showSuccessToast } from "../../../utils/toasts";
 
 const fetchCampuses = async () => {
   const token = sessionStorage.getItem("accessToken");
@@ -120,7 +121,7 @@ const CampusList = () => {
       setgeoBoundary([{ latitude: "", longitude: "" }]);
 
       // Show success message
-      alert("Campus added successfully!");
+      showSuccessToast("Campus added")
 
       // Invalidate and refetch campuses query
       queryClient.invalidateQueries(["campuses"]);
@@ -133,7 +134,8 @@ const CampusList = () => {
         endpoint: API_ENDPOINTS.ADD_CAMPUSES,
         fullUrl: `${API_BASE_URL}${API_ENDPOINTS.ADD_CAMPUSES}`
       });
-      alert(error.response?.data?.message || "Failed to add campus. Please try again.");
+     console.log(error.response?.data?.message);
+     showErrorToast("Failed")
     }
   };
 

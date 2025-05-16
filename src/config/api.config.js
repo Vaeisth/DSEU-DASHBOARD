@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
   LEAVE_REQUEST_APPROVE: '/superadmin/approve-leave-request',
   LEAVE_REQUEST_REJECT: '/superadmin/reject-leave-request',
   ADD_CAMPUSES: '/super_admin/add_campus',
+  DELETE_CAMPUS: '/super_admin/remove_campus',
   
   // VC
   VC_COUNTS: '/vc/counts',

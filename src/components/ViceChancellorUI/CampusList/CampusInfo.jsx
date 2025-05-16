@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
 import { API_ENDPOINTS } from '../../../config/api.config';
-import { FaArrowLeft, FaMapMarkerAlt, FaBuilding, FaInfoCircle, FaPhone, FaEnvelope, FaGlobe } from "react-icons/fa";
+import { FaMapMarkerAlt, FaBuilding, FaInfoCircle, FaPhone, FaEnvelope, FaGlobe, FaTrash } from "react-icons/fa";
+import { showErrorToast, showSuccessToast } from "../../../utils/toasts";
+
 
 const fetchCampusDetails = async (campusId) => {
   if (!campusId) {
@@ -20,7 +22,6 @@ const fetchCampusDetails = async (campusId) => {
       throw new Error('Invalid API response format');
     }
 
-    // Find the specific campus from the array using _id
     const campus = response.data.data.find(c => c._id === campusId);
     
     if (!campus) {
@@ -37,6 +38,49 @@ const fetchCampusDetails = async (campusId) => {
 const CampusInfo = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const { data: campus, isLoading, isError, error } = useQuery({
+    queryKey: ["campus", id],
+    queryFn: () => fetchCampusDetails(id),
+  });
+
+  const deleteCampusMutation = useMutation({
+    mutationFn: async () => {
+      if (!campus?.campus_id) {
+        throw new Error('Campus ID not found');
+      }
+      const response = await apiRequestAxios({
+        endpoint: `${API_ENDPOINTS.DELETE_CAMPUS}/${campus.campus_id}`,
+        method: 'DELETE'
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["campuses"]);
+      setShowDeleteModal(false);
+      // Navigate back to the campus list
+      setTimeout(() => {
+        navigate(-1);
+      }, 100);
+      showSuccessToast("Campus Deleted")
+    },
+    onError: (error) => {
+      console.error(error.response?.data?.message || "Failed to approve leave request");
+      showErrorToast("Failed");
+    }
+  });
+
+  const handleDelete = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (!deleteCampusMutation.isLoading) {
+      deleteCampusMutation.mutate();
+    }
+  };
 
   // If no ID is provided, show error and redirect
   if (!id) {
@@ -56,11 +100,6 @@ const CampusInfo = () => {
       </div>
     );
   }
-
-  const { data: campus, isLoading, isError, error } = useQuery({
-    queryKey: ["campus", id],
-    queryFn: () => fetchCampusDetails(id),
-  });
 
   if (isLoading) return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -96,9 +135,44 @@ const CampusInfo = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <h2 className="text-xl font-bold text-gray-800">Campus Details</h2>
+            <button
+              onClick={handleDelete}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
+            >
+              <FaTrash className="w-4 h-4" />
+              Delete Campus
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-opacity-50 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">Confirm Deletion</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete this campus? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                disabled={deleteCampusMutation.isLoading}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
+                disabled={deleteCampusMutation.isLoading}
+              >
+                {deleteCampusMutation.isLoading ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Campus Header */}
