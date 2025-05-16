@@ -21,7 +21,7 @@ export const API_ENDPOINTS = {
   ATTENDANCE_REPORT: '/superadmin/today-attendance-report',
   LEAVE_REQUEST_APPROVE: '/superadmin/approve-leave-request',
   LEAVE_REQUEST_REJECT: '/superadmin/reject-leave-request',
-  ADD_CAMPUSES: '/superadmin/add-campus',
+  ADD_CAMPUSES: '/super_admin/add_campus',
   
   // VC
   VC_COUNTS: '/vc/counts',

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
-import { API_ENDPOINTS } from '../../../config/api.config';
+import {API_BASE_URL, API_ENDPOINTS } from '../../../config/api.config';
 import { FaArrowLeft, FaPlus, FaTimes, FaMapMarkerAlt, FaBuilding, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -95,16 +95,18 @@ const CampusList = () => {
 
       // Prepare data for API
       const campusData = {
-        zone,
-        name,
-        description,
-        address,
-        geo_boundary: formattedCoordinates
+        name: name.trim(),
+        description: description.trim(),
+        address: address.trim(),
+        geo_boundary: formattedCoordinates,
+        campus_id: Math.floor(Date.now() / 1000) // Using Unix timestamp as numeric ID
       };
+
+      console.log("Sending data:", campusData); // Debug log
 
       // Make API request
       await apiRequestAxios({
-        endpoint: API_ENDPOINTS.ADD_CAMPUSES  ,
+        endpoint: `${API_ENDPOINTS.ADD_CAMPUSES}?zone=${encodeURIComponent(zone.trim())}`,
         method: 'POST',
         data: campusData
       });
@@ -124,6 +126,13 @@ const CampusList = () => {
       queryClient.invalidateQueries(["campuses"]);
     } catch (error) {
       console.error("Error adding campus:", error);
+      console.error("Error details:", {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        endpoint: API_ENDPOINTS.ADD_CAMPUSES,
+        fullUrl: `${API_BASE_URL}${API_ENDPOINTS.ADD_CAMPUSES}`
+      });
       alert(error.response?.data?.message || "Failed to add campus. Please try again.");
     }
   };
