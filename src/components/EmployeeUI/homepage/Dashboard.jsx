@@ -192,8 +192,8 @@ const Dashboard = () => {
           </div>
 
           {/* Today's Attendance Card */}
-          <div className="bg-white p-6 rounded-2xl shadow">
-            <div className="flex justify-between items-start mb-4">
+          <div className="bg-white p-2 rounded-2xl shadow flex flex-row gap-5">
+            <div className="flex justify-between  items-start mb-4">
               <div>
                 <h3 className="text-2xl font-bold text-gray-800">Your today's attendance</h3>
                 <p className="text-gray-600">Sat, 25 May, 2024</p>
