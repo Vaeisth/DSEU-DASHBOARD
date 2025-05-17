@@ -29,10 +29,7 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.3.0",
-<<<<<<< HEAD
-=======
     "react-virtualized-auto-sizer": "^1.0.26",
->>>>>>> 59bf61adeca317b1288c203e73f9431645a92ed5
     "react-window": "^1.8.11",
     "recharts": "^2.15.1"
   },
