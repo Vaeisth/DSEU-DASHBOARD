@@ -5,7 +5,19 @@ import { useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { fetchAllEmployees } from "../../../utils/apiservice";
 import { debounce } from "lodash";
-import { FixedSizeList as List } from 'react-window';
+import { FixedSizeGrid as Grid } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
+
+// Add custom styles to hide scrollbars
+const styles = {
+  hideScrollbar: {
+    scrollbarWidth: 'none',  /* Firefox */
+    msOverflowStyle: 'none',  /* IE and Edge */
+    '&::-webkit-scrollbar': {  /* Chrome, Safari and Opera */
+      display: 'none'
+    }
+  }
+};
 
 const EmployeeList = () => {
   const [inputField, setInputField] = useState("");
@@ -44,14 +56,17 @@ const EmployeeList = () => {
     debouncedSearch(e.target.value);
   };
 
-  // Row renderer for virtualized list
-  const Row = useCallback(({ index, style }) => {
+  // Cell renderer for virtualized grid
+  const Cell = useCallback(({ columnIndex, rowIndex, style }) => {
+    const index = rowIndex * 3 + columnIndex;
+    if (index >= filteredEmployees.length) return null;
+    
     const employee = filteredEmployees[index];
     return (
-      <div style={style}>
+      <div style={style} className="p-3">
         <Link
           to={`/employee-details/${employee._id}`}
-          className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow block mx-4 my-2"
+          className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow h-full block"
         >
           <div className="p-6">
             <div className="flex items-center gap-4">
@@ -124,7 +139,7 @@ const EmployeeList = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center p-8 bg-white rounded-xl shadow-sm max-w-md">
-          <div className="text-red-500 text-5xl mb-4">⚠</div>
+          <div className="text-red-500 text-5xl mb-4">⚠️</div>
           <h3 className="text-xl font-semibold text-gray-800 mb-2">
             Failed to Load Employees
           </h3>
@@ -154,6 +169,43 @@ const EmployeeList = () => {
             </span>
           </div>
         </div>
+      </div>
+
+      <div className="flex flex-row min-w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        <input
+          type="text"
+          value={inputField}
+          onChange={handleInputChange}
+          placeholder="Search by employee name..."
+          className="px-4 py-2 rounded-xl border-2 border-blue-300 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200 transition duration-300 shadow-sm w-full"
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[calc(100vh-200px)] overflow-hidden">
+        <AutoSizer>
+          {({ height, width }) => {
+            const columnCount = Math.min(3, Math.floor(width / 400));
+            const rowCount = Math.ceil(filteredEmployees.length / columnCount);
+            const columnWidth = width / columnCount;
+            const rowHeight = 400;
+
+            return (
+              <div className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:none]">
+                <Grid
+                  columnCount={columnCount}
+                  columnWidth={columnWidth}
+                  height={height}
+                  rowCount={rowCount}
+                  rowHeight={rowHeight}
+                  width={width}
+                  className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:none]"
+                >
+                  {Cell}
+                </Grid>
+              </div>
+            );
+          }}
+        </AutoSizer>
       </div>
 
       <div className="flex flex-row min-w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
