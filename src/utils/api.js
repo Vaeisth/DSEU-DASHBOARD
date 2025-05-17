@@ -48,6 +48,7 @@ export async function apiRequestAxios({ endpoint, method = 'GET', data = {}, hea
       sessionStorage.removeItem('accessToken');
       window.location.href = '/';
     }
+    console.error(error);
     throw error;
   }
 } 

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequestAxios } from "../../../utils/api";
 import { API_ENDPOINTS } from "../../../config/api.config";
 import {
@@ -11,7 +11,7 @@ import {
   FaUniversity,
   FaCreditCard,
 } from "react-icons/fa";
-import { Edit } from "lucide-react";
+import { Edit, Loader, LoaderCircle } from "lucide-react";
 import { updateProfileImage } from "../../../utils/apiservice";
 import toast from "react-hot-toast";
 import { useRef } from "react";
@@ -42,6 +42,7 @@ const Profile = () => {
   });
 
   const fileInputRef = useRef(null);
+  const queryClient = useQueryClient();
 
   const imageMutation = useMutation({
     mutationFn: async (formData) => {
@@ -49,6 +50,7 @@ const Profile = () => {
     },
     onSuccess: () => {
       toast("Image updated successfully!");
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
     onError: () => {
       toast("Error while uploading the image");
@@ -98,12 +100,24 @@ const Profile = () => {
                       alt="Profile"
                       className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
                     />
+
+                    {/* Image edit/loading thingy */}
+
                     <div
-                      className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                      className={`absolute inset-0 bg-black/60 rounded-full flex items-center justify-center ${
+                        !imageMutation.isPending
+                          ? "opacity-0 group-hover:opacity-100"
+                          : "opacity-100"
+                      } transition-opacity cursor-pointer`}
                       onClick={() => fileInputRef.current?.click()}
                     >
-                      <Edit className="text-white h-9 w-9 opacity-75" />
+                      {!imageMutation.isPending ? (
+                        <Edit className="text-white h-9 w-9 opacity-75" />
+                      ) : (
+                        <LoaderCircle className="text-white h-9 w-9 opacity-90 animate-spin" />
+                      )}
                     </div>
+
                     <input
                       type="file"
                       ref={fileInputRef}

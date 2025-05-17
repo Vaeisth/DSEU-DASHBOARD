@@ -112,9 +112,10 @@ export const updateProfileImage = async (formData) => {
         endpoint: API_ENDPOINTS.UPLOAD_IMAGE,
         method: 'POST',
         data: formData,
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
     })
 
-    console.log(formData);
-    console.log(res.data);
     return res.data;
 }
