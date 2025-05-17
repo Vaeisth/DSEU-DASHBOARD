@@ -6,7 +6,7 @@ import { API_ENDPOINTS } from "../../../config/api.config";
 
 const fetchAnnouncements = async () => {
   const role = sessionStorage.getItem("currentRole");
-  console.log(role)
+
   const endpoint =
     role === "super_admin"
       ? API_ENDPOINTS.ALL_ANNOUNCEMENTS
