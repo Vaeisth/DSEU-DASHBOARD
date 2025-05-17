@@ -158,7 +158,7 @@ const AdminDashboard = () => {
               {services.map((service, index) => (
                 <div
                   key={index}
-                  className={`flex flex-col justify-center items-center cursor-pointer p-4 h-[100px] rounded-xl shadow hover:shadow-lg transform text-center transition-transform hover:scale-105 ${buttonColors[index]}`}
+                  className={`flex flex-col justify-center items-center cursor-pointer p-4 h-[100px] rounded-xl shadow hover:shadow-lg transform text-center transition-transform hover:scale-105 ${buttonColors[index]} animate-spin`}
                   onClick={() => navigate(service.path)}
                 >
                   <FontAwesomeIcon

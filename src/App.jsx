@@ -4,7 +4,6 @@ import {
   Route,
   useLocation,
   useNavigate,
-  Navigate,
 } from "react-router-dom";
 import { useEffect } from "react";
 import Login from "./components/Login/Login";
@@ -32,11 +31,11 @@ import EmployeeList from "./components/ViceChancellorUI/employees/EmployeeList.j
 import EmployeePersonalDetail from "./components/ViceChancellorUI/employees/EmployeeDetail.jsx";
 import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
 import AdminDashboard from "./components/Admin/Dashboard.jsx";
-import AdminTrackLeave from './components/Admin/TrackLeave.jsx';
+import AdminTrackLeave from "./components/Admin/TrackLeave.jsx";
 
 import VCLayout from "./layouts/VcLayout.jsx";
-import EmployeeLayout from "./layouts/EmployeeLayout.jsx";import AdminLayout from "./layouts/AdminLayout.jsx";
-
+import EmployeeLayout from "./layouts/EmployeeLayout.jsx";
+import AdminLayout from "./layouts/AdminLayout.jsx";
 
 import { Toaster } from "react-hot-toast";
 import { ProfileProvider } from "./contexts/ProfileContext.jsx";
@@ -49,22 +48,35 @@ const AppRoutes = () => {
   const navigate = useNavigate();
   const role = sessionStorage.getItem("currentRole");
 
+  const isRouteAllowed = (allowedRoutes, currentPath) => {
+    return allowedRoutes.some((route) => {
+      const routeRegex = new RegExp(
+        "^" + route.replace(/:[^/]+/g, "[^/]+") + "$"
+      );
+      return routeRegex.test(currentPath);
+    });
+  };
+
   useEffect(() => {
+    if (!role) return;
+
+    const currentPath = location.pathname;
+
     switch (role) {
       case "super_admin":
-        if (!RoleRoutes.superadmin.includes(location.pathname)) {
+        if (!isRouteAllowed(RoleRoutes.superadmin, currentPath)) {
           navigate("/vc-dashboard");
           showErrorToast("Access Denied");
         }
         break;
       case "admin":
-        if (!RoleRoutes.admin.includes(location.pathname)) {
+        if (!isRouteAllowed(RoleRoutes.admin, currentPath)) {
           navigate("/admin/dashboard");
           showErrorToast("Access Denied");
         }
         break;
       case "employee":
-        if (!RoleRoutes.employee.includes(location.pathname)) {
+        if (!isRouteAllowed(RoleRoutes.employee, currentPath)) {
           navigate("/employee-dashboard");
           showErrorToast("Access Denied");
         }

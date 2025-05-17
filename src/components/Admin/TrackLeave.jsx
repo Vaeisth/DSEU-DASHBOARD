@@ -3,45 +3,59 @@ import { useState } from "react";
 const TrackLeave = () => {
   const [activeTab, setActiveTab] = useState("pending");
 
+  const pendingCount = 4;
+  const historyCount = 9;
+
   return (
-    <div className="px-2">
-      <div className="flex flex-col gap-1 mb-6">
-        <h2 className="text-3xl text-[#222] font-bold">Leave Management</h2>
-        <p className="text-lg text-[#333]">
+    <div className="px-6 py-4">
+      {/* Header */}
+      <div className="mb-6">
+        <h2 className="text-3xl font-semibold text-gray-800">
+          Leave Management
+        </h2>
+        <p className="text-base text-gray-600">
           Track and manage leave requests from all campuses
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-4 border-b mb-4">
-        <button
-          onClick={() => setActiveTab("pending")}
-          className={`pb-2 text-lg font-medium ${
-            activeTab === "pending"
-              ? "border-b-2 border-blue-600 text-blue-600"
-              : "text-gray-600 hover:text-blue-600"
-          }`}
-        >
-          Pending Requests
-        </button>
-        <button
-          onClick={() => setActiveTab("history")}
-          className={`pb-2 text-lg font-medium ${
-            activeTab === "history"
-              ? "border-b-2 border-blue-600 text-blue-600"
-              : "text-gray-600 hover:text-blue-600"
-          }`}
-        >
-          Leave History
-        </button>
+      <div className="bg-white rounded-xl shadow-sm p-1 mb-6">
+        <div className="flex">
+          <button
+            className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+              activeTab === "pending"
+                ? "bg-blue-50 text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("pending")}
+          >
+            Pending Requests
+            <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full text-xs">
+              {pendingCount}
+            </span>
+          </button>
+          <button
+            className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+              activeTab === "history"
+                ? "bg-blue-50 text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("history")}
+          >
+            Leave History
+            <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full text-xs">
+              {historyCount}
+            </span>
+          </button>
+        </div>
       </div>
 
-      {/* Tab Content */}
-      <div>
+      
+      <div className="bg-white p-6 rounded-xl shadow-sm">
         {activeTab === "pending" ? (
-          <div>Show Pending Requests Table or List here</div>
+          <p className="text-gray-600">Pending leave requests will show here.</p>
         ) : (
-          <div>Show Leave History Table or List here</div>
+          <p className="text-gray-600">Leave history will show here.</p>
         )}
       </div>
     </div>
