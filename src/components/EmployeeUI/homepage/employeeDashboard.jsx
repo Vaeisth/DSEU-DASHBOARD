@@ -127,7 +127,7 @@ const Dashboard = () => {
                 }
               }}>
                 <Box sx={{ mb: 1, color: '#222', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{service.icon}</Box>
-                <Typography variant="body1" fontWeight={600} sx={{ fontSize: 16, color: '#222' }}>{service.label}</Typography>
+                <Typography variant="body1" fontWeight={600} sx={{ fontSize: 16, color: '#222' }}>{services.label}</Typography>
               </Card>
             </Grid>
           ))}

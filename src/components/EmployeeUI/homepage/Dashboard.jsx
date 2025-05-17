@@ -1,33 +1,28 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
 import { API_ENDPOINTS } from '../../../config/api.config';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faUserCheck,
-  faFileAlt,
-  faPlaneDeparture,
-  faBullhorn,
-  faCalendarAlt,
-  faFileArchive,
-  faBoxOpen,
-  faClock,
   faFilePdf,
   faFileExcel,
   faFilePowerpoint,
 } from "@fortawesome/free-solid-svg-icons";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import AnnouncementIcon from '@mui/icons-material/Announcement';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 
 const services = [
-  { name: "Mark Attendance", path: "/mark-attendance", icon: faUserCheck },
-  { name: "Apply Leave", path: "/apply-leave", icon: faPlaneDeparture },
-  { name: "Leave Status", path: "/leave-status", icon: faClock },
-  { name: "Announcements", path: "/announcements", icon: faBullhorn },
-  { name: "Holidays", path: "/holidays", icon: faCalendarAlt },
-  { name: "File Tracking", path: "/filetracking", icon: faFileArchive },
-  { name: "Reports", path: "/reports", icon: faFileAlt },
-  { name: "Inventory", path: "/inventory", icon: faBoxOpen },
+  { label: 'Attendance', icon: <AssignmentIndIcon fontSize="large" />, color: '#e3f0fa', path: '/attendance' },
+  { label: 'Track Leaves', icon: <EventNoteIcon fontSize="large" />, color: '#f3e6fa', path: '/track-leaves' },
+  { label: 'Announcements', icon: <AnnouncementIcon fontSize="large" />, color: '#fae3e3', path: '/announcements' },
+  { label: 'Calendar', icon: <CalendarMonthIcon fontSize="large" />, color: '#faf7e3', path: '/calendar' },
+  { label: 'On Duty', icon: <AccessTimeIcon fontSize="large" />, color: '#e3faf7', path: '/on-duty' },
 ];
+
 
 const buttonColors = [
   "bg-[#C4DAFA]",
@@ -59,25 +54,25 @@ const announcements = [
 ];
 
 const fetchAttendanceStatus = async () => {
-  const res = await apiRequestAxios({ 
+  const res = await apiRequestAxios({
     endpoint: API_ENDPOINTS.EMPLOYEE_ATTENDANCE_STATUS,
-    method: 'GET' 
+    method: 'GET'
   });
   return res.data;
 };
 
 const fetchLeaveBalance = async () => {
-  const res = await apiRequestAxios({ 
+  const res = await apiRequestAxios({
     endpoint: API_ENDPOINTS.EMPLOYEE_LEAVE_BALANCE,
-    method: 'GET' 
+    method: 'GET'
   });
   return res.data;
 };
 
 const fetchPendingApprovals = async () => {
-  const res = await apiRequestAxios({ 
+  const res = await apiRequestAxios({
     endpoint: API_ENDPOINTS.EMPLOYEE_PENDING_APPROVALS,
-    method: 'GET' 
+    method: 'GET'
   });
   return res.data;
 };
@@ -144,13 +139,12 @@ const Dashboard = () => {
                 {title}
               </h3>
               <p
-                className={`text-4xl font-bold ${
-                  index === 0
+                className={`text-4xl font-bold ${index === 0
                     ? "text-green-600"
                     : index === 1
-                    ? "text-blue-600"
-                    : "text-orange-600"
-                }`}
+                      ? "text-blue-600"
+                      : "text-orange-600"
+                  }`}
               >
                 {cardData[index]}
               </p>
@@ -189,7 +183,7 @@ const Dashboard = () => {
                   htmlFor="toggle"
                   className={`block overflow-hidden h-7 rounded-full ${isOnDuty ? 'bg-blue-600' : 'bg-gray-300'} cursor-pointer`}
                 >
-                  <span 
+                  <span
                     className={`block h-7 w-7 rounded-full bg-white transform transition-transform duration-200 ease-in-out ${isOnDuty ? 'translate-x-7' : 'translate-x-0'}`}
                   ></span>
                 </label>
@@ -214,32 +208,32 @@ const Dashboard = () => {
                 Present
               </span>
             </div>
-            
+
             <div className="flex justify-between items-center">
               <button className="text-blue-500 font-semibold">Today</button>
               <div className="relative w-24 h-24">
                 <svg className="w-full h-full" viewBox="0 0 100 100">
                   {/* Background circle */}
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="40" 
-                    fill="none" 
-                    stroke="#E5E7EB" 
-                    strokeWidth="10" 
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    fill="none"
+                    stroke="#E5E7EB"
+                    strokeWidth="10"
                   />
                   {/* Progress circle - 4/8 = 50% */}
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="40" 
-                    fill="none" 
-                    stroke="#F59E0B" 
-                    strokeWidth="10" 
-                    strokeDasharray="251.2" 
-                    strokeDashoffset="125.6" 
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    fill="none"
+                    stroke="#F59E0B"
+                    strokeWidth="10"
+                    strokeDasharray="251.2"
+                    strokeDashoffset="125.6"
                     strokeLinecap="round"
-                    transform="rotate(-90 50 50)" 
+                    transform="rotate(-90 50 50)"
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center flex-col">
@@ -261,15 +255,14 @@ const Dashboard = () => {
                 className={`flex flex-col justify-center items-center cursor-pointer p-4 h-[100px] rounded-xl shadow hover:shadow-lg transform transition-transform hover:scale-105 ${buttonColors[index]}`}
                 onClick={() => navigate(service.path)}
               >
-                <FontAwesomeIcon
-                  icon={service.icon}
-                  className="text-2xl text-gray-800 mb-1"
-                />
+                {/* Render MUI icon directly */}
+                <div className="mb-2">{service.icon}</div>
                 <span className="text-sm text-gray-900 text-center">
-                  {service.name}
+                  {service.label}
                 </span>
               </div>
             ))}
+
           </div>
         </div>
       </div>
@@ -390,7 +383,7 @@ const Dashboard = () => {
                   onChange={(e) => setReason(e.target.value)}
                 />
               </div>
-              
+
               <div className="flex justify-between">
                 <button
                   className="border border-blue-500 text-blue-500 px-6 py-2 rounded-full font-medium"
@@ -398,7 +391,7 @@ const Dashboard = () => {
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   className="bg-blue-500 text-white px-8 py-2 rounded-full font-medium"
                   onClick={handleSave}
                 >
