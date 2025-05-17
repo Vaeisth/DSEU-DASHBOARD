@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from "../../../utils/api";
 import { API_ENDPOINTS } from "../../../config/api.config";
 import {
@@ -17,6 +17,8 @@ import toast from "react-hot-toast";
 import { useRef } from "react";
 import ProfileLoading from "./ProfileLoading";
 import ProfileError from "./ProfileError";
+import { showSuccessToast } from "@/utils/toasts.js";
+import { useProfileContext } from "../../../contexts/ProfileContext.jsx";
 
 const fetchProfile = async () => {
   try {
@@ -42,15 +44,15 @@ const Profile = () => {
   });
 
   const fileInputRef = useRef(null);
-  const queryClient = useQueryClient();
+  const { setIsProfileLoading } = useProfileContext();
 
   const imageMutation = useMutation({
     mutationFn: async (formData) => {
       return updateProfileImage(formData);
     },
     onSuccess: () => {
-      toast("Image updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      showSuccessToast("Image updated sucessfully!");
+      setIsProfileLoading(true);
     },
     onError: () => {
       toast("Error while uploading the image");

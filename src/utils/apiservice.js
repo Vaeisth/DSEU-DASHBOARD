@@ -75,6 +75,7 @@ export const approveLeave = async (id) => {
     });
     return data;
 };
+
 export const rejectLeave = async ({ id, remarks }) => {
     const { data } = await apiRequestAxios({
         endpoint: `${API_ENDPOINTS.LEAVE_REQUEST_REJECT}/${id}?remarks=${encodeURIComponent(remarks)}`,
@@ -82,7 +83,6 @@ export const rejectLeave = async ({ id, remarks }) => {
     });
     return data;
 };
-
 
 export const fetchLeaves = async (type) => {
     const endpoint =
@@ -106,7 +106,6 @@ export const fetchAllEmployees = async () => {
     return data?.data || [];
 };
 
-
 export const updateProfileImage = async (formData) => {
     const res = await apiRequestAxios({
         endpoint: API_ENDPOINTS.UPLOAD_IMAGE,
@@ -115,6 +114,15 @@ export const updateProfileImage = async (formData) => {
         headers: {
             "Content-Type": "multipart/form-data",
         },
+    })
+
+    return res.data;
+}
+
+export const getProfile = async () => {
+    const res = await apiRequestAxios({
+        endpoint: API_ENDPOINTS.PROFILE,
+        method: 'GET',
     })
 
     return res.data;

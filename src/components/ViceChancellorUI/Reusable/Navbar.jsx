@@ -1,40 +1,28 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import dseu_logo from "../../../assets/logo/dseu_logo.png";
-import { FaBell, FaSearch, FaUser, FaSignOutAlt, FaBuilding } from "react-icons/fa";
-import { apiRequest } from '../../../utils/api';
-import { API_ENDPOINTS } from '../../../config/api.config';
-import placeholder from '../../../assets/placeholder-pfp.jpg';
+import {
+  FaBell,
+  FaSearch,
+  FaUser,
+  FaSignOutAlt,
+  FaBuilding,
+} from "react-icons/fa";
+import placeholder from "../../../assets/placeholder-pfp.jpg";
+import { showSuccessToast } from "@/utils/toasts.js";
+import { getProfile } from "@/utils/apiservice.js";
+import { useQuery } from "@tanstack/react-query";
+import { Loader } from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
   const dropdownRef = useRef(null);
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const token = sessionStorage.getItem("accessToken");
-        const response = await apiRequest(API_ENDPOINTS.PROFILE, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch profile");
-        }
-
-        const data = await response.json();
-        setUserProfile(data);
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-      }
-    };
-
-    fetchUserProfile();
-  }, []);
+  const { data: userProfile, isLoading } = useQuery({
+    queryFn: getProfile,
+    queryKey: ["profile"],
+  });
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -44,8 +32,8 @@ const Navbar = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogoClick = () => {
@@ -78,8 +66,13 @@ const Navbar = () => {
     sessionStorage.removeItem("accessToken");
     sessionStorage.removeItem("currentRole");
     sessionStorage.removeItem("tokenExpiry");
+    showSuccessToast("Logged out successfully");
     navigate("/");
   };
+
+  if (isLoading) {
+    return <Loader className="animate-spin hidden" />;
+  }
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 px-4 py-2.5 z-50">
@@ -138,7 +131,9 @@ const Navbar = () => {
                 <div className="px-4 py-3 border-b border-gray-100">
                   <div className="flex items-center gap-3 mb-2">
                     <img
-                      src={userProfile?.picture || "https://via.placeholder.com/40"}
+                      src={
+                        userProfile?.picture || "https://via.placeholder.com/40"
+                      }
                       alt={userProfile?.name || "Profile"}
                       className="w-12 h-12 rounded-full border-2 border-gray-200 object-cover"
                       onError={(e) => {
@@ -147,8 +142,12 @@ const Navbar = () => {
                       }}
                     />
                     <div>
-                      <p className="font-medium text-gray-900">{userProfile?.name || "User"}</p>
-                      <p className="text-sm text-gray-500">{userProfile?.email || "user@example.com"}</p>
+                      <p className="font-medium text-gray-900">
+                        {userProfile?.name || "User"}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {userProfile?.email || "user@example.com"}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -164,7 +163,7 @@ const Navbar = () => {
                       navigate("/profile");
                       setIsDropdownOpen(false);
                     }}
-                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 cursor-pointer"
                   >
                     <FaUser className="w-4 h-4 text-gray-400" />
                     Profile Info
@@ -174,7 +173,7 @@ const Navbar = () => {
                       handleLogout();
                       setIsDropdownOpen(false);
                     }}
-                    className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                    className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 cursor-pointer"
                   >
                     <FaSignOutAlt className="w-4 h-4" />
                     Logout
