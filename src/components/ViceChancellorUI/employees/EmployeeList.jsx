@@ -8,16 +8,6 @@ import { debounce } from "lodash";
 import { FixedSizeGrid as Grid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
-// Add custom styles to hide scrollbars
-const styles = {
-  hideScrollbar: {
-    scrollbarWidth: 'none',  /* Firefox */
-    msOverflowStyle: 'none',  /* IE and Edge */
-    '&::-webkit-scrollbar': {  /* Chrome, Safari and Opera */
-      display: 'none'
-    }
-  }
-};
 
 const EmployeeList = () => {
   const [inputField, setInputField] = useState("");
@@ -206,27 +196,6 @@ const EmployeeList = () => {
             );
           }}
         </AutoSizer>
-      </div>
-
-      <div className="flex flex-row min-w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-        <input
-          type="text"
-          value={inputField}
-          onChange={handleInputChange}
-          placeholder="Search by employee name..."
-          className="px-4 py-2 rounded-xl border-2 border-blue-300 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200 transition duration-300 shadow-sm w-full"
-        />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <List
-          height={800}
-          itemCount={filteredEmployees.length}
-          itemSize={300}
-          width="100%"
-        >
-          {Row}
-        </List>
       </div>
     </div>
   );
