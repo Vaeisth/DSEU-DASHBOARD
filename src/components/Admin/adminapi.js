@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from "../../config/api.config";
 import { apiRequestAxios } from "../../utils/api";
 
 export const markOnDuty = (remarks) => {
@@ -7,3 +8,10 @@ export const markOnDuty = (remarks) => {
     data: { remarks },
   });
 };
+
+export const getLeaveRequest = () => {
+  return apiRequestAxios({
+    endpoint: API_ENDPOINTS.ADMIN_LEAVE_REQUESTS,
+    method: 'GET'
+  });
+}

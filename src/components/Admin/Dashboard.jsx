@@ -1,16 +1,22 @@
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Clock, Clock3 } from "lucide-react";
-import { useState } from "react";
+import { Clock, Clock3, LoaderCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import { buttonColors, services } from "../../Constants/adminDashboard";
-import { markOnDuty } from "./adminapi";
+import { getLeaveRequest, markOnDuty } from "./adminapi";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [onDuty, setOnDuty] = useState(false);
   const [showRemarks, setShowRemarks] = useState(false);
   const [remarks, setRemarks] = useState("");
+  const [leaveRequestData, setLeaveRequestData] = useState([]);
+
+  const { data: leaveRequest, isLoading: isRequestLoading } = useQuery({
+    queryFn: getLeaveRequest,
+    queryKey: ["admin-leave-request"],
+  });
 
   const dutyMutation = useMutation({
     mutationFn: async (remarks) => {
@@ -22,6 +28,12 @@ const AdminDashboard = () => {
       setOnDuty(true);
     },
   });
+
+  useEffect(() => {
+    if (leaveRequest) {
+      setLeaveRequestData(leaveRequest.data.data);
+    }
+  }, [leaveRequest]);
 
   const handleDutyChange = (e) => {
     const status = e.target.checked;
@@ -41,53 +53,54 @@ const AdminDashboard = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 min-h-screen w-full">
-      <div className="flex flex-col lg:flex-row gap-6 mb-10">
-        <div className="w-full lg:w-1/3 space-y-4">
-          <div className="bg-white p-6 rounded-2xl shadow">
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-3xl font-bold text-gray-800">On Duty</h3>
-                <p className="text-gray-600">
-                  {new Date().toLocaleDateString("en-GB", {
-                    weekday: "short",
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </p>
+      <div className="flex flex-col gap-5">
+        {/* On duty */}
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800">On Duty</h3>
+              <p className="text-gray-600">
+                {new Date().toLocaleDateString("en-GB", {
+                  weekday: "short",
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </p>
 
-                <div className="flex items-center mt-2 text-gray-500">
-                  <Clock />
-                  <span className="ml-2">Punch in 8:40 AM</span>
-                </div>
-              </div>
-              <div className="relative inline-block w-14 h-7 transition duration-200 ease-in-out">
-                <input
-                  type="checkbox"
-                  name="toggle"
-                  id="toggle"
-                  className="absolute w-0 h-0 opacity-0"
-                  checked={onDuty}
-                  onChange={handleDutyChange}
-                  disabled={dutyMutation.isPending}
-                />
-                <label
-                  htmlFor="toggle"
-                  className={`block overflow-hidden h-7 rounded-full ${
-                    onDuty ? "bg-blue-600" : "bg-gray-300"
-                  } cursor-pointer`}
-                >
-                  <span
-                    className={`block h-7 w-7 rounded-full bg-white transform transition-transform duration-200 ease-in-out ${
-                      onDuty ? "translate-x-7" : "translate-x-0"
-                    }`}
-                  ></span>
-                </label>
+              <div className="flex items-center mt-2 text-gray-500">
+                <Clock />
+                <span className="ml-2">Punch in 8:40 AM</span>
               </div>
             </div>
+            <div className="relative inline-block w-14 h-7 transition duration-200 ease-in-out">
+              <input
+                type="checkbox"
+                name="toggle"
+                id="toggle"
+                className="absolute w-0 h-0 opacity-0"
+                checked={onDuty}
+                onChange={handleDutyChange}
+                disabled={dutyMutation.isPending}
+              />
+              <label
+                htmlFor="toggle"
+                className={`block overflow-hidden h-7 rounded-full ${
+                  onDuty ? "bg-blue-600" : "bg-gray-300"
+                } cursor-pointer`}
+              >
+                <span
+                  className={`block h-7 w-7 rounded-full bg-white transform transition-transform duration-200 ease-in-out ${
+                    onDuty ? "translate-x-7" : "translate-x-0"
+                  }`}
+                ></span>
+              </label>
+            </div>
           </div>
+        </div>
 
-          {/* Today's Attendance Card */}
+        <div className="flex lg:flex-row gap-5 flex-col">
+          {/* Todays attendace card */}
           <div className="bg-white p-6 rounded-2xl shadow">
             <div className="flex justify-between items-start mb-4">
               <div>
@@ -137,49 +150,52 @@ const AdminDashboard = () => {
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Services Grid */}
-        <div className="bg-white p-6 rounded-2xl shadow w-full lg:w-2/3">
-          <h3 className="text-xl font-bold text-gray-700 mb-6">Services</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-center items-center">
-            {services.map((service, index) => (
-              <div
-                key={index}
-                className={`flex flex-col justify-center items-center cursor-pointer p-4 h-[100px] rounded-xl shadow hover:shadow-lg transform transition-transform hover:scale-105 ${buttonColors[index]}`}
-                onClick={() => navigate(service.path)}
-              >
-                <FontAwesomeIcon
-                  icon={service.icon}
-                  className="text-2xl text-gray-800 mb-1"
-                />
-                <span className="text-sm text-gray-900 text-center">
-                  {service.name}
-                </span>
-              </div>
-            ))}
+          {/* Services Grid */}
+          <div className="bg-white p-6 rounded-2xl shadow w-full lg:w-2/3 h-fit">
+            <h3 className="text-xl font-bold text-gray-700 mb-6">Services</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-center items-center">
+              {services.map((service, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-col justify-center items-center cursor-pointer p-4 h-[100px] rounded-xl shadow hover:shadow-lg transform text-center transition-transform hover:scale-105 ${buttonColors[index]}`}
+                  onClick={() => navigate(service.path)}
+                >
+                  <FontAwesomeIcon
+                    icon={service.icon}
+                    className="text-2xl text-gray-800 mb-1"
+                  />
+                  <span className="text-sm text-gray-900 text-center">
+                    {service.name}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Recent Activity */}
-      <div className="bg-white p-6 rounded-2xl shadow mb-10">
-        <h3 className="text-xl font-bold text-gray-700 mb-6">
-          Recent Activity
-        </h3>
-        <div className="space-y-4">
-          {[1, 2, 3].map((_, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
+        {/* Recent Activity */}
+        <div className="bg-white p-6 rounded-2xl shadow mb-10">
+          <div className="flex flex-row justify-between w-full -mt-[5px]">
+            <h3 className="text-2xl font-bold text-[#333]">
+              Pending Approvals
+            </h3>
+            <button
+              className="ml-2 cursor-pointer text-blue-600 hover:underline"
+              onClick={() => navigate("/admin/track-leave")}
             >
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <div>
-                <p className="text-sm text-gray-600">Leave request approved</p>
-                <p className="text-xs text-gray-400">2 hours ago</p>
-              </div>
+              See All
+            </button>
+          </div>
+          {isRequestLoading ? (
+            <div className="flex items-center justify-center h-full w-full">
+              <LoaderCircle className="w-5 h-5 animate-spin" />
             </div>
-          ))}
+          ) : leaveRequestData.length === 0 ? (
+            <div className="mt-2 mr-2 text-slate-600">No request as of now</div>
+          ) : (
+            <div>Meow</div>
+          )}
         </div>
       </div>
 

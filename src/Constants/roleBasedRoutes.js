@@ -1,5 +1,5 @@
 export const RoleRoutes = {
-  admin: ["/admin/dashboard"],
+  admin: ["/admin/dashboard", '/announcements', '/holidays', '/admin/on-duty', '/mark-attendance', '/admin/track-leave'],
   superadmin: [
     "/vc-dashboard",
     "/attendance",

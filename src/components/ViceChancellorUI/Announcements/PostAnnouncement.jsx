@@ -1,15 +1,13 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaClock, FaLink, FaFileAlt } from "react-icons/fa";
-import img from "../../../assets/icons/img (1).png";
-import { apiRequestAxios } from '../../../utils/api';
-import { API_ENDPOINTS } from '../../../config/api.config';
+import { apiRequestAxios } from "../../../utils/api";
+import { API_ENDPOINTS } from "../../../config/api.config";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchCampuses = async () => {
   const { data } = await apiRequestAxios({
     endpoint: API_ENDPOINTS.ALL_CAMPUSES,
-    method: 'GET'
+    method: "GET",
   });
   return data.data;
 };
@@ -20,7 +18,6 @@ const PostAnnouncement = () => {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [audience, setAudience] = useState("");
   const [campus, setCampus] = useState("");
   const [zone, setZone] = useState("");
   const [file, setFile] = useState(null);
@@ -31,7 +28,7 @@ const PostAnnouncement = () => {
   });
 
   // Get unique zones from campuses
-  const zones = [...new Set(campuses.map(campus => campus.zone))];
+  const zones = [...new Set(campuses.map((campus) => campus.zone))];
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -41,7 +38,7 @@ const PostAnnouncement = () => {
   };
 
   const handlePost = async () => {
-    if (!title || !description || !audience || !campus || !zone) {
+    if (!title || !description || !campus || !zone) {
       alert("Please fill all required fields.");
       return;
     }
@@ -57,16 +54,20 @@ const PostAnnouncement = () => {
 
     try {
       const res = await apiRequestAxios({
-        endpoint: `${API_ENDPOINTS.CREATE_ANNOUNCEMENT}?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`,
-        method: 'POST',
+        endpoint: `${
+          API_ENDPOINTS.CREATE_ANNOUNCEMENT
+        }?title=${encodeURIComponent(title)}&description=${encodeURIComponent(
+          description
+        )}`,
+        method: "POST",
         data: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
 
       if (res.data) {
-        navigate('/announcements');
+        navigate("/announcements");
       }
     } catch (error) {
       console.error("Error posting announcement:", error);
@@ -78,12 +79,16 @@ const PostAnnouncement = () => {
     <div className="p-2 bg-gray-100 min-h-screen">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-lg shadow-md p-4">
-          <h1 className="md:text-2xl text-xl font-semibold mb-4 text-gray-800 text-center mt-2">Post Announcement</h1>
+          <h1 className="md:text-2xl text-xl font-semibold mb-4 text-gray-800 text-center mt-2">
+            Post Announcement
+          </h1>
 
           <div className="space-y-3">
             {/* Title */}
             <div className="bg-gray-50 p-3 rounded-lg">
-              <label className="block text-md font-medium text-gray-700 mb-1">Title</label>
+              <label className="block text-md font-medium text-gray-700 mb-1">
+                Title
+              </label>
               <div className="relative w-full">
                 <input
                   type="text"
@@ -98,7 +103,9 @@ const PostAnnouncement = () => {
 
             {/* Description */}
             <div className="bg-gray-50 p-3 rounded-lg">
-              <label className="block text-md font-medium text-gray-700 mb-1">Description</label>
+              <label className="block text-md font-medium text-gray-700 mb-1">
+                Description
+              </label>
               <div className="relative w-full">
                 <textarea
                   value={description}
@@ -112,27 +119,12 @@ const PostAnnouncement = () => {
             </div>
 
             {/* Audience and Zone */}
-            <div className="grid grid-cols-2 gap-3">
-              {/* Audience */}
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <label className="block text-md font-medium text-gray-700 mb-1">Audience</label>
-                <div className="relative w-full">
-                  <select
-                    value={audience}
-                    onChange={(e) => setAudience(e.target.value)}
-                    className="peer w-full bg-transparent border-b border-gray-300 px-2 py-2 text-sm text-gray-800 focus:outline-none focus:ring-0 focus:border-blue-500"
-                  >
-                    <option value="">Select Audience</option>
-                    <option value="employee">Employee</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                  <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-blue-500 transition-all duration-300 peer-focus:w-full"></span>
-                </div>
-              </div>
-
+            <div>
               {/* Zone */}
               <div className="bg-gray-50 p-3 rounded-lg">
-                <label className="block text-md font-medium text-gray-700 mb-1">Zone</label>
+                <label className="block text-md font-medium text-gray-700 mb-1">
+                  Zone
+                </label>
                 <div className="relative w-full">
                   <select
                     value={zone}
@@ -156,7 +148,9 @@ const PostAnnouncement = () => {
 
             {/* Campus */}
             <div className="bg-gray-50 p-3 rounded-lg">
-              <label className="block text-md font-medium text-gray-700 mb-1">Campus</label>
+              <label className="block text-md font-medium text-gray-700 mb-1">
+                Campus
+              </label>
               <div className="relative w-full">
                 <select
                   value={campus}
@@ -178,7 +172,9 @@ const PostAnnouncement = () => {
 
             {/* File Input */}
             <div className="bg-gray-50 p-3 rounded-lg">
-              <label className="block text-md font-medium text-gray-700 mb-1">Attachment</label>
+              <label className="block text-md font-medium text-gray-700 mb-1">
+                Attachment
+              </label>
               <div className="flex items-center">
                 <input
                   type="file"

@@ -8,7 +8,7 @@ import {
 
 const services = [
     { name: "Attendance", path: "/mark-attendance", icon: faUserCheck },
-    { name: "Track Leaves", path: "/apply-leave", icon: faPlaneDeparture },
+    { name: "Track Leaves", path: "/admin/track-leave", icon: faPlaneDeparture },
     { name: "Announcements", path: "/announcements", icon: faBullhorn },
     { name: "Calendar", path: "/holidays", icon: faCalendarAlt },
     { name: "On Duty", path: "/admin/on-duty", icon: faCalendarCheck },
