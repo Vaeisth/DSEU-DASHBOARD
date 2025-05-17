@@ -29,58 +29,68 @@ import VCLayout from "./layouts/VcLayout.jsx";
 import EmployeeLayout from "./layouts/EmployeeLayout.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import AdminDashboard from "./components/Admin/Dashboard.jsx";
-
+import { ProfileProvider } from "./contexts/ProfileContext.jsx";
 
 function App() {
   return (
     <Router>
-      <Toaster />
-      <Routes>
-        <Route path="/" element={<Login />} />
+      <ProfileProvider>
+        <Toaster />
+        <Routes>
+          <Route path="/" element={<Login />} />
 
-        {/* VC routes */}
-        <Route path="/" element={<VCLayout />}>
-          <Route path="vc-dashboard" element={<Dashboard />} />
-          <Route path="attendance" element={<AttendanceReport />} />
-          <Route path="weekly-report" element={<WeeklyReport />} />
-          <Route path="monthly-report" element={<MonthlyReport />} />
-          <Route path="track-leave" element={<TrackLeave />} />
-          <Route path="leave-details/:id" element={<LeaveDetails />} />
-          <Route path="track-leave/history" element={<LeaveHistory />} />
-          <Route path="announcements" element={<Announcements />} />
-          <Route path="announcement/:id" element={<AnnouncementDetails />} />
-          <Route path="post" element={<PostAnnouncement />} />
-          <Route path="attach-link" element={<AttachLinkDrawer />} />
-          <Route path="schedule" element={<ScheduleDrawer />} />
-          <Route path="holidays" element={<Holidays />} />
-          <Route path="campus" element={<CampusList />} />
-          <Route path="campus/:id" element={<CampusInfo />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="profile/:employeeId" element={<Profile />} />
-          <Route path="employee-details/:employeeId" element={<EmployeePersonalDetail />} />
-          <Route path="inventory" element={<InventoryDashboard />} />
-          <Route path="surveillance" element={<Surveillance />} />
-          <Route path="officer-details/:id" element={<OfficerDetails />} />
-          <Route path="employees" element={<EmployeeList />} />
-          <Route path="calendar" element={<Calendar />} />
-        </Route>
+          {/* VC routes */}
+          <Route path="/" element={<VCLayout />}>
+            <Route path="vc-dashboard" element={<Dashboard />} />
+            <Route path="attendance" element={<AttendanceReport />} />
+            <Route path="weekly-report" element={<WeeklyReport />} />
+            <Route path="monthly-report" element={<MonthlyReport />} />
+            <Route path="track-leave" element={<TrackLeave />} />
+            <Route path="leave-details/:id" element={<LeaveDetails />} />
+            <Route path="track-leave/history" element={<LeaveHistory />} />
+            <Route path="announcements" element={<Announcements />} />
+            <Route path="announcement/:id" element={<AnnouncementDetails />} />
+            <Route path="post" element={<PostAnnouncement />} />
+            <Route path="attach-link" element={<AttachLinkDrawer />} />
+            <Route path="schedule" element={<ScheduleDrawer />} />
+            <Route path="holidays" element={<Holidays />} />
+            <Route path="campus" element={<CampusList />} />
+            <Route path="campus/:id" element={<CampusInfo />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="profile/:employeeId" element={<Profile />} />
+            <Route
+              path="employee-details/:employeeId"
+              element={<EmployeePersonalDetail />}
+            />
+            <Route path="inventory" element={<InventoryDashboard />} />
+            <Route path="surveillance" element={<Surveillance />} />
+            <Route path="officer-details/:id" element={<OfficerDetails />} />
+            <Route path="employees" element={<EmployeeList />} />
+            <Route path="calendar" element={<Calendar />} />
+          </Route>
 
-        {/* Employee Routes */}
-        <Route path="/" element={<EmployeeLayout />}>
-          <Route path="employee-dashboard" element={<EmployeeDashboard />} />
-          <Route path="employee-leave" element={<div>Leave Management</div>} />
-          <Route path="employee-announcements" element={<div>Announcements</div>} />
-          <Route path="employee-profile" element={<div>Profile</div>} />
-        </Route>
-      </Routes>
+          {/* Employee Routes */}
+          <Route path="/" element={<EmployeeLayout />}>
+            <Route path="employee-dashboard" element={<EmployeeDashboard />} />
+            <Route
+              path="employee-leave"
+              element={<div>Leave Management</div>}
+            />
+            <Route
+              path="employee-announcements"
+              element={<div>Announcements</div>}
+            />
+            <Route path="employee-profile" element={<div>Profile</div>} />
+          </Route>
+        </Routes>
 
-      {/* Admin Routes */} 
-     <Routes>
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route path="dashboard" element={<AdminDashboard />} />
-      </Route>
-    </Routes>
-
+        {/* Admin Routes */}
+        <Routes>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="dashboard" element={<AdminDashboard />} />
+          </Route>
+        </Routes>
+      </ProfileProvider>
     </Router>
   );
 }
