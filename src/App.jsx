@@ -1,5 +1,12 @@
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import { useEffect, useRef } from "react";
 import Login from "./components/Login/Login";
 import Dashboard from "./components/ViceChancellorUI/homepage/Dashboard.jsx";
 import AttendanceReport from "./components/ViceChancellorUI/attendance/Attendance.jsx";
@@ -22,74 +29,117 @@ import Surveillance from "./components/ViceChancellorUI/surveillance/Surveillanc
 import EmployeeDashboard from "./components/EmployeeUI/homepage/Dashboard.jsx";
 import OfficerDetails from "./components/ViceChancellorUI/attendance/OfficerDetails.jsx";
 import EmployeeList from "./components/ViceChancellorUI/employees/EmployeeList.jsx";
-import EmployeePersonalDetail from "./components/ViceChancellorUI/employees/EmployeeDetail.jsx"; // Fixed path
+import EmployeePersonalDetail from "./components/ViceChancellorUI/employees/EmployeeDetail.jsx";
 import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
-import { Toaster } from "react-hot-toast";
+import AdminDashboard from "./components/Admin/Dashboard.jsx";
 import VCLayout from "./layouts/VcLayout.jsx";
 import EmployeeLayout from "./layouts/EmployeeLayout.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
-import AdminDashboard from "./components/Admin/Dashboard.jsx";
+import { Toaster } from "react-hot-toast";
 import { ProfileProvider } from "./contexts/ProfileContext.jsx";
+import { RoleRoutes } from "./Constants/roleBasedRoutes.js";
+import { showErrorToast } from "./utils/toasts.js";
+
+const AppRoutes = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const role = sessionStorage.getItem("currentRole");
+  const hasRedirected = useRef(false);
+
+  useEffect(() => {
+    if (hasRedirected.current) return;
+
+    const currentPath = location.pathname;
+
+    switch (role) {
+      case "super_admin":
+        if (!RoleRoutes.superadmin.includes(currentPath)) {
+          hasRedirected.current = true;
+          showErrorToast("Access Denied");
+          navigate("/vc-dashboard");
+        }
+        break;
+
+      case "admin":
+        if (!RoleRoutes.admin.includes(currentPath)) {
+          hasRedirected.current = true;
+          showErrorToast("Access Denied");
+          navigate("/admin/dashboard");
+        }
+        break;
+
+      case "employee":
+        if (!RoleRoutes.employee.includes(currentPath)) {
+          hasRedirected.current = true;
+          showErrorToast("Access Denied");
+          navigate("/employee-dashboard");
+        }
+        break;
+
+      default:
+        break;
+    }
+  }, [location, role, navigate]);
+
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Login />} />
+
+        <Route path="/" element={<VCLayout />}>
+          <Route path="vc-dashboard" element={<Dashboard />} />
+          <Route path="attendance" element={<AttendanceReport />} />
+          <Route path="weekly-report" element={<WeeklyReport />} />
+          <Route path="monthly-report" element={<MonthlyReport />} />
+          <Route path="track-leave" element={<TrackLeave />} />
+          <Route path="leave-details/:id" element={<LeaveDetails />} />
+          <Route path="track-leave/history" element={<LeaveHistory />} />
+          <Route path="announcements" element={<Announcements />} />
+          <Route path="announcement/:id" element={<AnnouncementDetails />} />
+          <Route path="post" element={<PostAnnouncement />} />
+          <Route path="attach-link" element={<AttachLinkDrawer />} />
+          <Route path="schedule" element={<ScheduleDrawer />} />
+          <Route path="holidays" element={<Holidays />} />
+          <Route path="campus" element={<CampusList />} />
+          <Route path="campus/:id" element={<CampusInfo />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="profile/:employeeId" element={<Profile />} />
+          <Route
+            path="employee-details/:employeeId"
+            element={<EmployeePersonalDetail />}
+          />
+          <Route path="inventory" element={<InventoryDashboard />} />
+          <Route path="surveillance" element={<Surveillance />} />
+          <Route path="officer-details/:id" element={<OfficerDetails />} />
+          <Route path="employees" element={<EmployeeList />} />
+          <Route path="calendar" element={<Calendar />} />
+        </Route>
+
+        <Route path="/" element={<EmployeeLayout />}>
+          <Route path="employee-dashboard" element={<EmployeeDashboard />} />
+          <Route path="employee-leave" element={<div>Leave Management</div>} />
+          <Route
+            path="employee-announcements"
+            element={<div>Announcements</div>}
+          />
+        </Route>
+      </Routes>
+
+      <Routes>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminDashboard />} />
+        </Route>
+      </Routes>
+    </>
+  );
+};
 
 function App() {
   return (
     <Router>
       <ProfileProvider>
         <Toaster />
-        <Routes>
-          <Route path="/" element={<Login />} />
-
-          {/* VC routes */}
-          <Route path="/" element={<VCLayout />}>
-            <Route path="vc-dashboard" element={<Dashboard />} />
-            <Route path="attendance" element={<AttendanceReport />} />
-            <Route path="weekly-report" element={<WeeklyReport />} />
-            <Route path="monthly-report" element={<MonthlyReport />} />
-            <Route path="track-leave" element={<TrackLeave />} />
-            <Route path="leave-details/:id" element={<LeaveDetails />} />
-            <Route path="track-leave/history" element={<LeaveHistory />} />
-            <Route path="announcements" element={<Announcements />} />
-            <Route path="announcement/:id" element={<AnnouncementDetails />} />
-            <Route path="post" element={<PostAnnouncement />} />
-            <Route path="attach-link" element={<AttachLinkDrawer />} />
-            <Route path="schedule" element={<ScheduleDrawer />} />
-            <Route path="holidays" element={<Holidays />} />
-            <Route path="campus" element={<CampusList />} />
-            <Route path="campus/:id" element={<CampusInfo />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="profile/:employeeId" element={<Profile />} />
-            <Route
-              path="employee-details/:employeeId"
-              element={<EmployeePersonalDetail />}
-            />
-            <Route path="inventory" element={<InventoryDashboard />} />
-            <Route path="surveillance" element={<Surveillance />} />
-            <Route path="officer-details/:id" element={<OfficerDetails />} />
-            <Route path="employees" element={<EmployeeList />} />
-            <Route path="calendar" element={<Calendar />} />
-          </Route>
-
-          {/* Employee Routes */}
-          <Route path="/" element={<EmployeeLayout />}>
-            <Route path="employee-dashboard" element={<EmployeeDashboard />} />
-            <Route
-              path="employee-leave"
-              element={<div>Leave Management</div>}
-            />
-            <Route
-              path="employee-announcements"
-              element={<div>Announcements</div>}
-            />
-            <Route path="employee-profile" element={<div>Profile</div>} />
-          </Route>
-        </Routes>
-
-        {/* Admin Routes */}
-        <Routes>
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route path="dashboard" element={<AdminDashboard />} />
-          </Route>
-        </Routes>
+        <AppRoutes />
       </ProfileProvider>
     </Router>
   );

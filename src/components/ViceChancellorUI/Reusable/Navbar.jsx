@@ -71,7 +71,7 @@ const Navbar = () => {
   };
 
   if (isLoading) {
-    return <Loader className="animate-spin" />;
+    return <Loader className="animate-spin hidden" />;
   }
 
   return (
