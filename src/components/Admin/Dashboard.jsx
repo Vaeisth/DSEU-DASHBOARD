@@ -4,13 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Clock, Clock3, LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { buttonColors, services } from "../../Constants/adminDashboard";
-import { getLeaveRequest, markOnDuty } from "./adminapi";
+import { getLeaveRequest /*, markOnDuty*/ } from "./adminapi";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const [onDuty, setOnDuty] = useState(false);
-  const [showRemarks, setShowRemarks] = useState(false);
-  const [remarks, setRemarks] = useState("");
+  // const [onDuty, setOnDuty] = useState(false);
+  // const [showRemarks, setShowRemarks] = useState(false);
+  // const [remarks, setRemarks] = useState("");
   const [leaveRequestData, setLeaveRequestData] = useState([]);
 
   const { data: leaveRequest, isLoading: isRequestLoading } = useQuery({
@@ -18,6 +18,7 @@ const AdminDashboard = () => {
     queryKey: ["admin-leave-request"],
   });
 
+  /*
   const dutyMutation = useMutation({
     mutationFn: async (remarks) => {
       return await markOnDuty(remarks);
@@ -28,6 +29,7 @@ const AdminDashboard = () => {
       setOnDuty(true);
     },
   });
+  */
 
   useEffect(() => {
     if (leaveRequest) {
@@ -35,6 +37,7 @@ const AdminDashboard = () => {
     }
   }, [leaveRequest]);
 
+  /*
   const handleDutyChange = (e) => {
     const status = e.target.checked;
     if (status) {
@@ -50,11 +53,13 @@ const AdminDashboard = () => {
     setShowRemarks(false);
     dutyMutation.mutate({ status: true, remarks });
   };
+  */
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 min-h-screen w-full">
       <div className="flex flex-col gap-5">
         {/* On duty */}
+        {/*
         <div className="bg-white p-6 rounded-2xl shadow">
           <div className="flex justify-between items-center">
             <div>
@@ -98,6 +103,7 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
+        */}
 
         <div className="flex lg:flex-row gap-5 flex-col">
           {/* Todays attendace card */}
@@ -158,7 +164,7 @@ const AdminDashboard = () => {
               {services.map((service, index) => (
                 <div
                   key={index}
-                  className={`flex flex-col justify-center items-center cursor-pointer p-4 h-[100px] rounded-xl shadow hover:shadow-lg transform text-center transition-transform hover:scale-105 ${buttonColors[index]} animate-spin`}
+                  className={`flex flex-col justify-center items-center cursor-pointer p-4 h-[100px] rounded-xl shadow hover:shadow-lg transform text-center transition-transform hover:scale-105 ${buttonColors[index]}`}
                   onClick={() => navigate(service.path)}
                 >
                   <FontAwesomeIcon
@@ -200,6 +206,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Remarks Modal */}
+      {/*
       {showRemarks && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-lg">
@@ -232,6 +239,7 @@ const AdminDashboard = () => {
           </div>
         </div>
       )}
+      */}
     </div>
   );
 };

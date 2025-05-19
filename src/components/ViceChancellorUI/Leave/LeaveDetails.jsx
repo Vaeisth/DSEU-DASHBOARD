@@ -5,7 +5,7 @@ import { FaCheckCircle, FaTimes, FaCalendarAlt, FaBuilding, FaUserAlt, FaPhone, 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { approveLeave, fetchLeaveDetails, rejectLeave } from "../../../utils/apiservice";
 import { format } from "date-fns";
-import { showErrorToast } from "../../../utils/toasts";
+import { showSuccessToast, showErrorToast } from "../../../utils/toasts";
 
 function LeaveDetails() {
   const navigate = useNavigate();
@@ -30,7 +30,9 @@ function LeaveDetails() {
       setTimeout(() => {
         navigate(-1);
       }, 2000);
+      showSuccessToast("Leave Approved");
     },
+    
     onError: (error) => {
       setError(error.response?.data?.message || "Failed to approve leave request");
       showErrorToast("Failed to approve leave request");
@@ -44,6 +46,7 @@ function LeaveDetails() {
       queryClient.invalidateQueries(["leaves", "pending"]);
       queryClient.invalidateQueries(["leaves", "history"]);
       navigate(-1);
+      showSuccessToast("Leave Rejected");
     },
     onError: (error) => {
       setError(error.response?.data?.message || "Failed to reject leave request");

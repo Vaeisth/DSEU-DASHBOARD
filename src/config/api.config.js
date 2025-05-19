@@ -37,9 +37,12 @@ export const API_ENDPOINTS = {
   EMPLOYEE_LEAVE_BALANCE: '/employee/leave-balance',
   EMPLOYEE_PENDING_APPROVALS: '/employee/pending-approvals',
 
-  // admin
+  //Admin
   ADMIN_LEAVE_REQUESTS: '/admin/get-leave-requests',
   ADMIN_LEAVE_REQUESTS_HISTORY: '/admin/get-leave-requests-history',
+  APPROVE_LEAVE_ADMIN: '/approve-leave',
+  REJECT_LEAVE_ADMIN: '/reject-leave',
+  ADMIN_ANNOUNCEMENT: '/get-announcements',
 
   // Ghante ka hisab 
   EMPLOYEE_TOTAL_DURATION: '/attendance/total_duration',
@@ -48,8 +51,7 @@ export const API_ENDPOINTS = {
   // Mics
   HOLIDAY_CALENDAR: '/profile/get-calender',
 
-  //Admin
-  ADMIN_ANNOUNCEMENT: '/get-announcements'
+
 };
 
 // Helper function to get full API URL

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { fetchLeaves } from "../../../utils/apiservice";
-import { FaFilter, FaSearch, FaCalendarAlt, FaUserAlt, FaBuilding } from "react-icons/fa";
+import {  FaSearch, FaCalendarAlt, FaUserAlt, FaBuilding } from "react-icons/fa";
 import { format } from "date-fns";
 
 const TrackLeave = () => {
