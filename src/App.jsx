@@ -1,8 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login/Login";
 import Dashboard from "./components/ViceChancellorUI/homepage/Dashboard.jsx";
 import AttendanceReport from "./components/ViceChancellorUI/attendance/Attendance.jsx";
@@ -36,69 +32,104 @@ import AdminLayout from "./layouts/AdminLayout.jsx";
 
 import { Toaster } from "react-hot-toast";
 import { ProfileProvider } from "./contexts/ProfileContext.jsx";
-
-// Kaam chalau authentication
-const AppRoutes = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-
-      {/* VC Layout */}
-      <Route path="/" element={<VCLayout />}>
-        <Route path="vc-dashboard" element={<Dashboard />} />
-        <Route path="attendance" element={<AttendanceReport />} />
-        <Route path="weekly-report" element={<WeeklyReport />} />
-        <Route path="monthly-report" element={<MonthlyReport />} />
-        <Route path="track-leave" element={<TrackLeave />} />
-        <Route path="leave-details/:id" element={<LeaveDetails />} />
-        <Route path="track-leave/history" element={<LeaveHistory />} />
-        <Route path="announcements" element={<Announcements />} />
-        <Route path="announcement/:id" element={<AnnouncementDetails />} />
-        <Route path="post" element={<PostAnnouncement />} />
-        <Route path="attach-link" element={<AttachLinkDrawer />} />
-        <Route path="schedule" element={<ScheduleDrawer />} />
-        <Route path="holidays" element={<Holidays />} />
-        <Route path="campus" element={<CampusList />} />
-        <Route path="campus/:id" element={<CampusInfo />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="profile/:employeeId" element={<Profile />} />
-        <Route
-          path="employee-details/:employeeId"
-          element={<EmployeePersonalDetail />}
-        />
-        <Route path="inventory" element={<InventoryDashboard />} />
-        <Route path="surveillance" element={<Surveillance />} />
-        <Route path="officer-details/:id" element={<OfficerDetails />} />
-        <Route path="employees" element={<EmployeeList />} />
-        <Route path="calendar" element={<Calendar />} />
-        <Route path="mark-attendance" element={<div>Mark Attendance</div>} />
-      </Route>
-
-      {/* Employee Layout */}
-      <Route path="/" element={<EmployeeLayout />}>
-        <Route path="employee-dashboard" element={<EmployeeDashboard />} />
-        <Route path="employee-leave" element={<div>Leave Management</div>} />
-        <Route
-          path="employee-announcements"
-          element={<div>Announcements</div>}
-        />
-      </Route>
-
-      {/* Admin Layout */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="track-leave" element={<AdminTrackLeave />} />
-      </Route>
-    </Routes>
-  );
-};
+import ProtectedRoute from "./components/authProtection/ProtectedRoute.jsx";
+import Layout from "./layouts/Layout.jsx";
 
 function App() {
   return (
     <Router>
       <ProfileProvider>
         <Toaster />
-        <AppRoutes />
+        <Routes>
+          <Route path="/" element={<Login />} />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute
+                allowedRoles={["super_admin", "admin", "employee"]}
+              >
+                <Layout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Profile />} />
+          </Route>
+
+          {/* VC Layout */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute allowedRoles={["super_admin"]}>
+                <VCLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="vc-dashboard" element={<Dashboard />} />
+            <Route path="attendance" element={<AttendanceReport />} />
+            <Route path="weekly-report" element={<WeeklyReport />} />
+            <Route path="monthly-report" element={<MonthlyReport />} />
+            <Route path="track-leave" element={<TrackLeave />} />
+            <Route path="leave-details/:id" element={<LeaveDetails />} />
+            <Route path="track-leave/history" element={<LeaveHistory />} />
+            <Route path="announcements" element={<Announcements />} />
+            <Route path="announcement/:id" element={<AnnouncementDetails />} />
+            <Route path="post" element={<PostAnnouncement />} />
+            <Route path="attach-link" element={<AttachLinkDrawer />} />
+            <Route path="schedule" element={<ScheduleDrawer />} />
+            <Route path="holidays" element={<Holidays />} />
+            <Route path="campus" element={<CampusList />} />
+            <Route path="campus/:id" element={<CampusInfo />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="profile/:employeeId" element={<Profile />} />
+            <Route
+              path="employee-details/:employeeId"
+              element={<EmployeePersonalDetail />}
+            />
+            <Route path="inventory" element={<InventoryDashboard />} />
+            <Route path="surveillance" element={<Surveillance />} />
+            <Route path="officer-details/:id" element={<OfficerDetails />} />
+            <Route path="employees" element={<EmployeeList />} />
+            <Route path="calendar" element={<Calendar />} />
+            <Route
+              path="mark-attendance"
+              element={<div>Mark Attendance</div>}
+            />
+          </Route>
+
+          {/* Employee Layout */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute allowedRoles={["employee"]}>
+                <EmployeeLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="employee-dashboard" element={<EmployeeDashboard />} />
+            <Route
+              path="employee-leave"
+              element={<div>Leave Management</div>}
+            />
+            <Route
+              path="employee-announcements"
+              element={<div>Announcements</div>}
+            />
+          </Route>
+
+          {/* Admin Layout */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="track-leave" element={<AdminTrackLeave />} />
+          </Route>
+        </Routes>
       </ProfileProvider>
     </Router>
   );
