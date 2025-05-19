@@ -11,7 +11,7 @@ const fetchEmployeeDetails = async (employeeId) => {
       endpoint: `/superadmin/user/${employeeId}`, 
       method: "GET",
     });
-    console.log("Employee details response:", response.data);
+
     return response.data.data;
   } catch (FirstError) {
       console.error("Employee details fetch error:", FirstError);
