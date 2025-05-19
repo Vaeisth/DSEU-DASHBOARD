@@ -6,7 +6,6 @@ import WeeklyReport from "./components/ViceChancellorUI/attendance/WeeklyReport.
 import MonthlyReport from "./components/ViceChancellorUI/attendance/MonthlyReport.jsx";
 import TrackLeave from "./components/ViceChancellorUI/Leave/TrackLeave.jsx";
 import LeaveDetails from "./components/ViceChancellorUI/Leave/LeaveDetails.jsx";
-import LeaveHistory from "./components/ViceChancellorUI/Leave/leaveHistory.jsx";
 import Announcements from "./components/ViceChancellorUI/Announcements/Announcements.jsx";
 import AnnouncementDetails from "./components/ViceChancellorUI/Announcements/AnnouncementDetails.jsx";
 import PostAnnouncement from "./components/ViceChancellorUI/Announcements/PostAnnouncement.jsx";
@@ -71,7 +70,6 @@ function App() {
             <Route path="monthly-report" element={<MonthlyReport />} />
             <Route path="track-leave" element={<TrackLeave />} />
             <Route path="leave-details/:id" element={<LeaveDetails />} />
-            <Route path="track-leave/history" element={<LeaveHistory />} />
             <Route path="announcements" element={<Announcements />} />
             <Route path="announcement/:id" element={<AnnouncementDetails />} />
             <Route path="post" element={<PostAnnouncement />} />
