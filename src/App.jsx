@@ -1,11 +1,8 @@
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  useLocation,
-  useNavigate,
+  Route
 } from "react-router-dom";
-import { useEffect } from "react";
 import Login from "./components/Login/Login";
 import Dashboard from "./components/ViceChancellorUI/homepage/Dashboard.jsx";
 import AttendanceReport from "./components/ViceChancellorUI/attendance/Attendance.jsx";
@@ -39,53 +36,9 @@ import AdminLayout from "./layouts/AdminLayout.jsx";
 
 import { Toaster } from "react-hot-toast";
 import { ProfileProvider } from "./contexts/ProfileContext.jsx";
-import { RoleRoutes } from "./Constants/roleBasedRoutes.js";
-import { showErrorToast } from "./utils/toasts.js";
 
 // Kaam chalau authentication
 const AppRoutes = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const role = sessionStorage.getItem("currentRole");
-
-  const isRouteAllowed = (allowedRoutes, currentPath) => {
-    return allowedRoutes.some((route) => {
-      const routeRegex = new RegExp(
-        "^" + route.replace(/:[^/]+/g, "[^/]+") + "$"
-      );
-      return routeRegex.test(currentPath);
-    });
-  };
-
-  useEffect(() => {
-    if (!role) return;
-
-    const currentPath = location.pathname;
-
-    switch (role) {
-      case "super_admin":
-        if (!isRouteAllowed(RoleRoutes.superadmin, currentPath)) {
-          navigate("/vc-dashboard");
-          showErrorToast("Access Denied");
-        }
-        break;
-      case "admin":
-        if (!isRouteAllowed(RoleRoutes.admin, currentPath)) {
-          navigate("/admin/dashboard");
-          showErrorToast("Access Denied");
-        }
-        break;
-      case "employee":
-        if (!isRouteAllowed(RoleRoutes.employee, currentPath)) {
-          navigate("/employee-dashboard");
-          showErrorToast("Access Denied");
-        }
-        break;
-      default:
-        break;
-    }
-  }, [location, role, navigate]);
-
   return (
     <Routes>
       <Route path="/" element={<Login />} />
@@ -136,9 +89,6 @@ const AppRoutes = () => {
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="track-leave" element={<AdminTrackLeave />} />
       </Route>
-
-      {/* <Route path="not-found" element={<NotFoundPage />} />
-      <Route path="*" element={<NotFoundPage />} /> */}
     </Routes>
   );
 };

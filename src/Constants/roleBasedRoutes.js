@@ -1,5 +1,5 @@
 export const RoleRoutes = {
-  admin: ["/admin/dashboard", '/announcements', '/holidays', '/admin/on-duty', '/mark-attendance', '/admin/track-leave'],
+  admin: ["/admin/dashboard", '/announcements', '/holidays', '/admin/on-duty', '/mark-attendance', '/admin/track-leave', '/profile'],
   superadmin: [
     "/vc-dashboard",
     "/attendance",
@@ -24,6 +24,7 @@ export const RoleRoutes = {
     "/officer-details/:id",
     "/employees",
     "/calendar",
+    '/profile'
   ],
-  employee: ["/employee-dashboard", "/employee-leave", "/employee-announcements"],
+  employee: ["/employee-dashboard", "/employee-leave", "/employee-announcements", '/profile'],
 };
