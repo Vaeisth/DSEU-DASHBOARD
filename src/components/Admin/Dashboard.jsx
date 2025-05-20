@@ -129,7 +129,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow mb-10">
+        <div className="bg-white p-6 rounded-2xl shadow">
           <div className="flex flex-row justify-between w-full -mt-[5px]">
             <h3 className="text-2xl font-bold text-[#333]">
               Pending Approvals
