@@ -35,6 +35,7 @@ import ProtectedRoute from "./components/authProtection/ProtectedRoute.jsx";
 import Layout from "./layouts/Layout.jsx";
 import ApplyLeave from "./components/Admin/ApplyLeave.jsx";
 import OnDuty from "./components/Admin/OnDuty.jsx";
+import LeaveRequestForm from "./components/EmployeeUI/homepage/TrackLeave.jsx";
 
 function App() {
   return (
@@ -74,6 +75,7 @@ function App() {
             <Route path="weekly-report" element={<WeeklyReport />} />
             <Route path="monthly-report" element={<MonthlyReport />} />
             <Route path="track-leave" element={<TrackLeave />} />
+            <Route path="/leave-request" element={<LeaveRequestForm/>}/>
             <Route path="announcement/:id" element={<AnnouncementDetails />} />
             <Route path="post" element={<PostAnnouncement />} />
             <Route path="attach-link" element={<AttachLinkDrawer />} />
