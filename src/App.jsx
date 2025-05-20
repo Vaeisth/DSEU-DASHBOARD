@@ -75,7 +75,6 @@ function App() {
             <Route path="weekly-report" element={<WeeklyReport />} />
             <Route path="monthly-report" element={<MonthlyReport />} />
             <Route path="track-leave" element={<TrackLeave />} />
-            <Route path="/leave-request" element={<LeaveRequestForm/>}/>
             <Route path="announcement/:id" element={<AnnouncementDetails />} />
             <Route path="post" element={<PostAnnouncement />} />
             <Route path="attach-link" element={<AttachLinkDrawer />} />
@@ -116,6 +115,7 @@ function App() {
               path="employee-announcements"
               element={<div>Announcements</div>}
             />
+            <Route path="/leave-request" element={<LeaveRequestForm />} />
           </Route>
 
           {/* Admin Layout */}
