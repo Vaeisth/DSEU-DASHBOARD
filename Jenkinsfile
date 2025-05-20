@@ -2,30 +2,18 @@ pipeline {
     agent any
 
     environment {
-        // You can adjust these names as needed
         DOCKER_IMAGE_NAME = 'dseu-dashboard-frontend'
         CONTAINER_NAME = 'dseu_dashboard_container'
-        TZ = 'Asia/Kolkata'
     }
 
     options {
-        skipDefaultCheckout() // We will manually checkout from Git
+        skipDefaultCheckout()
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                // This automatically uses the SCM settings configured in Jenkins job
                 checkout scm
-            }
-        }
-
-        stage('Set Timezone') {
-            steps {
-                sh '''
-                echo "Setting timezone to Asia/Kolkata"
-                sudo timedatectl set-timezone Asia/Kolkata || true
-                '''
             }
         }
 
