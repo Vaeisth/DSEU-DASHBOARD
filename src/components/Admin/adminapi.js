@@ -15,3 +15,10 @@ export const getLeaveRequest = () => {
     method: 'GET'
   });
 }
+
+export const getOnDutyEmployees = () => {
+  return apiRequestAxios({
+    endpoint: API_ENDPOINTS.ADMIN_ON_DUTY,
+    method: 'GET'
+  })
+}

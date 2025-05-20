@@ -176,3 +176,12 @@ export const fetchLeavesAdmin = async (type) => {
 
     return data.data;
 };
+
+export const getActiveHours = async () => {
+    const res = await apiRequestAxios({
+        endpoint: API_ENDPOINTS.TOTAL_DURATION,
+        method: 'GET',
+    });
+
+    return res.data;
+}

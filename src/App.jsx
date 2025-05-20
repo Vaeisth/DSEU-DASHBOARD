@@ -33,6 +33,8 @@ import { Toaster } from "react-hot-toast";
 import { ProfileProvider } from "./contexts/ProfileContext.jsx";
 import ProtectedRoute from "./components/authProtection/ProtectedRoute.jsx";
 import Layout from "./layouts/Layout.jsx";
+import ApplyLeave from "./components/Admin/ApplyLeave.jsx";
+import OnDuty from "./components/Admin/OnDuty.jsx";
 
 function App() {
   return (
@@ -43,7 +45,7 @@ function App() {
           <Route path="/" element={<Login />} />
 
           <Route
-            path="/profile"
+            path="/"
             element={
               <ProtectedRoute
                 allowedRoles={["super_admin", "admin", "employee"]}
@@ -52,7 +54,10 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<Profile />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/announcements" element={<Announcements />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/leave-details/:id" element={<LeaveDetails />} />
           </Route>
 
           {/* VC Layout */}
@@ -69,13 +74,10 @@ function App() {
             <Route path="weekly-report" element={<WeeklyReport />} />
             <Route path="monthly-report" element={<MonthlyReport />} />
             <Route path="track-leave" element={<TrackLeave />} />
-            <Route path="leave-details/:id" element={<LeaveDetails />} />
-            <Route path="announcements" element={<Announcements />} />
             <Route path="announcement/:id" element={<AnnouncementDetails />} />
             <Route path="post" element={<PostAnnouncement />} />
             <Route path="attach-link" element={<AttachLinkDrawer />} />
             <Route path="schedule" element={<ScheduleDrawer />} />
-            <Route path="holidays" element={<Holidays />} />
             <Route path="campus" element={<CampusList />} />
             <Route path="campus/:id" element={<CampusInfo />} />
             <Route path="profile" element={<Profile />} />
@@ -88,7 +90,6 @@ function App() {
             <Route path="surveillance" element={<Surveillance />} />
             <Route path="officer-details/:id" element={<OfficerDetails />} />
             <Route path="employees" element={<EmployeeList />} />
-            <Route path="calendar" element={<Calendar />} />
             <Route
               path="mark-attendance"
               element={<div>Mark Attendance</div>}
@@ -117,15 +118,17 @@ function App() {
 
           {/* Admin Layout */}
           <Route
-            path="/admin"
+            path="/"
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminLayout />
               </ProtectedRoute>
             }
           >
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="track-leave" element={<AdminTrackLeave />} />
+            <Route path="admin/dashboard" element={<AdminDashboard />} />
+            <Route path="admin/track-leave" element={<AdminTrackLeave />} />
+            <Route path="admin/admin-leave" element={<ApplyLeave />} />
+            <Route path="admin/on-duty" element={<OnDuty />} />
           </Route>
         </Routes>
       </ProfileProvider>
