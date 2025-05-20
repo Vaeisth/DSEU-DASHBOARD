@@ -10,7 +10,7 @@ import Announcements from "./components/ViceChancellorUI/Announcements/Announcem
 import AnnouncementDetails from "./components/ViceChancellorUI/Announcements/AnnouncementDetails.jsx";
 import PostAnnouncement from "./components/ViceChancellorUI/Announcements/PostAnnouncement.jsx";
 import AttachLinkDrawer from "./components/ViceChancellorUI/Announcements/AttachLinkDrawer.jsx";
-import ScheduleDrawer from "./components/ViceChancellorUI/Attendance/ScheduleDrawer.jsx";
+import ScheduleDrawer from "./components/ViceChancellorUI/attendance/ScheduleDrawer.jsx";
 import Holidays from "./components/ViceChancellorUI/Holidays/Holidays.jsx";
 import CampusList from "./components/ViceChancellorUI/CampusList/CampusList.jsx";
 import CampusInfo from "./components/ViceChancellorUI/CampusList/CampusInfo.jsx";
