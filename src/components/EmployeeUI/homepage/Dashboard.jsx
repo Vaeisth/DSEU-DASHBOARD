@@ -15,6 +15,7 @@ const services = [
   { label: 'Track Leaves', icon: <EventNoteIcon fontSize="large" />, color: '#f3e6fa', path: '/track-leaves' },
   { label: 'Announcements', icon: <AnnouncementIcon fontSize="large" />, color: '#fae3e3', path: '/announcements' },
   { label: 'Calendar', icon: <CalendarMonthIcon fontSize="large" />, color: '#faf7e3', path: '/calendar' },
+   { label: 'Leave Request', icon: <EventNoteIcon fontSize="large" />, color: '#f3e6fa', path: '/Leave-request' },
   
 ];
 
