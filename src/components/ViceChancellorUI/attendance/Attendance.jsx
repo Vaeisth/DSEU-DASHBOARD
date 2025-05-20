@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { CalendarIcon } from "lucide-react"; // Optional: lucide-react icon
+import { CalendarIcon } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api.config";
 
 const AttendanceReport = () => {
-  const [campus, setCampus] = useState("");
+  const [campus_name, setCampus] = useState("");
   const [department, setDepartment] = useState("");
   const [employee, setEmployee] = useState("");
   const [reportType, setReportType] = useState("");
@@ -15,35 +17,38 @@ const AttendanceReport = () => {
 
   const navigate = useNavigate();
 
-  const isFormComplete =
-    campus &&
-    department &&
-    employee &&
-    reportType &&
-    (reportType === "monthly" ? selectedMonth : true) &&
-    (reportType === "weekly" || reportType === "custom"
-      ? startDate && endDate
-      : true);
+  const reportMutation = useMutation({
+    mutationFn: async (data) => {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_ATTENDANCE_REPORT}?campus_name=${encodeURIComponent(campus_name)}`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch report");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Attendance_Report.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    },
+    onError: (error) => {
+      console.error(error);
+      alert("Failed to generate the report.");
+    },
+  });
 
   const handleGenerateReport = () => {
-    if (!isFormComplete) return;
+    if (!campus_name) return;
 
-    let reportData = { campus, department, employee, reportType };
-    if (reportType === "weekly" || reportType === "custom") {
-      reportData = { ...reportData, startDate, endDate };
-    } else if (reportType === "monthly") {
-      reportData = { ...reportData, selectedMonth };
-    }
+    const reportData = {
+      campus_name,
+    };
 
-    console.log("Generating Report:", reportData);
-
-    if (reportType === "monthly") {
-      navigate("/monthly-report");
-    } else if (reportType === "weekly") {
-      navigate("/weekly-report");
-    } else {
-      alert(`Report Generated:\n${JSON.stringify(reportData, null, 2)}`);
-    }
+    reportMutation.mutate(reportData);
   };
 
   return (
@@ -59,18 +64,15 @@ const AttendanceReport = () => {
 
         <div className="grid grid-cols-1 gap-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Campus</label>
-            <select
-              value={campus}
+            <label className="block text-sm font-medium text-gray-700 mb-1">Campus Name</label>
+            <input
+              value={campus_name}
               onChange={(e) => setCampus(e.target.value)}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            >
-              <option value="">Select campus</option>
-              <option value="campus1">Campus 1</option>
-              <option value="campus2">Campus 2</option>
-            </select>
+            />
           </div>
 
+          {/* UI kept for display; data won't be sent */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
             <select
@@ -171,14 +173,14 @@ const AttendanceReport = () => {
 
           <button
             onClick={handleGenerateReport}
-            disabled={!isFormComplete}
+            disabled={!campus_name || reportMutation.isLoading}
             className={`w-full mt-6 py-2 text-lg font-semibold rounded-xl transition ${
-              isFormComplete
+              campus_name && !reportMutation.isLoading
                 ? "bg-blue-600 text-white hover:bg-blue-700"
                 : "bg-gray-300 text-gray-600 cursor-not-allowed"
             }`}
           >
-            Generate Report
+            {reportMutation.isLoading ? "Generating..." : "Generate Report"}
           </button>
         </div>
       </div>
