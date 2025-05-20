@@ -24,7 +24,7 @@ export const API_ENDPOINTS = {
   LEAVE_REQUEST_REJECT: '/superadmin/reject-leave-request',
   ADD_CAMPUSES: '/super_admin/add_campus',
   DELETE_CAMPUS: '/super_admin/remove_campus',
-
+  GET_ATTENDANCE_REPORT: '/attendance/report',
 
   // VC
   VC_COUNTS: '/vc/counts',
@@ -43,6 +43,7 @@ export const API_ENDPOINTS = {
   APPROVE_LEAVE_ADMIN: '/approve-leave',
   REJECT_LEAVE_ADMIN: '/reject-leave',
   ADMIN_ANNOUNCEMENT: '/get-announcements',
+  ADMIN_ON_DUTY: '/admin/all-on-duty-users',
 
   // Ghante ka hisab 
   EMPLOYEE_TOTAL_DURATION: '/attendance/total_duration',
@@ -50,7 +51,7 @@ export const API_ENDPOINTS = {
 
   // Mics
   HOLIDAY_CALENDAR: '/profile/get-calender',
-
+  TOTAL_DURATION: '/attendance/total_duration',  // to get the active hours
 
 };
 

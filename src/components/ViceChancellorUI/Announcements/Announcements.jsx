@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FaUpload, FaCalendarAlt } from "react-icons/fa";
 import { apiRequest } from "../../../utils/api";
 import { API_ENDPOINTS } from "../../../config/api.config";
+import { useEffect, useState } from "react";
 
 const fetchAnnouncements = async () => {
   const role = sessionStorage.getItem("currentRole");
@@ -16,22 +17,25 @@ const fetchAnnouncements = async () => {
   if (!response.ok) {
     throw new Error("Failed to fetch announcements");
   }
+
   return response.json();
 };
 
 const Announcements = () => {
   const role = sessionStorage.getItem("currentRole");
   const navigate = useNavigate();
+  const [announcements, setAnnoucements] = useState([]);
 
-  const {
-    data: announcements = [],
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["announcements"],
     queryFn: fetchAnnouncements,
   });
+
+  useEffect(() => {
+    if(data) {
+      setAnnoucements(data.reverse());
+    }
+  }, [data]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -88,7 +92,7 @@ const Announcements = () => {
 
         {/* Announcements List */}
         {!isLoading && !isError && (
-          <div className="space-y-4">
+          <div className="space-y-4 grid grid-cols-1 lg:grid-cols-2 gap-x-10">
             {announcements.map((announcement, index) => (
               <div
                 key={index}

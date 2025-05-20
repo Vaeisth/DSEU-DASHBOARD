@@ -1,16 +1,16 @@
 import {
-    faUserCheck,
     faPlaneDeparture,
     faBullhorn,
     faCalendarAlt,
     faCalendarCheck,
+    faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 
 const services = [
-    { name: "Attendance", path: "/mark-attendance", icon: faUserCheck },
+    { name: "Apply Leave", path: "/admin/admin-leave", icon: faPaperPlane },
     { name: "Track Leaves", path: "/admin/track-leave", icon: faPlaneDeparture },
     { name: "Announcements", path: "/announcements", icon: faBullhorn },
-    { name: "Calendar", path: "/holidays", icon: faCalendarAlt },
+    { name: "Calendar", path: "/calendar", icon: faCalendarAlt },
     { name: "On Duty", path: "/admin/on-duty", icon: faCalendarCheck },
 ];
 
