@@ -2,39 +2,57 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoaderCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { buttonColors, services } from "../../Constants/adminDashboard";
-import { getLeaveRequest } from "./adminapi";
+import { getLeaveRequest, getOnDutyEmployees } from "./adminapi";
 import { getActiveHours } from "../../utils/apiservice";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
   const [leaveRequestData, setLeaveRequestData] = useState([]);
+  const [onDutyData, setOnDutyData] = useState([]);
 
   const { data: leaveRequest, isLoading: isRequestLoading } = useQuery({
     queryFn: getLeaveRequest,
     queryKey: ["admin-leave-request"],
   });
 
-  const { data: totalDuration, isLoading: isDurationLoading } = useQuery({
+  const { data: totalDuration } = useQuery({
     queryFn: getActiveHours,
     queryKey: ["totalDuration"],
   });
+
+  const { data: onDuty, isLoading: isOnDutyLoading } = useQuery({
+    queryFn: getOnDutyEmployees,
+    queryKey: ["onDutyEmployees"],
+  });
+
+  const scrollRef = useRef(null);
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 320;
+      scrollRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   useEffect(() => {
     if (leaveRequest) {
       setLeaveRequestData(leaveRequest.data.data);
     }
-
-    console.log(totalDuration);
-  }, [leaveRequest, totalDuration]);
+    if (onDuty) {
+      setOnDutyData(onDuty.data.data);
+    }
+  }, [leaveRequest, onDuty]);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 w-full">
       <div className="flex flex-col gap-5">
         <div className="flex lg:flex-row gap-5 flex-col">
-          {/* Todays attendace card */}
           <div className="bg-white p-6 rounded-2xl shadow pt-10">
             <div className="flex justify-between items-start mb-4">
               <div>
@@ -54,7 +72,6 @@ const AdminDashboard = () => {
                 Present
               </span>
             </div>
-
             <div className="flex justify-between items-center">
               <button className="text-blue-500 font-semibold">Today</button>
               <div className="relative w-24 h-24">
@@ -81,14 +98,15 @@ const AdminDashboard = () => {
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center flex-col">
-                  <span className="text-xl font-bold">4/8</span>
+                  <span className="text-xl font-bold">
+                    {totalDuration?.data?.activeHours || 0}/8
+                  </span>
                   <span className="text-sm text-gray-500">hours</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Services Grid */}
           <div className="bg-white p-6 rounded-2xl shadow w-full lg:w-2/3 h-fit">
             <h3 className="text-xl font-bold text-gray-700 mb-6">Services</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-center items-center">
@@ -111,7 +129,6 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Recent Activity */}
         <div className="bg-white p-6 rounded-2xl shadow mb-10">
           <div className="flex flex-row justify-between w-full -mt-[5px]">
             <h3 className="text-2xl font-bold text-[#333]">
@@ -135,7 +152,95 @@ const AdminDashboard = () => {
           )}
         </div>
 
-       {/* ON duty */} 
+        <div className="bg-white p-6 rounded-2xl shadow mb-10 relative">
+          <div className="flex flex-row justify-between w-full -mt-[5px]">
+            <h3 className="text-2xl font-bold text-[#333]">
+              On-Duty Employees
+            </h3>
+            <button
+              className="ml-2 cursor-pointer text-blue-600 hover:underline"
+              onClick={() => navigate("/admin/on-duty")}
+            >
+              See All
+            </button>
+          </div>
+
+          {isOnDutyLoading ? (
+            <div className="flex items-center justify-center h-full w-full">
+              <LoaderCircle className="w-5 h-5 animate-spin" />
+            </div>
+          ) : onDutyData.length === 0 ? (
+            <div className="mt-2 mr-2 text-slate-600">
+              No one is on duty right now
+            </div>
+          ) : (
+            <>
+              <button
+                onClick={() => scroll("left")}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-1.5 bg-white/80 backdrop-blur rounded-full shadow-sm hover:bg-white transition ml-4 cursor-pointer"
+              >
+                <FontAwesomeIcon icon={faArrowLeft} className="text-sm" />
+              </button>
+
+              <div
+                ref={scrollRef}
+                className="flex gap-3 overflow-x-auto px-8 py-2 scroll-smooth"
+                style={{
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                }}
+              >
+                <style jsx="true">{`
+                  div::-webkit-scrollbar {
+                    display: none;
+                  }
+                `}</style>
+
+                {onDutyData.slice(0, 7).map((officer) => (
+                  <div
+                    key={officer._id}
+                    className="min-w-[240px] sm:min-w-[280px] max-w-[90%] bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-3 cursor-pointer"
+                  >
+                    <img
+                      src={
+                        officer.link_id?.picture ||
+                        "https://via.placeholder.com/150"
+                      }
+                      alt={officer.name}
+                      className="w-10 h-10 rounded-full border-4 border-white shadow-lg object-cover"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-900 text-xs truncate">
+                        {officer.name || "Unknown Officer"}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {officer.link_id?.campus?.name || "No Campus"}
+                      </p>
+                      <p className="text-[10px] text-gray-400">
+                        {officer.link_id?.designation?.[0] || "No Designation"}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-xs font-medium text-green-600">
+                        On Duty
+                      </span>
+                      <span className="text-[10px] text-gray-400">
+                        {officer.Date}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => scroll("right")}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-1.5 bg-white/80 backdrop-blur rounded-full shadow-sm hover:bg-white transition mr-4 cursor-pointer"
+              >
+                <FontAwesomeIcon icon={faArrowRight} className="text-sm" />
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
