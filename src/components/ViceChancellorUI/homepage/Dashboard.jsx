@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiRequestAxios } from '../../../utils/api';
 import { API_ENDPOINTS } from '../../../config/api.config';
 
+
 import {
   PieChart,
   Pie,
@@ -25,6 +26,7 @@ import {
   faVideo,
   faBoxOpen,
 } from "@fortawesome/free-solid-svg-icons";
+import { fetchPendingLeaves } from "../../../utils/apiservice";
 
 
 
@@ -219,7 +221,7 @@ const Dashboard = () => {
       </div>
 
       {/* Bottom Components */}
-      <PendingApprovals />
+      <PendingApprovals queryFn={fetchPendingLeaves} />
       <OnDutyOfficers />
     </div>
   );

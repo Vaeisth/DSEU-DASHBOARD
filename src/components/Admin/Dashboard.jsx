@@ -5,8 +5,9 @@ import { LoaderCircle } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { buttonColors, services } from "../../Constants/adminDashboard";
 import { getLeaveRequest, getOnDutyEmployees } from "./adminapi";
-import { getActiveHours } from "../../utils/apiservice";
+import { fetchLeavesAdmin, getActiveHours } from "../../utils/apiservice";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import PendingApprovals from "../ViceChancellorUI/homepage/PendingApprovals";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -144,28 +145,8 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow">
-          <div className="flex flex-row justify-between w-full -mt-[5px]">
-            <h3 className="text-2xl font-bold text-[#333]">
-              Pending Approvals
-            </h3>
-            <button
-              className="ml-2 cursor-pointer text-blue-600 hover:underline"
-              onClick={() => navigate("/admin/track-leave")}
-            >
-              See All
-            </button>
-          </div>
-          {isRequestLoading ? (
-            <div className="flex items-center justify-center h-full w-full">
-              <LoaderCircle className="w-5 h-5 animate-spin" />
-            </div>
-          ) : leaveRequestData.length === 0 ? (
-            <div className="mt-2 mr-2 text-slate-600">No request as of now</div>
-          ) : (
-            <div>Meow</div>
-          )}
-        </div>
+      <PendingApprovals queryFn = {fetchLeavesAdmin}/>
+
 
         <div className="bg-white p-6 rounded-2xl shadow mb-10 relative">
           <div className="flex flex-row justify-between w-full -mt-[5px]">

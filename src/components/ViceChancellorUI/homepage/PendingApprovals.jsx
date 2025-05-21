@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { fetchPendingLeaves } from "../../../utils/apiservice";
 
-const PendingApprovals = () => {
+const PendingApprovals = ({queryFn}) => {
   const navigate = useNavigate();
   const scrollRef = useRef(null);
 
@@ -15,7 +15,7 @@ const PendingApprovals = () => {
     isError,
   } = useQuery({
     queryKey: ["pendingLeaves"],
-    queryFn: fetchPendingLeaves,
+    queryFn,
   });
 
   const scroll = (direction) => {
