@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequestAxios } from "../../../utils/api";
 import { API_ENDPOINTS } from "../../../config/api.config";
@@ -26,6 +26,14 @@ const PostAnnouncement = () => {
     queryKey: ["campuses"],
     queryFn: fetchCampuses,
   });
+
+  useEffect(() => {
+    if (campuses) {
+      const names = campuses.map((cam) => cam.name);
+      console.log(names);
+      
+    }
+  }, [campuses]);
 
   // Get unique zones from campuses
   const zones = [...new Set(campuses.map((campus) => campus.zone))];

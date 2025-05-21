@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { CalendarIcon } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api.config";
+import { campusList } from "../../../Constants/campusList";
 
 const AttendanceReport = () => {
   const [campus_name, setCampus] = useState("");
@@ -19,7 +20,11 @@ const AttendanceReport = () => {
 
   const reportMutation = useMutation({
     mutationFn: async (data) => {
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_ATTENDANCE_REPORT}?campus_name=${encodeURIComponent(campus_name)}`);
+      const response = await fetch(
+        `${API_BASE_URL}${
+          API_ENDPOINTS.GET_ATTENDANCE_REPORT
+        }?campus_name=${encodeURIComponent(campus_name)}`
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch report");
@@ -57,24 +62,39 @@ const AttendanceReport = () => {
         <div className="flex items-center gap-3 mb-8">
           <CalendarIcon className="text-blue-600 w-8 h-8" />
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Attendance Report</h1>
-            <p className="text-sm text-gray-500">Track and generate detailed employee reports</p>
+            <h1 className="text-3xl font-bold text-gray-800">
+              Attendance Report
+            </h1>
+            <p className="text-sm text-gray-500">
+              Track and generate detailed employee reports
+            </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Campus Name</label>
-            <input
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Campus Name
+            </label>
+            <select
               value={campus_name}
               onChange={(e) => setCampus(e.target.value)}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
+            >
+              <option value="">Select campus</option>
+              {campusList.map((campus, idx) => (
+                <option key={idx} value={campus}>
+                  {campus}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* UI kept for display; data won't be sent */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Department
+            </label>
             <select
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
@@ -87,7 +107,9 @@ const AttendanceReport = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Employee
+            </label>
             <select
               value={employee}
               onChange={(e) => setEmployee(e.target.value)}
@@ -100,10 +122,15 @@ const AttendanceReport = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Report Type
+            </label>
             <div className="flex gap-6">
               {["weekly", "monthly", "custom"].map((type) => (
-                <label key={type} className="flex items-center gap-2 text-sm text-gray-600">
+                <label
+                  key={type}
+                  className="flex items-center gap-2 text-sm text-gray-600"
+                >
                   <input
                     type="radio"
                     name="reportType"
@@ -120,7 +147,9 @@ const AttendanceReport = () => {
 
           {(reportType === "weekly" || reportType === "custom") && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Date Range
+              </label>
               <div className="flex gap-2">
                 <DatePicker
                   selected={startDate}
@@ -152,7 +181,9 @@ const AttendanceReport = () => {
 
           {reportType === "monthly" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Select Month</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Select Month
+              </label>
               <select
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(e.target.value)}
@@ -160,8 +191,18 @@ const AttendanceReport = () => {
               >
                 <option value="">Choose a Month</option>
                 {[
-                  "January", "February", "March", "April", "May", "June",
-                  "July", "August", "September", "October", "November", "December",
+                  "January",
+                  "February",
+                  "March",
+                  "April",
+                  "May",
+                  "June",
+                  "July",
+                  "August",
+                  "September",
+                  "October",
+                  "November",
+                  "December",
                 ].map((month) => (
                   <option key={month} value={month}>
                     {month}
