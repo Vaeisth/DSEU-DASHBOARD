@@ -35,7 +35,8 @@ export const API_ENDPOINTS = {
   // Employee
   EMPLOYEE_ATTENDANCE_STATUS: '/employee/attendance-status',
   EMPLOYEE_LEAVE_BALANCE: '/employee/leave-balance',
-  EMPLOYEE_PENDING_APPROVALS: '/employee/pending-approvals',
+  EMPLOYEE_PENDING_APPROVALS: '/get-pending-requests',
+  EMPLOYEE_LEAVE_HISTORY: 'user/get-leave-history',
 
   //Admin
   ADMIN_LEAVE_REQUESTS: '/admin/get-leave-requests',

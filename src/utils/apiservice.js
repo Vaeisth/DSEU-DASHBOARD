@@ -185,3 +185,18 @@ export const getActiveHours = async () => {
 
     return res.data;
 }
+
+export const fetchLeavesEmployee = async (type) => {
+    const endpoint =
+        type === "pending"
+            ? API_ENDPOINTS.EMPLOYEE_PENDING_APPROVALS
+            : API_ENDPOINTS.EMPLOYEE_LEAVE_HISTORY;
+
+    const { data } = await apiRequestAxios({
+        endpoint,
+        method: 'GET'
+    });
+
+    return data.data;
+
+}

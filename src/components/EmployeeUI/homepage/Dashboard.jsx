@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import AnnouncementIcon from "@mui/icons-material/Announcement";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 const services = [
   {
@@ -19,7 +16,7 @@ const services = [
     label: "Track Leaves",
     icon: <EventNoteIcon fontSize="large" />,
     color: "#f3e6fa",
-    path: "/track-leaves",
+    path: "/leaves",
   },
   {
     label: "Announcements",

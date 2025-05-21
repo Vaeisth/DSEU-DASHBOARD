@@ -11,7 +11,6 @@ import AnnouncementDetails from "./components/ViceChancellorUI/Announcements/Ann
 import PostAnnouncement from "./components/ViceChancellorUI/Announcements/PostAnnouncement.jsx";
 import AttachLinkDrawer from "./components/ViceChancellorUI/Announcements/AttachLinkDrawer.jsx";
 import ScheduleDrawer from "./components/ViceChancellorUI/attendance/ScheduleDrawer.jsx";
-import Holidays from "./components/ViceChancellorUI/Holidays/Holidays.jsx";
 import CampusList from "./components/ViceChancellorUI/CampusList/CampusList.jsx";
 import CampusInfo from "./components/ViceChancellorUI/CampusList/CampusInfo.jsx";
 import Profile from "./components/ViceChancellorUI/Profile/Profile.jsx";
@@ -36,6 +35,7 @@ import Layout from "./layouts/Layout.jsx";
 import ApplyLeave from "./components/Admin/ApplyLeave.jsx";
 import OnDuty from "./components/Admin/OnDuty.jsx";
 import LeaveRequestForm from "./components/EmployeeUI/homepage/TrackLeave.jsx";
+import Leaves from "./components/EmployeeUI/homepage/Leaves.jsx"
 
 function App() {
   return (
@@ -116,6 +116,7 @@ function App() {
               element={<div>Announcements</div>}
             />
             <Route path="/leave-request" element={<LeaveRequestForm />} />
+            <Route path="/leaves" element={<Leaves/>} />
           </Route>
 
           {/* Admin Layout */}
