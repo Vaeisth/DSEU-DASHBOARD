@@ -1,9 +1,20 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
-import { FaCheckCircle, FaTimes, FaCalendarAlt, FaBuilding, FaUserAlt, FaPhone, FaMapMarkerAlt, FaInfoCircle } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaTimes,
+  FaBuilding,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaInfoCircle,
+} from "react-icons/fa";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { approveLeave, fetchLeaveDetails, rejectLeave } from "../../../utils/apiservice";
+import {
+  approveLeave,
+  fetchLeaveDetails,
+  rejectLeave,
+} from "../../../utils/apiservice";
 import { format } from "date-fns";
 import { showSuccessToast, showErrorToast } from "../../../utils/toasts";
 
@@ -16,7 +27,12 @@ function LeaveDetails() {
   const [rejectReason, setRejectReason] = useState("");
   const [error, setError] = useState("");
 
-  const { data: leaveRequest, isLoading, isError, error: fetchError } = useQuery({
+  const {
+    data: leaveRequest,
+    isLoading,
+    isError,
+    error: fetchError,
+  } = useQuery({
     queryKey: ["leaveDetails", id],
     queryFn: () => fetchLeaveDetails(id),
   });
@@ -32,11 +48,13 @@ function LeaveDetails() {
       }, 2000);
       showSuccessToast("Leave Approved");
     },
-    
+
     onError: (error) => {
-      setError(error.response?.data?.message || "Failed to approve leave request");
+      setError(
+        error.response?.data?.message || "Failed to approve leave request"
+      );
       showErrorToast("Failed to approve leave request");
-    }
+    },
   });
 
   const rejectMutation = useMutation({
@@ -49,10 +67,12 @@ function LeaveDetails() {
       showSuccessToast("Leave Rejected");
     },
     onError: (error) => {
-      setError(error.response?.data?.message || "Failed to reject leave request");
+      setError(
+        error.response?.data?.message || "Failed to reject leave request"
+      );
       console.error(error);
       showErrorToast("Failed to reject leave request");
-    }
+    },
   });
 
   const handleApprove = () => {
@@ -68,7 +88,7 @@ function LeaveDetails() {
   const handleRejectSubmit = () => {
     if (!rejectReason.trim()) {
       setError("Please provide a reason for rejection");
-      showErrorToast("Please provide a reason for rejection!")
+      showErrorToast("Please provide a reason for rejection!");
       return;
     }
     rejectMutation.mutate({ id, remarks: rejectReason });
@@ -90,7 +110,9 @@ function LeaveDetails() {
       <div className="p-6 bg-gray-50 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <FaTimes className="text-red-500 text-4xl mx-auto mb-4" />
-          <p className="text-red-500">Failed to load leave details: {fetchError.message}</p>
+          <p className="text-red-500">
+            Failed to load leave details: {fetchError.message}
+          </p>
           <button
             onClick={() => navigate(-1)}
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
@@ -127,7 +149,9 @@ function LeaveDetails() {
           <div className="flex items-center">
             <FaCheckCircle className="text-green-500 mr-3" size={24} />
             <div>
-              <p className="font-semibold text-gray-900">Leave approved successfully!</p>
+              <p className="font-semibold text-gray-900">
+                Leave approved successfully!
+              </p>
               <p className="text-sm text-gray-500">
                 Redirecting back to leave list...
               </p>
@@ -141,7 +165,9 @@ function LeaveDetails() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Reject Leave Request</h2>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Reject Leave Request
+              </h2>
               <button
                 onClick={() => setShowRejectPopup(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -150,7 +176,8 @@ function LeaveDetails() {
               </button>
             </div>
             <p className="text-sm text-gray-600 mb-4">
-              Please provide a reason for rejecting this leave request. This will be visible to the employee.
+              Please provide a reason for rejecting this leave request. This
+              will be visible to the employee.
             </p>
             <textarea
               className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
@@ -170,7 +197,9 @@ function LeaveDetails() {
                 disabled={rejectMutation.isLoading}
                 className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
               >
-                {rejectMutation.isLoading ? "Submitting..." : "Confirm Rejection"}
+                {rejectMutation.isLoading
+                  ? "Submitting..."
+                  : "Confirm Rejection"}
               </button>
             </div>
           </div>
@@ -186,7 +215,9 @@ function LeaveDetails() {
           <IoArrowBack className="text-2xl text-gray-600" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Leave Request Details</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Leave Request Details
+          </h1>
           <p className="text-gray-500 mt-1">Review and manage leave request</p>
         </div>
       </div>
@@ -199,7 +230,10 @@ function LeaveDetails() {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center space-x-4">
               <img
-                src={leaveRequest.user_id?.picture || "https://via.placeholder.com/100"}
+                src={
+                  leaveRequest.user_id?.picture ||
+                  "https://via.placeholder.com/100"
+                }
                 alt="Profile"
                 className="w-20 h-20 rounded-full object-cover border-2 border-gray-100"
               />
@@ -207,7 +241,9 @@ function LeaveDetails() {
                 <h3 className="text-lg font-semibold text-gray-900">
                   {leaveRequest.user_id?.name}
                 </h3>
-                <p className="text-gray-500">{leaveRequest.user_id?.designation?.[0]}</p>
+                <p className="text-gray-500">
+                  {leaveRequest.user_id?.designation?.[0]}
+                </p>
                 <div className="flex items-center text-gray-500 mt-1">
                   <FaBuilding className="mr-2" />
                   <span>{leaveRequest.user_id?.campus?.name}</span>
@@ -218,10 +254,12 @@ function LeaveDetails() {
 
           {/* Contact Information */}
           <div className="bg-white rounded-xl shadow-sm p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Contact Information
+            </h3>
             <div className="space-y-3">
               <div className="flex items-center text-gray-600">
-                <FaPhone className="mr-3 text-gray-400" />
+                <FaPhone className="mr-3 text-gray-400 rotate-90" />
                 <span>{leaveRequest.mobile_no_of_contact}</span>
               </div>
               {leaveRequest.out_of_station && (
@@ -240,18 +278,22 @@ function LeaveDetails() {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Leave Details</h3>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Leave Details
+                </h3>
                 <p className="text-gray-500 mt-1">
-                  Requested on {format(new Date(leaveRequest.request_date), "MMMM dd, yyyy")}
+                  Requested on{" "}
+                  {format(new Date(leaveRequest.request_date), "MMMM dd, yyyy")}
                 </p>
               </div>
               <span
-                className={`px-4 py-2 rounded-full text-sm font-medium ${leaveRequest.status === "Approved"
-                  ? "bg-green-100 text-green-800"
-                  : leaveRequest.status === "Rejected"
+                className={`px-4 py-2 rounded-full text-sm font-medium ${
+                  leaveRequest.status === "Approved"
+                    ? "bg-green-100 text-green-800"
+                    : leaveRequest.status === "Rejected"
                     ? "bg-red-100 text-red-800"
                     : "bg-yellow-100 text-yellow-800"
-                  }`}
+                }`}
               >
                 {leaveRequest.status}
               </span>
@@ -261,7 +303,9 @@ function LeaveDetails() {
               <div className="space-y-4">
                 <div>
                   <label className="text-sm text-gray-500">Leave Type</label>
-                  <p className="font-medium text-gray-900">{leaveRequest.leave_type}</p>
+                  <p className="font-medium text-gray-900">
+                    {leaveRequest.leave_type}
+                  </p>
                 </div>
                 <div>
                   <label className="text-sm text-gray-500">Start Date</label>
@@ -274,7 +318,15 @@ function LeaveDetails() {
                 <div>
                   <label className="text-sm text-gray-500">Duration</label>
                   <p className="font-medium text-gray-900">
-                    {leaveRequest.duration} days
+                    {(() => {
+                      const days =
+                        Math.ceil(
+                          (new Date(leaveRequest.end_date) -
+                            new Date(leaveRequest.start_date)) /
+                            (1000 * 60 * 60 * 24)
+                        ) + 1;
+                      return `${days} ${days === 1 ? "Day" : "Days"}`;
+                    })()}
                   </p>
                 </div>
                 <div>
@@ -288,14 +340,33 @@ function LeaveDetails() {
           </div>
 
           {/* Reason Card */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Reason for Leave</h3>
-            <p className="text-gray-600 whitespace-pre-wrap">{leaveRequest.reason}</p>
-          </div>
+          {leaveRequest.reason && (
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Reason for Leave
+              </h3>
+              <p className="text-gray-600 whitespace-pre-wrap">
+                {leaveRequest.reason}
+              </p>
+            </div>
+          )}
+
+          {leaveRequest.remarks && (
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Remarks
+              </h3>
+              <p className="text-gray-600 whitespace-pre-wrap">
+                {leaveRequest.remarks}
+              </p>
+            </div>
+          )}
 
           {/* Additional Information Card */}
           <div className="bg-white rounded-xl shadow-sm p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Additional Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Additional Information
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm text-gray-500">Out of Station</label>
@@ -306,7 +377,9 @@ function LeaveDetails() {
               {leaveRequest.child_age > 0 && (
                 <div>
                   <label className="text-sm text-gray-500">Child Age</label>
-                  <p className="font-medium text-gray-900">{leaveRequest.child_age} years</p>
+                  <p className="font-medium text-gray-900">
+                    {leaveRequest.child_age} years
+                  </p>
                 </div>
               )}
             </div>

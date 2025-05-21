@@ -145,8 +145,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-      <PendingApprovals queryFn = {fetchLeavesAdmin}/>
-
+        <PendingApprovals queryFn={() => fetchLeavesAdmin("pending")} />
 
         <div className="bg-white p-6 rounded-2xl shadow mb-10 relative">
           <div className="flex flex-row justify-between w-full -mt-[5px]">

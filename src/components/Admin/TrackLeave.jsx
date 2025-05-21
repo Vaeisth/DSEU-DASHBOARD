@@ -145,7 +145,7 @@ const TrackLeave = () => {
       <div className="bg-white rounded-xl shadow-sm p-1 mb-6">
         <div className="flex">
           <button
-            className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+            className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer ${
               activeTab === "pending"
                 ? "bg-blue-50 text-blue-600"
                 : "text-gray-500 hover:text-gray-700"
@@ -158,7 +158,7 @@ const TrackLeave = () => {
             </span>
           </button>
           <button
-            className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+            className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer ${
               activeTab === "history"
                 ? "bg-blue-50 text-blue-600"
                 : "text-gray-500 hover:text-gray-700"
