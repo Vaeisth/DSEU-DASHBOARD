@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import AnnouncementIcon from "@mui/icons-material/Announcement";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 const services = [
   {
-    label: "Attendance",
-    icon: <AssignmentIndIcon fontSize="large" />,
-    color: "#e3f0fa",
-    path: "/attendance",
+    label: "Apply Leave",
+    icon: <FontAwesomeIcon icon={faPaperPlane} className="text-[32px]" />,
+    color: "#f3e6fa",
+    path: "/Leave-request",
   },
   {
     label: "Track Leaves",
@@ -30,12 +32,6 @@ const services = [
     icon: <CalendarMonthIcon fontSize="large" />,
     color: "#faf7e3",
     path: "/calendar",
-  },
-  {
-    label: "Leave Request",
-    icon: <EventNoteIcon fontSize="large" />,
-    color: "#f3e6fa",
-    path: "/Leave-request",
   },
 ];
 
