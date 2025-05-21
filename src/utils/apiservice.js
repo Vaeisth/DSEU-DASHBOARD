@@ -197,6 +197,14 @@ export const fetchLeavesEmployee = async (type) => {
         method: 'GET'
     });
 
-    return data.data;
+   
+    if (Array.isArray(data)) {
+        return data; 
+    }
 
-}
+    if (data?.data && Array.isArray(data.data)) {
+        return data.data; 
+    }
+
+    return []; 
+};
