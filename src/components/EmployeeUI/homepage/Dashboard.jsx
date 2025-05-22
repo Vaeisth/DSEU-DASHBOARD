@@ -1,10 +1,15 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import AnnouncementIcon from "@mui/icons-material/Announcement";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { ArrowRight, LoaderCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAnnouncements } from "../../../utils/apiservice";
+import { useEffect, useState } from "react";
+import AnnouncementSlider from "../../UI/AnnouncementSlider";
+
 const services = [
   {
     label: "Apply Leave",
@@ -43,25 +48,20 @@ const buttonColors = [
   "bg-[#C6FFEB]",
 ];
 
-const announcements = [
-  {
-    timestamp: "2d ago",
-    title: " admission open session 2024 - 25",
-    description: "Lorem ipsum dolor sit amet, dummy dolor sit",
-  },
-  // Add more announcement objects if needed
-];
-
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [loaderColor, setLoaderColor] = useState(1);
+  const { data: annoucements, isLoading: isAnnoucementLoading } = useQuery({
+    queryKey: ["announcements"],
+    queryFn: fetchAnnouncements,
+  });
 
-  const [showReasonPopup, setShowReasonPopup] = useState(false);
-  const [reason, setReason] = useState("");
-
-  const handleCancel = () => {
-    setShowReasonPopup(false);
-    // Keep the duty status as it was
-  };
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoaderColor((c) => c + 1);
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [loaderColor]);
 
   return (
     <div className="pt-16 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen w-full mt-[-3rem]">
@@ -185,83 +185,31 @@ const Dashboard = () => {
           </h3>
           <button
             onClick={() => navigate("/announcements")}
-            className="text-blue-500 font-semibold flex items-center gap-1 hover:underline"
+            className="font-semibold"
           >
-            See all
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <div className="flex items-center gap-1 group cursor-pointer">
+              <span className="text-blue-500 group-hover:underline">
+                See all
+              </span>
+              <ArrowRight className="h-4 w-4 text-blue-500 group-hover:underline" />
+            </div>
           </button>
         </div>
-        <div className="space-y-4">
-          {announcements.map((announcement, index) => (
-            <div
-              key={index}
-              className="bg-blue-50 p-4 rounded-lg flex flex-col gap-2"
-            >
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">
-                  {announcement.timestamp}
-                </span>
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-gray-800">
-                  {announcement.title}
-                </h4>
-                <p className="text-sm text-gray-600">
-                  {announcement.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-center mt-4">
-          <div className="flex gap-2">
-            <div className="w-2 h-2 bg-blue-500 rounded-full" />
-            <div className="w-2 h-2 bg-gray-300 rounded-full" />
-            <div className="w-2 h-2 bg-gray-300 rounded-full" />
-            <div className="w-2 h-2 bg-gray-300 rounded-full" />
+
+        {isAnnoucementLoading ? (
+          <div className="flex items-center justify-center h-full w-full">
+            <LoaderCircle
+              className={`h-14 w-14 animate-spin ${
+                loaderColor % 2 === 0 ? "text-blue-400" : "text-emerald-400"
+              } transition-colors`}
+            />
           </div>
-        </div>
+        ) : (
+          <div>
+            <AnnouncementSlider announcements={annoucements} />
+          </div>
+        )}
       </div>
-
-      {showReasonPopup && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-opacity-10 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
-            <div className="p-6">
-              <div className="mb-6">
-                <label className="block text-gray-700 text-lg font-medium mb-2">
-                  Reason for Turning On Duty
-                </label>
-                <textarea
-                  className="w-full h-40 px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500"
-                  placeholder="Write here..."
-                  value={reason}
-                  onChange={(e) => setReason(e.target.value)}
-                />
-              </div>
-
-              <div className="flex justify-between">
-                <button
-                  className="border border-blue-500 text-blue-500 px-6 py-2 rounded-full font-medium"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

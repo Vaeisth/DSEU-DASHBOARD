@@ -13,6 +13,7 @@ const ROLES = {
   EMPLOYEE: "employee",
   SUPER_ADMIN: "super_admin",
   ADMIN: "admin",
+  INVENTORY_ADMIN: "inventory_admin",
 };
 
 const ROUTES = {
@@ -20,6 +21,7 @@ const ROUTES = {
   [ROLES.EMPLOYEE]: "/employee-dashboard",
   [ROLES.SUPER_ADMIN]: "/vc-dashboard",
   [ROLES.ADMIN]: "/admin/dashboard",
+  [ROLES.INVENTORY_ADMIN]: '/employee-dashboard',
 };
 
 // Validation functions

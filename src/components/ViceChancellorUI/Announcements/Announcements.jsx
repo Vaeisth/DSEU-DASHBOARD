@@ -1,25 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { FaUpload, FaCalendarAlt } from "react-icons/fa";
-import { apiRequest } from "../../../utils/api";
-import { API_ENDPOINTS } from "../../../config/api.config";
 import { useEffect, useState } from "react";
-
-const fetchAnnouncements = async () => {
-  const role = sessionStorage.getItem("currentRole");
-
-  const endpoint =
-    role === "super_admin"
-      ? API_ENDPOINTS.ALL_ANNOUNCEMENTS
-      : API_ENDPOINTS.ADMIN_ANNOUNCEMENT;
-
-  const response = await apiRequest(endpoint);
-  if (!response.ok) {
-    throw new Error("Failed to fetch announcements");
-  }
-
-  return response.json();
-};
+import { fetchAnnouncements } from "../../../utils/apiservice";
 
 const Announcements = () => {
   const role = sessionStorage.getItem("currentRole");
@@ -32,7 +15,7 @@ const Announcements = () => {
   });
 
   useEffect(() => {
-    if(data) {
+    if (data) {
       setAnnoucements(data.reverse());
     }
   }, [data]);

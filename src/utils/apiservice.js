@@ -1,5 +1,5 @@
 import axios from "axios";
-import { apiRequestAxios } from "./api";
+import { apiRequest, apiRequestAxios } from "./api";
 import { API_BASE_URL, API_ENDPOINTS } from "../config/api.config";
 
 export const loginUser = async (form) => {
@@ -48,16 +48,21 @@ export const fetchPendingLeaves = async () => {
 
 export const fetchLeaveDetails = async (id) => {
     const role = sessionStorage.getItem("currentRole");
-    
     const isAdmin = role === "admin";
 
-    const requestsEndpoint = isAdmin
-        ? API_ENDPOINTS.ADMIN_LEAVE_REQUESTS
-        : API_ENDPOINTS.LEAVE_REQUESTS;
+    let requestsEndpoint;
+    let historyEndpoint;
 
-    const historyEndpoint = isAdmin
-        ? API_ENDPOINTS.ADMIN_LEAVE_REQUESTS_HISTORY
-        : API_ENDPOINTS.LEAVE_REQUESTS_HISTORY;
+    if (isAdmin) {
+        requestsEndpoint = API_ENDPOINTS.ADMIN_LEAVE_REQUESTS;
+        historyEndpoint = API_ENDPOINTS.ADMIN_LEAVE_REQUESTS_HISTORY;
+    } else if (role === "employee") {
+        requestsEndpoint = API_ENDPOINTS.EMPLOYEE_PENDING_APPROVALS;
+        historyEndpoint = API_ENDPOINTS.EMPLOYEE_LEAVE_HISTORY;
+    } else {
+        requestsEndpoint = API_ENDPOINTS.LEAVE_REQUESTS;
+        historyEndpoint = API_ENDPOINTS.LEAVE_REQUESTS_HISTORY;
+    }
 
     const pending = await apiRequestAxios({
         endpoint: requestsEndpoint,
@@ -80,12 +85,13 @@ export const fetchLeaveDetails = async (id) => {
 };
 
 
+
 export const approveLeave = async (id) => {
     const role = sessionStorage.getItem("currentRole");
     const endpoint = role === "admin"
         ? `${API_ENDPOINTS.APPROVE_LEAVE_ADMIN}/${id}`
         : `${API_ENDPOINTS.LEAVE_REQUEST_APPROVE}/${id}`;
-    
+
     const method = role === "admin"
         ? "POST"
         : "PATCH";
@@ -108,8 +114,8 @@ export const rejectLeave = async ({ id, remarks }) => {
 
     const method = role === "admin"
         ? "POST"
-        : "PATCH";   
-         
+        : "PATCH";
+
     const { data } = await apiRequestAxios({
         endpoint,
         method,
@@ -197,14 +203,31 @@ export const fetchLeavesEmployee = async (type) => {
         method: 'GET'
     });
 
-   
+
     if (Array.isArray(data)) {
-        return data; 
+        return data;
     }
 
     if (data?.data && Array.isArray(data.data)) {
-        return data.data; 
+        return data.data;
     }
 
-    return []; 
+    return [];
+};
+
+
+export const fetchAnnouncements = async () => {
+    const role = sessionStorage.getItem("currentRole");
+
+    const endpoint =
+        role === "super_admin"
+            ? API_ENDPOINTS.ALL_ANNOUNCEMENTS
+            : API_ENDPOINTS.ADMIN_ANNOUNCEMENT;
+
+    const response = await apiRequest(endpoint);
+    if (!response.ok) {
+        throw new Error("Failed to fetch announcements");
+    }
+
+    return response.json();
 };
