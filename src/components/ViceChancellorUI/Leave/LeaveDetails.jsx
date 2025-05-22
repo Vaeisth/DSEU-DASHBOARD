@@ -388,7 +388,7 @@ function LeaveDetails() {
       </div>
 
       {/* Action Buttons */}
-      {leaveRequest.status === "Pending" && (
+      {leaveRequest.status === "Pending" && sessionStorage.getItem("currentRole") !== "employee" && (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
           <div className="max-w-7xl mx-auto flex justify-end gap-4">
             <button
