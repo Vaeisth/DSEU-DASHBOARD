@@ -1,11 +1,13 @@
 import { Outlet } from "react-router-dom";
 import InventoryNavbar from "../components/Inventory/InventoryNavbar.jsx";
+import Navbar from "../components/ViceChancellorUI/Reusable/Navbar.jsx";
 
 const InventoryLayout = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="fixed top-0 left-0 right-0 z-50">
-        <InventoryNavbar />
+        {/* <InventoryNavbar /> */}
+        <Navbar />
       </div>
 
       <main className="pt-20 pb-8 px-3 sm:px-4">

@@ -69,8 +69,8 @@ export const fetchLeaveDetails = async (id) => {
         method: 'GET',
     });
 
-    let leaves = Array.isArray(pending.data) ? pending.data : 
-                (pending.data?.data && Array.isArray(pending.data.data)) ? pending.data.data : [];
+    let leaves = Array.isArray(pending.data) ? pending.data :
+        (pending.data?.data && Array.isArray(pending.data.data)) ? pending.data.data : [];
 
     let leave = leaves.find(leave => leave._id === id);
 
@@ -81,7 +81,7 @@ export const fetchLeaveDetails = async (id) => {
         });
 
         leaves = Array.isArray(history.data) ? history.data :
-                (history.data?.data && Array.isArray(history.data.data)) ? history.data.data : [];
+            (history.data?.data && Array.isArray(history.data.data)) ? history.data.data : [];
 
         leave = leaves.find(leave => leave._id === id);
     }
@@ -168,11 +168,16 @@ export const updateProfileImage = async (formData) => {
 }
 
 export const getProfile = async () => {
+    const role = sessionStorage.getItem("currentRole");
+    console.log(role);
+
     const res = await apiRequestAxios({
-        endpoint: API_ENDPOINTS.PROFILE,
+        endpoint: role === "inventory_admin" ? API_ENDPOINTS.GET_CURRENT_USER : API_ENDPOINTS.PROFILE,
         method: 'GET',
     })
 
+    console.log(res.data);
+    
     return res.data;
 }
 
@@ -238,3 +243,11 @@ export const fetchAnnouncements = async () => {
 
     return response.json();
 };
+
+
+export const getCurrentUser = async () => {
+    return apiRequestAxios({
+        endpoint: API_ENDPOINTS.GET_CURRENT_USER,
+        method: 'GET',
+    })
+}

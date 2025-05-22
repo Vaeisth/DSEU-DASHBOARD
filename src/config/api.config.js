@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
   // Profile
   PROFILE: '/profile',
   UPLOAD_IMAGE: '/profile/upload-image',
+  GET_CURRENT_USER: '/get-current-user',
 
   // Super Admin
   ALL_USERS: '/superadmin/all-users',

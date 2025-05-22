@@ -10,9 +10,9 @@ import {
 } from "react-icons/fa";
 import placeholder from "../../../assets/placeholder-pfp.jpg";
 import { showSuccessToast } from "@/utils/toasts.js";
-import { getProfile } from "@/utils/apiservice.js";
 import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
+import { getProfile } from "../../../utils/apiservice";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -117,10 +117,6 @@ const Navbar = () => {
                 src={userProfile?.picture || placeholder}
                 alt={userProfile?.name || "Profile"}
                 className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "https://via.placeholder.com/40";
-                }}
               />
             </button>
 
@@ -131,15 +127,9 @@ const Navbar = () => {
                 <div className="px-4 py-3 border-b border-gray-100">
                   <div className="flex items-center gap-3 mb-2">
                     <img
-                      src={
-                        userProfile?.picture || "https://via.placeholder.com/40"
-                      }
+                      src={userProfile?.picture}
                       alt={userProfile?.name || "Profile"}
                       className="w-12 h-12 rounded-full border-2 border-gray-200 object-cover"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "https://via.placeholder.com/40";
-                      }}
                     />
                     <div>
                       <p className="font-medium text-gray-900">
