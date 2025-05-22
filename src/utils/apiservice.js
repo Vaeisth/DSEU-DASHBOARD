@@ -69,14 +69,21 @@ export const fetchLeaveDetails = async (id) => {
         method: 'GET',
     });
 
-    let leave = pending.data.data.find(leave => leave._id === id);
+    let leaves = Array.isArray(pending.data) ? pending.data : 
+                (pending.data?.data && Array.isArray(pending.data.data)) ? pending.data.data : [];
+
+    let leave = leaves.find(leave => leave._id === id);
 
     if (!leave) {
         const history = await apiRequestAxios({
             endpoint: historyEndpoint,
             method: 'GET',
         });
-        leave = history.data.data.find(leave => leave._id === id);
+
+        leaves = Array.isArray(history.data) ? history.data :
+                (history.data?.data && Array.isArray(history.data.data)) ? history.data.data : [];
+
+        leave = leaves.find(leave => leave._id === id);
     }
 
     if (!leave) throw new Error("Leave request not found");
