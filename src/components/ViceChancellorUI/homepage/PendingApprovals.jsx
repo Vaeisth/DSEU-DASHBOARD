@@ -27,11 +27,11 @@ const PendingApprovals = ({ queryFn }) => {
     }
   };
 
-  useEffect(() => {
-    if (pendingLeaves) {
-      console.log(pendingLeaves);
-    }
-  }, [pendingLeaves]);
+  // useEffect(() => {
+  //   if (pendingLeaves) {
+  //     console.log(pendingLeaves);
+  //   }
+  // }, [pendingLeaves]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

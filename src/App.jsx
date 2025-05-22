@@ -14,7 +14,6 @@ import ScheduleDrawer from "./components/ViceChancellorUI/attendance/ScheduleDra
 import CampusList from "./components/ViceChancellorUI/CampusList/CampusList.jsx";
 import CampusInfo from "./components/ViceChancellorUI/CampusList/CampusInfo.jsx";
 import Profile from "./components/ViceChancellorUI/Profile/Profile.jsx";
-import InventoryDashboard from "./components/ViceChancellorUI/Inventory/InventoryDashboard.jsx";
 import Surveillance from "./components/ViceChancellorUI/surveillance/Surveillance.jsx";
 import EmployeeDashboard from "./components/EmployeeUI/homepage/Dashboard.jsx";
 import OfficerDetails from "./components/ViceChancellorUI/attendance/OfficerDetails.jsx";
@@ -23,6 +22,7 @@ import EmployeePersonalDetail from "./components/ViceChancellorUI/employees/Empl
 import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
 import AdminDashboard from "./components/Admin/Dashboard.jsx";
 import AdminTrackLeave from "./components/Admin/TrackLeave.jsx";
+import InventoryDashboard from "./components/Inventory/Dashboard.jsx";
 
 import VCLayout from "./layouts/VcLayout.jsx";
 import EmployeeLayout from "./layouts/EmployeeLayout.jsx";
@@ -31,11 +31,12 @@ import AdminLayout from "./layouts/AdminLayout.jsx";
 import { Toaster } from "react-hot-toast";
 import { ProfileProvider } from "./contexts/ProfileContext.jsx";
 import ProtectedRoute from "./components/authProtection/ProtectedRoute.jsx";
-import Layout from "./layouts/Layout.jsx";
 import ApplyLeave from "./components/Admin/ApplyLeave.jsx";
 import OnDuty from "./components/Admin/OnDuty.jsx";
 import LeaveRequestForm from "./components/EmployeeUI/homepage/TrackLeave.jsx";
-import Leaves from "./components/EmployeeUI/homepage/Leaves.jsx"
+import Leaves from "./components/EmployeeUI/homepage/Leaves.jsx";
+import InventoryLayout from "./layouts/InventoryLayout.jsx";
+import Layout from "./layouts/Layout.jsx";
 
 function App() {
   return (
@@ -87,7 +88,6 @@ function App() {
               path="employee-details/:employeeId"
               element={<EmployeePersonalDetail />}
             />
-            <Route path="inventory" element={<InventoryDashboard />} />
             <Route path="surveillance" element={<Surveillance />} />
             <Route path="officer-details/:id" element={<OfficerDetails />} />
             <Route path="employees" element={<EmployeeList />} />
@@ -101,7 +101,7 @@ function App() {
           <Route
             path="/"
             element={
-              <ProtectedRoute allowedRoles={["employee", "inventory_admin"]}>
+              <ProtectedRoute allowedRoles={["employee"]}>
                 <EmployeeLayout />
               </ProtectedRoute>
             }
@@ -116,7 +116,7 @@ function App() {
               element={<div>Announcements</div>}
             />
             <Route path="/leave-request" element={<LeaveRequestForm />} />
-            <Route path="/leaves" element={<Leaves/>} />
+            <Route path="/leaves" element={<Leaves />} />
           </Route>
 
           {/* Admin Layout */}
@@ -132,6 +132,18 @@ function App() {
             <Route path="admin/track-leave" element={<AdminTrackLeave />} />
             <Route path="admin/admin-leave" element={<ApplyLeave />} />
             <Route path="admin/on-duty" element={<OnDuty />} />
+          </Route>
+
+          {/* Inventory */}
+          <Route
+            path="/inventory"
+            element={
+              <ProtectedRoute allowedRoles={["inventory_admin"]}>
+                <InventoryLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="dashboard" element={<InventoryDashboard />} />
           </Route>
         </Routes>
       </ProfileProvider>

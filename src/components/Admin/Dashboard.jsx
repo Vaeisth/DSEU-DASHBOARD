@@ -1,18 +1,19 @@
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { LoaderCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { LoaderCircle } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+
+import PendingApprovals from "../ViceChancellorUI/homepage/PendingApprovals";
+
 import { buttonColors, services } from "../../Constants/adminDashboard";
 import { getLeaveRequest, getOnDutyEmployees } from "./adminapi";
 import { fetchLeavesAdmin, getActiveHours } from "../../utils/apiservice";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import PendingApprovals from "../ViceChancellorUI/homepage/PendingApprovals";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
-  const [leaveRequestData, setLeaveRequestData] = useState([]);
   const [onDutyData, setOnDutyData] = useState([]);
 
   const { data: leaveRequest, isLoading: isRequestLoading } = useQuery({
@@ -42,13 +43,10 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    if (leaveRequest) {
-      setLeaveRequestData(leaveRequest.data.data);
-    }
     if (onDuty) {
       setOnDutyData(onDuty.data.data);
     }
-  }, [leaveRequest, onDuty]);
+  }, [leaveRequest, onDuty, onDutyData]);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 w-full min-h-screen">

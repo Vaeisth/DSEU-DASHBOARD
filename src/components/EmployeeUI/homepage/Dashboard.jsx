@@ -156,27 +156,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Recent Activity */}
-      <div className="bg-white p-6 rounded-2xl shadow mb-10">
-        <h3 className="text-xl font-bold text-gray-700 mb-6">
-          Recent Activity
-        </h3>
-        <div className="space-y-4">
-          {[1, 2, 3].map((_, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
-            >
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <div>
-                <p className="text-sm text-gray-600">Leave request approved</p>
-                <p className="text-xs text-gray-400">2 hours ago</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Latest Announcements */}
       <div className="bg-white p-6 rounded-2xl shadow mb-10">
         <div className="flex justify-between items-center mb-6">

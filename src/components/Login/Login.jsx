@@ -21,7 +21,7 @@ const ROUTES = {
   [ROLES.EMPLOYEE]: "/employee-dashboard",
   [ROLES.SUPER_ADMIN]: "/vc-dashboard",
   [ROLES.ADMIN]: "/admin/dashboard",
-  [ROLES.INVENTORY_ADMIN]: '/employee-dashboard',
+  [ROLES.INVENTORY_ADMIN]: '/inventory/dashboard',
 };
 
 // Validation functions
