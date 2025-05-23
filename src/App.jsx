@@ -23,6 +23,7 @@ import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
 import AdminDashboard from "./components/Admin/Dashboard.jsx";
 import AdminTrackLeave from "./components/Admin/TrackLeave.jsx";
 import InventoryDashboard from "./components/Inventory/Dashboard.jsx";
+import VCInventoryDashboard from "./components/ViceChancellorUI/inventory/InventoryDashboard.jsx"
 
 import VCLayout from "./layouts/VcLayout.jsx";
 import EmployeeLayout from "./layouts/EmployeeLayout.jsx";
@@ -96,6 +97,7 @@ function App() {
               path="mark-attendance"
               element={<div>Mark Attendance</div>}
             />
+            <Route path="inventory" element = {<VCInventoryDashboard/>}></Route>
           </Route>
 
           {/* Employee Layout */}
