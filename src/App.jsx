@@ -37,6 +37,7 @@ import LeaveRequestForm from "./components/EmployeeUI/homepage/TrackLeave.jsx";
 import Leaves from "./components/EmployeeUI/homepage/Leaves.jsx";
 import InventoryLayout from "./layouts/InventoryLayout.jsx";
 import Layout from "./layouts/Layout.jsx";
+import CreateStock from "./components/Inventory/CreateStock.jsx";
 
 function App() {
   return (
@@ -144,6 +145,7 @@ function App() {
             }
           >
             <Route path="dashboard" element={<InventoryDashboard />} />
+            <Route path="create-stock" element={<CreateStock />} />
           </Route>
         </Routes>
       </ProfileProvider>

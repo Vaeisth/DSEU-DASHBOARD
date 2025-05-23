@@ -55,6 +55,9 @@ export const API_ENDPOINTS = {
   HOLIDAY_CALENDAR: '/profile/get-calender',
   TOTAL_DURATION: '/attendance/total_duration',  // to get the active hours
 
+  // stocks
+  CREATE_STOCK: '/central_stock/create_stock',
+
 };
 
 // Helper function to get full API URL

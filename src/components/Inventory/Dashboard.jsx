@@ -8,21 +8,21 @@ const Dashboard = () => {
     {
       label: "Create Stock",
       icon: <PackagePlus className="w-8 h-8 text-white" />,
-      route: "/create-stock",
+      route: "/inventory/create-stock",
       gradient: "from-blue-500 to-blue-700",
       desc: "To create a stock",
     },
     {
       label: "View All Stocks",
       icon: <Boxes className="w-8 h-8 text-white" />,
-      route: "/view-stocks",
+      route: "/inventory/view-stocks",
       gradient: "from-green-500 to-green-700",
       desc: "To view all stocks"
     },
     {
       label: "All Issued Items",
       icon: <ClipboardList className="w-8 h-8 text-white" />,
-      route: "/issued-items",
+      route: "/inventory/issued-items",
       gradient: "from-orange-500 to-orange-700",
       desc: "To check the issued items"
     },
