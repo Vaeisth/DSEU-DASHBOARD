@@ -127,7 +127,7 @@ const Navbar = () => {
                 <div className="px-4 py-3 border-b border-gray-100">
                   <div className="flex items-center gap-3 mb-2">
                     <img
-                      src={userProfile?.picture}
+                      src={userProfile?.picture || placeholder}
                       alt={userProfile?.name || "Profile"}
                       className="w-12 h-12 rounded-full border-2 border-gray-200 object-cover"
                     />
