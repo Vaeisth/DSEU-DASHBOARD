@@ -19,6 +19,7 @@ import ProfileLoading from "./ProfileLoading";
 import ProfileError from "./ProfileError";
 import { showSuccessToast } from "@/utils/toasts.js";
 import { useProfileContext } from "../../../contexts/ProfileContext.jsx";
+import placeholder from "../../../assets/placeholder-pfp.jpg";
 
 const fetchProfile = async () => {
   try {
@@ -43,6 +44,7 @@ const Profile = () => {
     queryFn: fetchProfile,
   });
 
+  const role = sessionStorage.getItem("currentRole");
   const fileInputRef = useRef(null);
   const { setIsProfileLoading } = useProfileContext();
 
@@ -96,29 +98,29 @@ const Profile = () => {
                 <div className="flex justify-center">
                   <div className="relative -mt-16 group w-32 h-32">
                     <img
-                      src={
-                        userData.picture || "https://via.placeholder.com/150"
-                      }
+                      src={userData.picture || placeholder}
                       alt="Profile"
                       className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
                     />
 
                     {/* Image edit/loading thingy */}
 
-                    <div
-                      className={`absolute inset-0 bg-black/60 rounded-full flex items-center justify-center ${
-                        !imageMutation.isPending
-                          ? "opacity-0 group-hover:opacity-100"
-                          : "opacity-100"
-                      } transition-opacity cursor-pointer`}
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      {!imageMutation.isPending ? (
-                        <Edit className="text-white h-9 w-9 opacity-75" />
-                      ) : (
-                        <LoaderCircle className="text-white h-9 w-9 opacity-90 animate-spin" />
-                      )}
-                    </div>
+                    {role != "inventory_admin" && (
+                      <div
+                        className={`absolute inset-0 bg-black/60 rounded-full flex items-center justify-center ${
+                          !imageMutation.isPending
+                            ? "opacity-0 group-hover:opacity-100"
+                            : "opacity-100"
+                        } transition-opacity cursor-pointer`}
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        {!imageMutation.isPending ? (
+                          <Edit className="text-white h-9 w-9 opacity-75" />
+                        ) : (
+                          <LoaderCircle className="text-white h-9 w-9 opacity-90 animate-spin" />
+                        )}
+                      </div>
+                    )}
 
                     <input
                       type="file"

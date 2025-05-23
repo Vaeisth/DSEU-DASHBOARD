@@ -169,15 +169,14 @@ export const updateProfileImage = async (formData) => {
 
 export const getProfile = async () => {
     const role = sessionStorage.getItem("currentRole");
-    console.log(role);
 
     const res = await apiRequestAxios({
         endpoint: role === "inventory_admin" ? API_ENDPOINTS.GET_CURRENT_USER : API_ENDPOINTS.PROFILE,
         method: 'GET',
     })
 
-    console.log(res.data);
-    
+    // console.log(res.data);
+
     return res.data;
 }
 
@@ -249,5 +248,14 @@ export const getCurrentUser = async () => {
     return apiRequestAxios({
         endpoint: API_ENDPOINTS.GET_CURRENT_USER,
         method: 'GET',
+    })
+}
+
+
+export const createStock = async (formData) => {
+    return apiRequestAxios({
+        endpoint: API_ENDPOINTS.CREATE_STOCK,
+        method: 'POST',
+        data: formData,
     })
 }
