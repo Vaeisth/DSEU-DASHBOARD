@@ -57,7 +57,7 @@ export const API_ENDPOINTS = {
 
   // stocks
   CREATE_STOCK: '/central_stock/create_stock',
-
+  GET_ALL_STOCK: '/central_stock/get_all_stocks'
 };
 
 // Helper function to get full API URL
