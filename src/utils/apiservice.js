@@ -251,11 +251,19 @@ export const getCurrentUser = async () => {
     })
 }
 
-
 export const createStock = async (formData) => {
     return apiRequestAxios({
         endpoint: API_ENDPOINTS.CREATE_STOCK,
         method: 'POST',
         data: formData,
     })
+}
+
+export const getAllStocks = async () => {
+    const res = apiRequestAxios({
+        endpoint: API_ENDPOINTS.GET_ALL_STOCK,
+        method: 'GET'
+    });
+
+    return (await res).data;
 }
