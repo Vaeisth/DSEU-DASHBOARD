@@ -1,26 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { apiRequestAxios } from '../../../utils/api';
-import { API_ENDPOINTS } from '../../../config/api.config';
-import { FaSearch, FaFilter, FaCheckCircle, FaTimesCircle, FaClock, FaBoxOpen } from "react-icons/fa";
+import { apiRequestAxios } from "../../../utils/api";
+import { API_ENDPOINTS } from "../../../config/api.config";
+import {
+  FaSearch,
+  FaFilter,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaClock,
+  FaBoxOpen,
+} from "react-icons/fa";
 import { format } from "date-fns";
 
 const fetchInventoryCounts = async () => {
-  const response = await apiRequestAxios({ 
+  const response = await apiRequestAxios({
     endpoint: API_ENDPOINTS.VC_COUNTS,
-    method: 'GET'
+    method: "GET",
   });
   return response.data;
 };
 
 const fetchInventoryRequests = async (status) => {
-  const endpoint = status === 'pending' ? API_ENDPOINTS.VC_ALL_PENDING :
-                  status === 'approved' ? API_ENDPOINTS.VC_ALL_APPROVED :
-                  API_ENDPOINTS.VC_ALL_REJECTED;
-                  
-  const response = await apiRequestAxios({ 
+  const endpoint =
+    status === "pending"
+      ? API_ENDPOINTS.VC_ALL_PENDING
+      : status === "approved"
+      ? API_ENDPOINTS.VC_ALL_APPROVED
+      : API_ENDPOINTS.VC_ALL_REJECTED;
+
+  const response = await apiRequestAxios({
     endpoint,
-    method: 'GET'
+    method: "GET",
   });
   return response.data;
 };
@@ -33,18 +43,23 @@ const InventoryDashboard = () => {
 
   const { data: counts, isLoading: countsLoading } = useQuery({
     queryKey: ["inventoryCounts"],
-    queryFn: fetchInventoryCounts
+    queryFn: fetchInventoryCounts,
   });
 
   const { data: requests, isLoading: requestsLoading } = useQuery({
     queryKey: ["inventoryRequests", activeTab],
-    queryFn: () => fetchInventoryRequests(activeTab)
+    queryFn: () => fetchInventoryRequests(activeTab),
   });
 
-  const filteredRequests = requests?.filter(request => {
-    const matchesSearch = request.campus_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         request.items.some(item => item.item_name.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesCampus = selectedCampuses.length === 0 || selectedCampuses.includes(request.campus_name);
+  const filteredRequests = requests?.filter((request) => {
+    const matchesSearch =
+      request.campus_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      request.items.some((item) =>
+        item.item_name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    const matchesCampus =
+      selectedCampuses.length === 0 ||
+      selectedCampuses.includes(request.campus_name);
     return matchesSearch && matchesCampus;
   });
 
@@ -74,8 +89,12 @@ const InventoryDashboard = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Inventory Management</h1>
-        <p className="text-gray-600">Manage and track inventory requests across all campuses</p>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          Inventory Management
+        </h1>
+        <p className="text-gray-600">
+          Manage and track inventory requests across all campuses
+        </p>
       </div>
 
       {/* Stats Cards */}
@@ -84,7 +103,9 @@ const InventoryDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Pending Requests</p>
-              <p className="text-2xl font-bold text-yellow-600">{counts?.Pending || 0}</p>
+              <p className="text-2xl font-bold text-yellow-600">
+                {counts?.Pending || 0}
+              </p>
             </div>
             <div className="p-3 bg-yellow-50 rounded-lg">
               <FaClock className="text-yellow-600 text-xl" />
@@ -95,7 +116,9 @@ const InventoryDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Approved Requests</p>
-              <p className="text-2xl font-bold text-green-600">{counts?.Approved || 0}</p>
+              <p className="text-2xl font-bold text-green-600">
+                {counts?.Approved || 0}
+              </p>
             </div>
             <div className="p-3 bg-green-50 rounded-lg">
               <FaCheckCircle className="text-green-600 text-xl" />
@@ -106,7 +129,9 @@ const InventoryDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Rejected Requests</p>
-              <p className="text-2xl font-bold text-red-600">{counts?.Rejected || 0}</p>
+              <p className="text-2xl font-bold text-red-600">
+                {counts?.Rejected || 0}
+              </p>
             </div>
             <div className="p-3 bg-red-50 rounded-lg">
               <FaTimesCircle className="text-red-600 text-xl" />
@@ -161,9 +186,14 @@ const InventoryDashboard = () => {
             <h3 className="text-lg font-semibold mb-4">Filter Requests</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Campus</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Campus
+                </label>
                 <div className="space-y-2">
-                  {["Ambedkar DSEU Campus - 1", "BhaiParamanand DSEU Campus"].map((campus) => (
+                  {[
+                    "Ambedkar DSEU Campus - 1",
+                    "BhaiParamanand DSEU Campus",
+                  ].map((campus) => (
                     <label key={campus} className="flex items-center">
                       <input
                         type="checkbox"
@@ -172,12 +202,16 @@ const InventoryDashboard = () => {
                           if (e.target.checked) {
                             setSelectedCampuses([...selectedCampuses, campus]);
                           } else {
-                            setSelectedCampuses(selectedCampuses.filter(c => c !== campus));
+                            setSelectedCampuses(
+                              selectedCampuses.filter((c) => c !== campus)
+                            );
                           }
                         }}
                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
-                      <span className="ml-2 text-sm text-gray-700">{campus}</span>
+                      <span className="ml-2 text-sm text-gray-700">
+                        {campus}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -225,22 +259,35 @@ const InventoryDashboard = () => {
                 {/* Requested Items Section */}
                 <div className="space-y-3">
                   {request.items.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between bg-gray-50 p-4 rounded-lg"
+                    >
                       <div className="flex items-center gap-4">
                         <div className="p-3 bg-blue-50 rounded-lg">
                           <FaBoxOpen className="text-blue-600 text-xl" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-800">{item.item_name}</h3>
-                          <p className="text-sm text-gray-500">Requested by {request.campus_name}</p>
+                          <h3 className="text-lg font-semibold text-gray-800">
+                            {item.item_name}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            Requested by {request.campus_name}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
                           <p className="text-sm text-gray-500">Quantity</p>
-                          <p className="text-xl font-bold text-blue-600">{item.qty}</p>
+                          <p className="text-xl font-bold text-blue-600">
+                            {item.qty}
+                          </p>
                         </div>
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(request.status)}`}>
+                        <span
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                            request.status
+                          )}`}
+                        >
                           {getStatusIcon(request.status)}
                           {request.status}
                         </span>
@@ -254,10 +301,18 @@ const InventoryDashboard = () => {
                   <div className="flex items-center gap-4">
                     <span>Request ID: #{request.request_id}</span>
                     <span>•</span>
-                    <span>Requested on {format(new Date(request.date_of_request), "MMM dd, yyyy")}</span>
+                    <span>
+                      Requested on{" "}
+                      {format(
+                        new Date(request.date_of_request),
+                        "MMM dd, yyyy"
+                      )}
+                    </span>
                   </div>
                   {request.reason && (
-                    <p className="text-sm text-gray-600">Reason: {request.reason}</p>
+                    <p className="text-sm text-gray-600">
+                      Reason: {request.reason}
+                    </p>
                   )}
                 </div>
               </div>
@@ -269,4 +324,4 @@ const InventoryDashboard = () => {
   );
 };
 
-export default InventoryDashboard; 
+export default InventoryDashboard;

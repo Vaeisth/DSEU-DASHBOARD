@@ -23,7 +23,7 @@ import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
 import AdminDashboard from "./components/Admin/Dashboard.jsx";
 import AdminTrackLeave from "./components/Admin/TrackLeave.jsx";
 import InventoryDashboard from "./components/Inventory/Dashboard.jsx";
-import VCInventoryDashboard from "./components/ViceChancellorUI/inventory/InventoryDashboard.jsx"
+import VCInventoryDashboard from "./components/ViceChancellorUI/Inventory/InventoryDashboard.jsx"
 
 import VCLayout from "./layouts/VcLayout.jsx";
 import EmployeeLayout from "./layouts/EmployeeLayout.jsx";
