@@ -175,8 +175,6 @@ export const getProfile = async () => {
         method: 'GET',
     })
 
-    // console.log(res.data);
-
     return res.data;
 }
 
