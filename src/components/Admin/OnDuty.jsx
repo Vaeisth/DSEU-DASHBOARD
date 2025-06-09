@@ -8,6 +8,7 @@ const OnDuty = () => {
   const { data, isLoading, isError } = useQuery({
     queryFn: getOnDutyEmployees,
     queryKey: ["getOnDuty"],
+    staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {

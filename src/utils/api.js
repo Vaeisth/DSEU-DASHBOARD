@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getApiUrl } from '../config/api.config';
+import { showErrorToast } from '../utils/toasts';
 
 export async function apiRequest(endpoint, { method = 'GET', body, headers = {}, ...rest } = {}) {
   const token = sessionStorage.getItem('accessToken');
@@ -46,6 +47,7 @@ export async function apiRequestAxios({ endpoint, method = 'GET', data = {}, hea
   } catch (error) {
     if (error.response && error.response.status === 401) {
       sessionStorage.removeItem('accessToken');
+      showErrorToast("Session expired! please login agian!");
       window.location.href = '/';
     }
     console.error(error);

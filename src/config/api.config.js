@@ -29,6 +29,7 @@ export const API_ENDPOINTS = {
 
   // VC
   VC_COUNTS: '/vc/counts',
+  VC_ALL_REQUESTS: '/vc/all_requets',
   VC_ALL_PENDING: '/vc/all_pending',
   VC_ALL_APPROVED: '/vc/all_approved',
   VC_ALL_REJECTED: '/vc/all_rejected',
@@ -57,7 +58,10 @@ export const API_ENDPOINTS = {
 
   // stocks
   CREATE_STOCK: '/central_stock/create_stock',
-  GET_ALL_STOCK: '/central_stock/get_all_stocks'
+  GET_ALL_STOCK: '/central_stock/get_all_stocks',
+  GET_STOCK_BY_GEM_ID: '/central_stock/get_stock_with_items',
+  GET_ALL_ISSUED_ITEMS: '/central_stock/all_issued_items',
+  ISSUE_ITEMS_BY_REQUEST_ID: '/central_stock/item_issue_to_request'
 };
 
 // Helper function to get full API URL

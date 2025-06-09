@@ -23,7 +23,9 @@ import Calendar from "./components/ViceChancellorUI/Calendar/Calendar.jsx";
 import AdminDashboard from "./components/Admin/Dashboard.jsx";
 import AdminTrackLeave from "./components/Admin/TrackLeave.jsx";
 import InventoryDashboard from "./components/Inventory/Dashboard.jsx";
-import VCInventoryDashboard from "./components/ViceChancellorUI/Inventory/InventoryDashboard.jsx"
+import VCInventoryDashboard from "./components/ViceChancellorUI/Inventory/InventoryDashboard.jsx";
+import CollegeInventoryDashbaord from './components/CollegeInventory/Dashboard.jsx';
+
 
 import VCLayout from "./layouts/VcLayout.jsx";
 import EmployeeLayout from "./layouts/EmployeeLayout.jsx";
@@ -36,10 +38,17 @@ import ApplyLeave from "./components/Admin/ApplyLeave.jsx";
 import OnDuty from "./components/Admin/OnDuty.jsx";
 import LeaveRequestForm from "./components/EmployeeUI/homepage/TrackLeave.jsx";
 import Leaves from "./components/EmployeeUI/homepage/Leaves.jsx";
+
+// inventory
 import InventoryLayout from "./layouts/InventoryLayout.jsx";
 import Layout from "./layouts/Layout.jsx";
 import CreateStock from "./components/Inventory/CreateStock.jsx";
 import ViewAllStocks from "./components/Inventory/ViewAllStocks.jsx";
+import StockByGemId from "./components/Inventory/StockByGemId.jsx";
+import AllIssuedItems from "./components/Inventory/AllIssuedItems.jsx";
+import IncomingRequests from "./components/Inventory/IncomingRequests.jsx";
+
+// college inventory dashboard
 
 function App() {
   return (
@@ -53,7 +62,12 @@ function App() {
             path="/"
             element={
               <ProtectedRoute
-                allowedRoles={["super_admin", "admin", "employee", "inventory_admin"]}
+                allowedRoles={[
+                  "super_admin",
+                  "admin",
+                  "employee",
+                  "inventory_admin",
+                ]}
               >
                 <Layout />
               </ProtectedRoute>
@@ -98,7 +112,7 @@ function App() {
               path="mark-attendance"
               element={<div>Mark Attendance</div>}
             />
-            <Route path="inventory" element = {<VCInventoryDashboard/>}></Route>
+            <Route path="inventory" element={<VCInventoryDashboard />}></Route>
           </Route>
 
           {/* Employee Layout */}
@@ -150,6 +164,21 @@ function App() {
             <Route path="dashboard" element={<InventoryDashboard />} />
             <Route path="create-stock" element={<CreateStock />} />
             <Route path="view-stocks" element={<ViewAllStocks />} />
+            <Route path="stock/:id" element={<StockByGemId />} />
+            <Route path="issued-items" element={<AllIssuedItems />} />
+            <Route path="incoming-requests" element={<IncomingRequests />} />
+          </Route>
+
+            {/* college inventory */}
+          <Route
+            path="/college-inventory"
+            element={
+              <ProtectedRoute allowedRoles={["icadmin"]}>
+                <InventoryLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="dashboard" element={<CollegeInventoryDashbaord />} />
           </Route>
         </Routes>
       </ProfileProvider>

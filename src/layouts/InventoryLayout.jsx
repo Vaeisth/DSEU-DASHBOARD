@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import InventoryNavbar from "../components/Inventory/InventoryNavbar.jsx";
 import Navbar from "../components/ViceChancellorUI/Reusable/Navbar.jsx";
 
 const InventoryLayout = () => {

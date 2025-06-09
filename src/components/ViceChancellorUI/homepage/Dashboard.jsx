@@ -1,79 +1,36 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import PendingApprovals from "./PendingApprovals";
 import OnDutyOfficers from "./OnDutyOfficers";
 import { useQuery } from "@tanstack/react-query";
-import { apiRequestAxios } from '../../../utils/api';
-import { API_ENDPOINTS } from '../../../config/api.config';
+import { apiRequestAxios } from "../../../utils/api";
+import { API_ENDPOINTS } from "../../../config/api.config";
 
-
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUserCheck,
-  faFileAlt,
-  faPlaneDeparture,
-  faBullhorn,
-  faCalendarAlt,
-  faUniversity,
-  faFileArchive,
-  faVideo,
-  faBoxOpen,
-} from "@fortawesome/free-solid-svg-icons";
+
 import { fetchPendingLeaves } from "../../../utils/apiservice";
-
-
-
-const services = [
-  { name: "Attendance", path: "/attendance", icon: faUserCheck },
-  { name: "Reports", path: "/reports", icon: faFileAlt },
-  { name: "Track Leave", path: "/track-leave", icon: faPlaneDeparture },
-  { name: "Announcements", path: "/announcements", icon: faBullhorn },
-  { name: "Calendar", path: "/calendar", icon: faCalendarAlt },
-  { name: "Campus List", path: "/campus", icon: faUniversity },
-  { name: "File Tracking", path: "/filetracking", icon: faFileArchive },
-  { name: "Surveillance", path: "/surveillance", icon: faVideo },
-  { name: "Inventory", path: "/inventory", icon: faBoxOpen },
-];
-
-const buttonColors = [
-  "bg-[#C4DAFA]",
-  "bg-[#EFFBEA]",
-  "bg-[#F1D9FC]",
-  "bg-[#FBD5D7]",
-  "bg-[#FBF5EA]",
-  "bg-[#FBC4DF]",
-  "bg-[#FCDFE0]",
-  "bg-[#C6FFEB]",
-  "bg-[#A3EEE7]",
-];
+import { buttonColors, services } from "./HomePageConstant";
 
 const fetchAttendanceReport = async () => {
   const res = await apiRequestAxios({
     endpoint: API_ENDPOINTS.ATTENDANCE_REPORT,
-    method: 'GET'
+    method: "GET",
   });
   return res.data.report;
 };
 
 const fetchTotalEmployees = async () => {
-  const res = await apiRequestAxios({ 
+  const res = await apiRequestAxios({
     endpoint: API_ENDPOINTS.ALL_USERS,
-    method: 'GET' 
+    method: "GET",
   });
   return res.data.data.length;
 };
 
 const fetchTodaysAttendance = async () => {
-  const res = await apiRequestAxios({ 
+  const res = await apiRequestAxios({
     endpoint: API_ENDPOINTS.TODAYS_ATTENDANCE,
-    method: 'GET' 
+    method: "GET",
   });
   return res.data.data.length;
 };
@@ -82,35 +39,50 @@ const fetchLeavesApproved = async () => {
   try {
     const res = await apiRequestAxios({
       endpoint: API_ENDPOINTS.LEAVE_REQUESTS_HISTORY,
-      method: 'GET',
+      method: "GET",
     });
     const allLeaves = res.data.data || [];
-    const approvedLeaves = allLeaves.filter(leave => leave.status === 'Approved');
+    const approvedLeaves = allLeaves.filter(
+      (leave) => leave.status === "Approved"
+    );
     return approvedLeaves.length;
   } catch (error) {
-    console.error('Error fetching approved leaves:', error);
-    return 0;  
+    console.error("Error fetching approved leaves:", error);
+    return 0;
   }
 };
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const {data: AttendanceReport} = useQuery({
+
+  const { data: AttendanceReport } = useQuery({
     queryKey: ["AttendanceReport"],
     queryFn: fetchAttendanceReport,
+    staleTime: 5 * 60 * 1000,
   });
-  const { data: totalEmployees, isLoading, isError } = useQuery({
+
+  const {
+    data: totalEmployees,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["totalEmployees"],
     queryFn: fetchTotalEmployees,
+    staleTime: 5 * 60 * 1000,
   });
+
   const { data: todaysAttendance } = useQuery({
     queryKey: ["todaysAttendance"],
     queryFn: fetchTodaysAttendance,
+    staleTime: 5 * 60 * 1000,
   });
+
   const { data: leavesApproved } = useQuery({
     queryKey: ["leavesApproved"],
     queryFn: fetchLeavesApproved,
+    staleTime: 5 * 60 * 1000,
   });
+
   const chartData = [
     { name: "Present", value: AttendanceReport?.present, color: "#4CAF50" },
     { name: "Absent", value: AttendanceReport?.absent, color: "#F44336" },
@@ -127,36 +99,36 @@ const Dashboard = () => {
     <div className="space-y-4">
       {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <div 
+        <div
           className="bg-white p-3 rounded-lg shadow flex flex-col items-center cursor-pointer"
-          onClick={() => navigate('/employees')}
+          onClick={() => navigate("/employees")}
         >
-          <h3 className="text-sm font-semibold text-gray-600 mb-1">Total Employees</h3>
+          <h3 className="text-sm font-semibold text-gray-600 mb-1">
+            Total Employees
+          </h3>
           <p className="text-2xl font-bold text-blue-600">{cardData[0]}</p>
         </div>
-        {["Today's Attendance", "Leaves Approved"].map(
-          (title, index) => (
-            <div
-              key={index}
-              className="bg-white p-3 rounded-lg shadow flex flex-col items-center"
+        {["Today's Attendance", "Leaves Approved"].map((title, index) => (
+          <div
+            key={index}
+            className="bg-white p-3 rounded-lg shadow flex flex-col items-center"
+          >
+            <h3 className="text-sm font-semibold text-gray-600 mb-1">
+              {title}
+            </h3>
+            <p
+              className={`text-2xl font-bold ${
+                index === 1
+                  ? "text-green-600"
+                  : index === 2
+                  ? "text-red-600"
+                  : "text-blue-600"
+              }`}
             >
-              <h3 className="text-sm font-semibold text-gray-600 mb-1">
-                {title}
-              </h3>
-              <p
-                className={`text-2xl font-bold ${
-                  index === 1
-                    ? "text-green-600"
-                    : index === 2
-                    ? "text-red-600"
-                    : "text-blue-600"
-                }`}
-              >
-                {cardData[index + 1]}
-              </p>
-            </div>
-          )
-        )}
+              {cardData[index + 1]}
+            </p>
+          </div>
+        ))}
       </div>
 
       {/* Chart + Services */}

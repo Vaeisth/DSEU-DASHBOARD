@@ -19,6 +19,7 @@ const TrackLeave = () => {
   } = useQuery({
     queryKey: ["leaves", "pending"],
     queryFn: () => fetchLeaves("pending"),
+    staleTime: 5 * 60 * 1000,
   });
 
   const {
@@ -28,6 +29,7 @@ const TrackLeave = () => {
   } = useQuery({
     queryKey: ["leaves", "history"],
     queryFn: () => fetchLeaves("history"),
+    staleTime: 5 * 60 * 1000,
   });
 
   const getStatusColor = (status) => {

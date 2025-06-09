@@ -22,6 +22,7 @@ const Navbar = () => {
   const { data: userProfile, isLoading } = useQuery({
     queryFn: getProfile,
     queryKey: ["profile"],
+    staleTime: 7 * 60 * 1000,
   });
 
   // Close dropdown when clicking outside
@@ -86,7 +87,7 @@ const Navbar = () => {
         </div>
 
         {/* Center: Search */}
-        <div className="relative flex-1 max-w-2xl mx-4">
+        <div className="relative flex-1 max-w-2xl mx-4 hidden md:block">
           <div className="relative">
             <input
               type="text"

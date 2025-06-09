@@ -12,6 +12,7 @@ const Calendar = () => {
   } = useQuery({
     queryKey: ["holidays"],
     queryFn: fetchHolidays,
+    staleTime: 10 * 60 * 1000,
   });
 
   const daysInMonth = new Date(

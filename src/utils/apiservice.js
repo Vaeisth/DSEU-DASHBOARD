@@ -171,7 +171,7 @@ export const getProfile = async () => {
     const role = sessionStorage.getItem("currentRole");
 
     const res = await apiRequestAxios({
-        endpoint: role === "inventory_admin" ? API_ENDPOINTS.GET_CURRENT_USER : API_ENDPOINTS.PROFILE,
+        endpoint: role === "inventory_admin" || role === "icadmin" ? API_ENDPOINTS.GET_CURRENT_USER : API_ENDPOINTS.PROFILE,
         method: 'GET',
     })
 
@@ -256,6 +256,7 @@ export const createStock = async (formData) => {
         endpoint: API_ENDPOINTS.CREATE_STOCK,
         method: 'POST',
         data: formData,
+        headers: { "Content-Type": "application/json" }
     })
 }
 
@@ -266,4 +267,45 @@ export const getAllStocks = async () => {
     });
 
     return (await res).data;
+}
+
+export const getStockByGemID = async (gemId) => {
+    const res = apiRequestAxios({
+        endpoint: `${API_ENDPOINTS.GET_STOCK_BY_GEM_ID}/${gemId}`,
+        method: 'GET',
+    })
+
+    const data = await res;
+    return data.data;
+}
+
+export const getAllIssuedItems = async () => {
+    const res = apiRequestAxios({
+        endpoint: API_ENDPOINTS.GET_ALL_ISSUED_ITEMS,
+        method: 'GET',
+    })
+
+    const data = await res;
+    return data.data;
+}
+
+//? All incoming requests of college inventory to 
+export const getVcAllRequests = async () => {
+    const res = apiRequestAxios({
+        endpoint: API_ENDPOINTS.VC_ALL_REQUESTS,
+        method: 'GET'
+    });
+
+    const data = await res;
+    return data.data;
+}
+
+//? Approve leave 
+export const issueStockItems = async (requestId) => {
+    const res = apiRequestAxios({
+        endpoint: `${API_ENDPOINTS.ISSUE_ITEMS_BY_REQUEST_ID}/${requestId}`,
+        method: 'POST'
+    });
+
+    return res;
 }

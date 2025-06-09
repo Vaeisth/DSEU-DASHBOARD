@@ -12,6 +12,7 @@ const Announcements = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["announcements"],
     queryFn: fetchAnnouncements,
+    staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {

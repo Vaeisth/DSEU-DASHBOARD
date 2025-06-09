@@ -1,13 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { FaBuilding, FaUserTie, FaCalendarAlt, FaEnvelope } from "react-icons/fa";
+import {
+  FaBuilding,
+  FaUserTie,
+  FaCalendarAlt,
+  FaEnvelope,
+} from "react-icons/fa";
 import placeholder from "../../../assets/placeholder-pfp.jpg";
 import { useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { fetchAllEmployees } from "../../../utils/apiservice";
 import { debounce } from "lodash";
-import { FixedSizeGrid as Grid } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
-
+import { FixedSizeGrid as Grid } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 
 const EmployeeList = () => {
   const [inputField, setInputField] = useState("");
@@ -22,6 +26,7 @@ const EmployeeList = () => {
     queryKey: ["allEmployee"],
     queryFn: fetchAllEmployees,
     retry: 1,
+    staleTime: 5 * 60 * 1000,
   });
 
   // Memoize the filtered employees to prevent unnecessary recalculations
@@ -47,73 +52,84 @@ const EmployeeList = () => {
   };
 
   // Cell renderer for virtualized grid
-  const Cell = useCallback(({ columnIndex, rowIndex, style }) => {
-    const index = rowIndex * 3 + columnIndex;
-    if (index >= filteredEmployees.length) return null;
-    
-    const employee = filteredEmployees[index];
-    return (
-      <div style={style} className="p-3">
-        <Link
-          to={`/employee-details/${employee._id}`}
-          className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow h-full block"
-        >
-          <div className="p-6">
-            <div className="flex items-center gap-4">
-              <img
-                src={employee.picture || placeholder}
-                alt={employee.name || "Employee"}
-                className="w-16 h-16 rounded-full object-cover border border-gray-200"
-              />
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {employee.name || "Unknown"}
-                </h3>
-                <p className="text-sm text-gray-500">{employee.email || "No email"}</p>
-              </div>
-            </div>
+  const Cell = useCallback(
+    ({ columnIndex, rowIndex, style }) => {
+      const index = rowIndex * 3 + columnIndex;
+      if (index >= filteredEmployees.length) return null;
 
-            <div className="mt-4 space-y-3">
-              <div className="flex items-center text-gray-600">
-                <FaBuilding className="w-5 h-5 mr-3 text-blue-500" />
-                <span>{employee.campus?.name || "No Campus"}</span>
+      const employee = filteredEmployees[index];
+      return (
+        <div style={style} className="p-3">
+          <Link
+            to={`/employee-details/${employee._id}`}
+            className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow h-full block"
+          >
+            <div className="p-6">
+              <div className="flex items-center gap-4">
+                <img
+                  src={employee.picture || placeholder}
+                  alt={employee.name || "Employee"}
+                  className="w-16 h-16 rounded-full object-cover border border-gray-200"
+                />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    {employee.name || "Unknown"}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {employee.email || "No email"}
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center text-gray-600">
-                <FaUserTie className="w-5 h-5 mr-3 text-blue-500" />
-                <span>{employee.designation?.[0] || "No Designation"}</span>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <FaCalendarAlt className="w-5 h-5 mr-3 text-blue-500" />
-                <span>
-                  Joined:{" "}
-                  {employee.date_of_joining
-                    ? new Date(employee.date_of_joining).toLocaleDateString()
-                    : "Not specified"}
-                </span>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <FaEnvelope className="w-5 h-5 mr-3 text-blue-500" />
-                <span className="text-sm">{employee.role || "Not specified"}</span>
-              </div>
-            </div>
 
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <div className="flex flex-wrap gap-2">
-                {employee.department?.map((dept, index) => (
-                  <span
-                    key={index}
-                    className="px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded-full"
-                  >
-                    {dept}
+              <div className="mt-4 space-y-3">
+                <div className="flex items-center text-gray-600">
+                  <FaBuilding className="w-5 h-5 mr-3 text-blue-500" />
+                  <span>{employee.campus?.name || "No Campus"}</span>
+                </div>
+                <div className="flex items-center text-gray-600">
+                  <FaUserTie className="w-5 h-5 mr-3 text-blue-500" />
+                  <span>{employee.designation?.[0] || "No Designation"}</span>
+                </div>
+                <div className="flex items-center text-gray-600">
+                  <FaCalendarAlt className="w-5 h-5 mr-3 text-blue-500" />
+                  <span>
+                    Joined:{" "}
+                    {employee.date_of_joining
+                      ? new Date(employee.date_of_joining).toLocaleDateString()
+                      : "Not specified"}
                   </span>
-                )) || <span className="text-gray-500 text-xs">No departments</span>}
+                </div>
+                <div className="flex items-center text-gray-600">
+                  <FaEnvelope className="w-5 h-5 mr-3 text-blue-500" />
+                  <span className="text-sm">
+                    {employee.role || "Not specified"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="flex flex-wrap gap-2">
+                  {employee.department?.map((dept, index) => (
+                    <span
+                      key={index}
+                      className="px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded-full"
+                    >
+                      {dept}
+                    </span>
+                  )) || (
+                    <span className="text-gray-500 text-xs">
+                      No departments
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </Link>
-      </div>
-    );
-  }, [filteredEmployees]);
+          </Link>
+        </div>
+      );
+    },
+    [filteredEmployees]
+  );
 
   if (isLoading)
     return (
@@ -133,7 +149,9 @@ const EmployeeList = () => {
           <h3 className="text-xl font-semibold text-gray-800 mb-2">
             Failed to Load Employees
           </h3>
-          <p className="text-gray-600">{error.message || "Please try again later."}</p>
+          <p className="text-gray-600">
+            {error.message || "Please try again later."}
+          </p>
         </div>
       </div>
     );
@@ -142,7 +160,9 @@ const EmployeeList = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center p-8 bg-white rounded-xl shadow-sm max-w-md">
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">No Employees Found</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            No Employees Found
+          </h3>
           <p className="text-gray-600">There are no employees to display.</p>
         </div>
       </div>
@@ -174,7 +194,8 @@ const EmployeeList = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[calc(100vh-200px)] overflow-hidden">
         <AutoSizer>
           {({ height, width }) => {
-            const columnCount = Math.min(3, Math.floor(width / 400));
+            const rawColumnCount = Math.floor(width / 400);
+            const columnCount = Math.max(1, Math.min(3, rawColumnCount)); // 🔥 FIXED
             const rowCount = Math.ceil(filteredEmployees.length / columnCount);
             const columnWidth = width / columnCount;
             const rowHeight = 400;

@@ -42,6 +42,7 @@ const Profile = () => {
   } = useQuery({
     queryKey: ["profile"],
     queryFn: fetchProfile,
+    staleTime: 5 * 60 * 1000,
   });
 
   const role = sessionStorage.getItem("currentRole");

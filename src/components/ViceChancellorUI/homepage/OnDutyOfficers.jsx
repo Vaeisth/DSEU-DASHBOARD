@@ -23,6 +23,7 @@ const OnDutyOfficers = () => {
   const { data: onDutyOfficers = [], isLoading, isError } = useQuery({
     queryKey: ["onDutyOfficers"],
     queryFn: fetchOnDutyOfficers,
+    staleTime: 5 * 60 * 1000,
   });
 
   const scroll = (direction) => {

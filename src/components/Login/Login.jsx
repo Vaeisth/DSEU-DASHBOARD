@@ -14,6 +14,7 @@ const ROLES = {
   SUPER_ADMIN: "super_admin",
   ADMIN: "admin",
   INVENTORY_ADMIN: "inventory_admin",
+  COLLEGE_INVENTORY: "icadmin"
 };
 
 const ROUTES = {
@@ -22,6 +23,7 @@ const ROUTES = {
   [ROLES.SUPER_ADMIN]: "/vc-dashboard",
   [ROLES.ADMIN]: "/admin/dashboard",
   [ROLES.INVENTORY_ADMIN]: '/inventory/dashboard',
+  [ROLES.COLLEGE_INVENTORY]: '/college-inventory/dashboard'
 };
 
 // Validation functions

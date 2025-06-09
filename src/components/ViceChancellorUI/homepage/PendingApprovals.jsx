@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ const PendingApprovals = ({ queryFn }) => {
   } = useQuery({
     queryKey: ["pendingLeaves"],
     queryFn,
+    staleTime: 5 * 60 * 1000,
   });
 
   const scroll = (direction) => {
@@ -26,12 +27,6 @@ const PendingApprovals = ({ queryFn }) => {
       });
     }
   };
-
-  // useEffect(() => {
-  //   if (pendingLeaves) {
-  //     console.log(pendingLeaves);
-  //   }
-  // }, [pendingLeaves]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -49,14 +44,12 @@ const PendingApprovals = ({ queryFn }) => {
     <div className="relative w-full bg-white p-4 rounded-xl shadow-md shadow-blue-100">
       {/* Header */}
       <div className="flex justify-between items-center mb-3 px-1">
-        <h3 className="text-2xl font-bold text-[#333]">
-          Pending Approvals
-        </h3>
+        <h3 className="text-2xl font-bold text-[#333]">Pending Approvals</h3>
         <button
           onClick={() => navigate("/admin/track-leave")}
           className="text-blue-600 text-md font-base hover:underline cursor-pointer"
         >
-          See all 
+          See all
         </button>
       </div>
 

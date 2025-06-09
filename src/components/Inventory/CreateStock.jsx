@@ -42,10 +42,28 @@ const CreateStock = () => {
   const handleItemChange = (index, e) => {
     const { name, value } = e.target;
     const updatedItems = [...formData.items];
-
     updatedItems[index][name] =
       name === "item_price" || name === "item_quantity" ? Number(value) : value;
+    setFormData({ ...formData, items: updatedItems });
+  };
 
+  const addItem = () => {
+    setFormData({
+      ...formData,
+      items: [
+        ...formData.items,
+        {
+          item_name: "",
+          item_type: "Consumable",
+          item_quantity: 1,
+          item_price: 100,
+        },
+      ],
+    });
+  };
+
+  const removeItem = (index) => {
+    const updatedItems = formData.items.filter((_, i) => i !== index);
     setFormData({ ...formData, items: updatedItems });
   };
 
@@ -93,9 +111,22 @@ const CreateStock = () => {
 
   const handleSubmit = () => {
     if (!validateForm()) return;
-    console.log(formData);
 
-    mutation.mutate(formData);
+    const payload = {
+      ...formData,
+      gem_id: Number(formData.gem_id),
+      date_of_adding: new Date().toISOString().split("T")[0],
+      items: formData.items.map((item) => ({
+        ...item,
+        item_quantity: Number(item.item_quantity),
+        item_price: Number(item.item_price),
+        item_id: 0,
+      })),
+    };
+
+    console.log(payload);
+      
+    mutation.mutate(payload);
   };
 
   return (
@@ -113,7 +144,7 @@ const CreateStock = () => {
                 GEM ID
               </label>
               <input
-                type="text"
+                type="number"
                 name="gem_id"
                 value={formData.gem_id}
                 onChange={handleChange}
@@ -165,13 +196,13 @@ const CreateStock = () => {
               />
             </div>
 
-            {/* Items */}
+            {/* Item Details */}
             <div className="bg-gray-50 p-3 rounded-lg">
               <label className="block text-md font-medium text-gray-700 mb-2">
                 Item Details
               </label>
               {formData.items.map((item, index) => (
-                <div key={index} className="space-y-2">
+                <div key={index} className="space-y-2 border p-3 rounded-md mb-3">
                   <input
                     type="text"
                     name="item_name"
@@ -187,39 +218,50 @@ const CreateStock = () => {
                     className="w-full bg-transparent border-b border-gray-300 px-2 py-2 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
                   >
                     <option value="Consumable">Consumable</option>
-                    <option value="Non-Consumable">Non-Consumable</option>
+                    <option value="Non Consumable">Non-Consumable</option>
                   </select>
-                  {/* Quantity */}
                   <div className="flex gap-4 mt-4">
                     <div className="flex-1">
                       <label className="block text-md font-medium text-gray-700 mb-2">
-                        Item Quantity
+                        Quantity
                       </label>
                       <input
                         type="number"
                         name="item_quantity"
                         value={item.item_quantity}
                         onChange={(e) => handleItemChange(index, e)}
-                        placeholder="Item Quantity"
                         className="w-full bg-transparent border-b border-gray-300 px-2 py-2 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
                       />
                     </div>
                     <div className="flex-1">
                       <label className="block text-md font-medium text-gray-700 mb-2">
-                        Item Price
+                        Price
                       </label>
                       <input
                         type="number"
                         name="item_price"
                         value={item.item_price}
                         onChange={(e) => handleItemChange(index, e)}
-                        placeholder="Item Price"
                         className="w-full bg-transparent border-b border-gray-300 px-2 py-2 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
                       />
                     </div>
                   </div>
+                  {formData.items.length > 1 && (
+                    <button
+                      onClick={() => removeItem(index)}
+                      className="text-red-500 text-sm underline mt-2"
+                    >
+                      Remove Item
+                    </button>
+                  )}
                 </div>
               ))}
+              <button
+                onClick={addItem}
+                className="mt-2 text-sm text-blue-500 underline"
+              >
+                + Add Another Item
+              </button>
             </div>
 
             {/* Submit */}

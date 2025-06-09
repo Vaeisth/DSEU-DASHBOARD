@@ -39,6 +39,8 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
         return <Navigate to="/vc-dashboard" replace />;
       case "inventory_admin":
         return <Navigate to="/inventory/dashboard" replace />;
+      case "icadmin":
+         return <Navigate to="/college-inventory/dashboard" replace />
       default:
         return <Navigate to="/" replace />;
     }

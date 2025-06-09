@@ -44,6 +44,8 @@ const CampusInfo = () => {
   const { data: campus, isLoading, isError, error } = useQuery({
     queryKey: ["campus", id],
     queryFn: () => fetchCampusDetails(id),
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000,
   });
 
   const deleteCampusMutation = useMutation({

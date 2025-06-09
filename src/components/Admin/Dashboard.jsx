@@ -16,19 +16,22 @@ const AdminDashboard = () => {
 
   const [onDutyData, setOnDutyData] = useState([]);
 
-  const { data: leaveRequest, isLoading: isRequestLoading } = useQuery({
+  const { data: leaveRequest } = useQuery({
     queryFn: getLeaveRequest,
     queryKey: ["admin-leave-request"],
+    staleTime: 5 * 60 * 1000,
   });
 
   const { data: totalDuration } = useQuery({
     queryFn: getActiveHours,
     queryKey: ["totalDuration"],
+    staleTime: 5 * 60 * 1000,
   });
 
   const { data: onDuty, isLoading: isOnDutyLoading } = useQuery({
     queryFn: getOnDutyEmployees,
     queryKey: ["onDutyEmployees"],
+    staleTime: 5 * 60 * 1000,
   });
 
   const scrollRef = useRef(null);

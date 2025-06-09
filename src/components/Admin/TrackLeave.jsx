@@ -20,6 +20,7 @@ const TrackLeave = () => {
   } = useQuery({
     queryKey: ["leaves", "pending"],
     queryFn: () => fetchLeavesAdmin("pending"),
+    staleTime: 5 * 60 * 1000,
   });
 
   const {
