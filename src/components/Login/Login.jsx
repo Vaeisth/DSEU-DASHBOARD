@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useLoginForm from "../../hooks/useLoginForm";
 import { loginUser } from "../../utils/apiservice";
 import dseuLogo from "../../assets/logo/DSEULOGO.svg";
@@ -39,6 +39,7 @@ const Login = () => {
   const { form, errors, handleChange, setErrors } = useLoginForm();
   // const [loginAttempts, setLoginAttempts] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const handleLogout = useCallback(() => {
@@ -78,6 +79,8 @@ const Login = () => {
       sessionStorage.setItem("accessToken", data.access_token);
       sessionStorage.setItem("currentRole", normalizedRole);
       sessionStorage.setItem("tokenExpiry", expiryTime.toISOString());
+
+      queryClient.invalidateQueries(['profile']);
 
       const route = ROUTES[normalizedRole];
       if (route) {

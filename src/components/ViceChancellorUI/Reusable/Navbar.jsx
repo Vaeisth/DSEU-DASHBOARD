@@ -22,7 +22,7 @@ const Navbar = () => {
   const { data: userProfile, isLoading } = useQuery({
     queryFn: getProfile,
     queryKey: ["profile"],
-    staleTime: 7 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 
   // Close dropdown when clicking outside
