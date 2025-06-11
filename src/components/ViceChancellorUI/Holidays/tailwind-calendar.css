@@ -1,0 +1,27 @@
+/* tailwind-calendar.css */
+.react-calendar {
+    border: none !important;
+    font-family: inherit;
+  }
+  
+  .react-calendar__tile {
+    height: 80px;
+    padding: 6px;
+    border-radius: 0.5rem;
+    transition: background 0.2s;
+  }
+  
+  .react-calendar__tile--now {
+    background: #e0f2fe !important;
+    color: #0c4a6e !important;
+  }
+  
+  .react-calendar__tile--active {
+    background: #3b82f6 !important;
+    color: white !important;
+  }
+  
+  .react-calendar__tile:hover {
+    background: #bae6fd !important;
+  }
+  
