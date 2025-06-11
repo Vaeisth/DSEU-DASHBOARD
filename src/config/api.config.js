@@ -10,6 +10,10 @@ export const API_ENDPOINTS = {
   PROFILE: '/profile',
   UPLOAD_IMAGE: '/profile/upload-image',
   GET_CURRENT_USER: '/get-current-user',
+<<<<<<< HEAD
+=======
+  CHANGE_PASSWORD: '/change-password',
+>>>>>>> ae412ae (change oassword)
 
   // Super Admin
   ALL_USERS: '/superadmin/all-users',

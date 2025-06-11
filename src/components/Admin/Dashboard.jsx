@@ -4,9 +4,7 @@ import { LoaderCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-
 import PendingApprovals from "../ViceChancellorUI/homepage/PendingApprovals";
-
 import { buttonColors, services } from "../../Constants/adminDashboard";
 import { getLeaveRequest, getOnDutyEmployees } from "./adminapi";
 import { fetchLeavesAdmin, getActiveHours } from "../../utils/apiservice";

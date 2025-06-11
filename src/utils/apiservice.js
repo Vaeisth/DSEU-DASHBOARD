@@ -175,6 +175,8 @@ export const getProfile = async () => {
         method: 'GET',
     })
 
+    // console.log(res.data);
+
     return res.data;
 }
 
@@ -307,3 +309,17 @@ export const issueStockItems = async (requestId) => {
 
     return res;
 }
+
+
+export const changePassword = async ({ oldPassword, newPassword }) => {
+  return apiRequestAxios({
+    endpoint: API_ENDPOINTS.CHANGE_PASSWORD,
+    method: 'PATCH',
+    data: {
+      old_password: oldPassword,
+      new_password: newPassword,
+    },
+  });
+};
+
+

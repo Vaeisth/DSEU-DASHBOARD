@@ -11,6 +11,7 @@ import {
   FaUniversity,
   FaCreditCard,
 } from "react-icons/fa";
+import { RiLockPasswordLine } from "react-icons/ri";
 import { Edit, Loader, LoaderCircle } from "lucide-react";
 import { updateProfileImage } from "../../../utils/apiservice";
 import toast from "react-hot-toast";
@@ -20,6 +21,7 @@ import ProfileError from "./ProfileError";
 import { showSuccessToast } from "@/utils/toasts.js";
 import { useProfileContext } from "../../../contexts/ProfileContext.jsx";
 import placeholder from "../../../assets/placeholder-pfp.jpg";
+import { Link } from "react-router-dom";
 
 const fetchProfile = async () => {
   try {
@@ -184,6 +186,9 @@ const Profile = () => {
                   </div>
                 )}
               </div>
+            </div>
+            <div className="bg-white rounded-2xl shadow-sm mt-8 p-6 ">
+              <Link to="/change-password" className="flex items-center"> <RiLockPasswordLine size={20}className="inline-block mr-2 text-blue-500 font-bold" /> <h1 className=" text-gray-800 font-medium">Change Password</h1></Link>
             </div>
           </div>
 

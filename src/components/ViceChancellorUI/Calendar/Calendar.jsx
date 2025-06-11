@@ -5,6 +5,7 @@ import { fetchHolidays } from "../../../utils/apiservice";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
+
   const {
     data: holidays,
     isLoading,
@@ -55,6 +56,15 @@ const Calendar = () => {
     return holiday ? holiday.holiday : "";
   };
 
+  const isToday = (date) => {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
+
   if (isLoading)
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -79,7 +89,7 @@ const Calendar = () => {
   return (
     <div className="bg-gray-50 py-6">
       <div className="max-w-4xl mx-auto px-2 sm:px-4">
-        {/* Calendar Header */}
+        {/* Header */}
         <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-800 flex items-center">
@@ -117,11 +127,19 @@ const Calendar = () => {
               return (
                 <div
                   key={index}
-                  className={`aspect-square p-2 relative group ${
-                    isHolidayDay ? "bg-red-50 border border-red-200" : "hover:bg-gray-50"
-                  } rounded-lg transition-colors`}
+                  className={`aspect-square p-2 relative group rounded-lg transition-colors
+                    ${isToday(date) ? "bg-blue-100 border border-blue-300" : ""}
+                    ${isHolidayDay ? "bg-red-50 border border-red-200" : "hover:bg-gray-50"}
+                  `}
                 >
                   <span className="text-gray-800">{index + 1}</span>
+
+                  {isToday(date) && (
+                    <span className="absolute top-1 right-1 text-[10px] px-1 py-0.5 bg-blue-600 text-white rounded-full">
+                      Today
+                    </span>
+                  )}
+
                   {isHolidayDay && (
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-red-50 rounded-lg">
                       <span className="text-xs text-red-600 font-medium text-center px-1">
@@ -165,3 +183,4 @@ const Calendar = () => {
 };
 
 export default Calendar;
+
